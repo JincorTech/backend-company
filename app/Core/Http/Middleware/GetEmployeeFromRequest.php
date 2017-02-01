@@ -12,8 +12,8 @@ namespace App\Core\Http\Middleware;
 use Closure;
 use App;
 use App\Core\Services\IdentityService;
-use App\Domains\Company\Services\EmployeeService;
-use App\Domains\Company\Entities\Employee;
+use App\Domains\Employee\Services\EmployeeService;
+use App\Domains\Employee\Entities\Employee;
 use Illuminate\Auth\AuthenticationException;
 
 class GetEmployeeFromRequest
@@ -43,7 +43,7 @@ class GetEmployeeFromRequest
         }
         $data = $this->identityService->validateToken($header);
 
-        /** @var Employee $employee */
+        /** @var \App\Domains\Employee\Entities\Employee $employee */
         $employee = $this->employeeService->findByLogin($data['login']);
         $employee->getProfile()->scope = $data['scope'];
         if (!$employee) {

@@ -10,9 +10,9 @@
 use Illuminate\Database\Seeder;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Dictionary\Entities\Country;
-use App\Domains\Company\ValueObjects\EmployeeProfile;
-use App\Domains\Company\Services\EmployeeVerificationService;
-use App\Domains\Company\Services\EmployeeRegistrationService;
+use App\Domains\Employee\ValueObjects\EmployeeProfile;
+use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Domains\Employee\Services\EmployeeService;
 use App\Core\Dictionary\Repositories\CountryRepository;
 use GeoJson\Geometry\Point;
 use App\Domains\Company\Entities\Company;
@@ -22,12 +22,12 @@ use App\Domains\Company\Entities\CompanyType;
 class CompanySeeder extends Seeder
 {
     /**
-     * @var \App\Domains\Company\Services\EmployeeVerificationService
+     * @var EmployeeVerificationService
      */
     private $evs;
 
     /**
-     * @var \App\Domains\Company\Services\EmployeeRegistrationService
+     * @var EmployeeService
      */
     private $ers;
 
@@ -39,16 +39,20 @@ class CompanySeeder extends Seeder
             37.6285343,
         ]);
         $address = new Address('Москва, ул. Алая, д. 15, оф. 89, 602030', $country, $point);
+        /** @var CompanyType $companyType */
         $companyType = $this->getDm()->getRepository(CompanyType::class)->findOneBy([
             'code' => 'BT1',
         ]);
         $company = new Company('MyCompany', $address, $companyType);
         $this->getDm()->persist($company);
         $verification = $this->getEmployeeVerificationService()->beginVerificationProcess($company);
-        $this->getEmployeeVerificationService()->sendEmailVerification($verification->getId(), 'hlogeon1@gmail.com');
+        $this->getEmployeeVerificationService()->sendEmailVerification(
+            $verification->getId(),
+            env('TEST_MAIL_ADDRESS', 'hlogeon1@gmail.com')
+            );
         $this->getEmployeeVerificationService()->verifyEmail($verification->getId(), $verification->getEmailCode());
         $profile = new EmployeeProfile('Test', 'Tester', 'Admin');
-        $this->getEmployeeRegistrationService()->register($verification->getId(), $profile, 'test');
+        $this->getEmployeeService()->register($verification->getId(), $profile, 'test');
     }
 
     /**
@@ -80,12 +84,12 @@ class CompanySeeder extends Seeder
     }
 
     /**
-     * @return EmployeeRegistrationService
+     * @return EmployeeService
      */
-    private function getEmployeeRegistrationService() : EmployeeRegistrationService
+    private function getEmployeeService() : EmployeeService
     {
         if (!$this->ers) {
-            $this->ers = new EmployeeRegistrationService();
+            $this->ers = new EmployeeService();
         }
 
         return $this->ers;

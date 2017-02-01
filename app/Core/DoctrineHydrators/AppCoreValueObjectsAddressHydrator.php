@@ -41,18 +41,6 @@ class AppCoreValueObjectsAddressHydrator implements HydratorInterface
             $hydratedData['formattedAddress'] = $return;
         }
 
-        /** @Field(type="hash") */
-        if (isset($data['geoPoint']) || (! empty($this->class->fieldMappings['geoPoint']['nullable']) && array_key_exists('geoPoint', $data))) {
-            $value = $data['geoPoint'];
-            if ($value !== null) {
-                $return = $value;
-            } else {
-                $return = null;
-            }
-            $this->class->reflFields['geoPoint']->setValue($document, $return);
-            $hydratedData['geoPoint'] = $return;
-        }
-
         /** @ReferenceOne */
         if (isset($data['country'])) {
             $reference = $data['country'];

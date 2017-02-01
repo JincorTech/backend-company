@@ -10,7 +10,7 @@
 namespace App\Applications\Company\Http\Requests\Employee;
 
 use App\Core\Http\Requests\BaseAPIRequest;
-use App\Domains\Company\ValueObjects\EmployeeProfile;
+use App\Domains\Employee\ValueObjects\EmployeeProfile;
 
 class Register extends BaseAPIRequest
 {

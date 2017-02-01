@@ -5,3 +5,5 @@ modules:
         - REST:
             url: http://nginx/api/v1/
             depends: PhpBrowser
+        - DoctrineMongoOdm:
+                      connection_callback: ['DoctrineInit', 'createDocumentManager']

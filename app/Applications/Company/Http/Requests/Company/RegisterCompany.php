@@ -18,7 +18,6 @@ class RegisterCompany extends BaseAPIRequest
         return [
             'legalName' => 'required|string|min:3',
             'countryId' => 'required|string|size:36',
-            'formattedAddress' => 'required|string',
             'companyType' => 'required|string|size:36',
         ];
     }

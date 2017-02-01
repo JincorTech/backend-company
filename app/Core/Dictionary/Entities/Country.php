@@ -12,6 +12,7 @@
 namespace App\Core\Dictionary\Entities;
 
 use App\Core\ValueObjects\CountryISOCodes;
+use App\Core\ValueObjects\TranslatableString;
 use GeoJson\Geometry\MultiPolygon;
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
@@ -35,14 +36,20 @@ class Country
     protected $id;
 
     /**
-     * @var array
-     * @ODM\Field(type="hash")
+     * @var TranslatableString
+     *
+     * @ODM\EmbedOne(
+     *     targetDocument="App\Core\ValueObjects\TranslatableString"
+     * )
      */
     protected $names;
 
     /**
      * @var Currency
-     * @ODM\ReferenceOne(targetDocument="App\Core\Dictionary\Entities\Currency")
+     * @ODM\ReferenceOne(
+     *     targetDocument="App\Core\Dictionary\Entities\Currency",
+     *     cascade={"persist"}
+     * )
      */
     protected $currency;
 
@@ -95,13 +102,9 @@ class Country
      * @param string $locale
      * @return mixed
      */
-    public function getName(string $locale = 'en') : string
+    public function getName($locale = null) : string
     {
-        if (array_key_exists($locale, $this->names)) {
-            return $this->names[$locale];
-        }
-
-        return $this->names['en'];
+        return $this->names->getValue($locale);
     }
 
     /**
@@ -176,7 +179,6 @@ class Country
         if ($this->id instanceof UuidInterface) {
             return $this->id->toString();
         }
-
         return $this->id;
     }
 
@@ -185,10 +187,7 @@ class Country
      */
     public function setNames(array $names)
     {
-        if (!array_key_exists('en', $names)) {
-            throw new InvalidArgumentException("English name('en' key) must be presented in names array");
-        }
-        $this->names = $names;
+        $this->names = new TranslatableString($names);
     }
 
     /**

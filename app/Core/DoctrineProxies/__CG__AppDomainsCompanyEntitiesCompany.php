@@ -64,10 +64,10 @@ class Company extends \App\Domains\Company\Entities\Company implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'legalName', 'legalAddress', 'type', 'departments'];
+            return ['__isInitialized__', 'id', 'profile', 'departments'];
         }
 
-        return ['__isInitialized__', 'id', 'legalName', 'legalAddress', 'type', 'departments'];
+        return ['__isInitialized__', 'id', 'profile', 'departments'];
     }
 
     /**
@@ -191,56 +191,12 @@ class Company extends \App\Domains\Company\Entities\Company implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getLegalName(): string
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLegalName', []);
-
-        return parent::getLegalName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLegalAddress(): \App\Core\ValueObjects\Address
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLegalAddress', []);
-
-        return parent::getLegalAddress();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getProfile(): \App\Domains\Company\ValueObjects\CompanyProfile
+    public function getProfile()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProfile', []);
 
         return parent::getProfile();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addEmployee(\App\Domains\Company\Entities\Employee $employee)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addEmployee', [$employee]);
-
-        return parent::addEmployee($employee);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addDepartment(\App\Domains\Company\Entities\Department $department)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addDepartment', [$department]);
-
-        return parent::addDepartment($department);
     }
 
     /**
@@ -252,17 +208,6 @@ class Company extends \App\Domains\Company\Entities\Company implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRootDepartment', []);
 
         return parent::getRootDepartment();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getType()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', []);
-
-        return parent::getType();
     }
 
     /**

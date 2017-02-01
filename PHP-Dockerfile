@@ -1,0 +1,32 @@
+FROM laradock/php-fpm:7.0--1.2
+
+MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
+
+USER root
+
+RUN pecl install mongodb-1.1.9 && \
+    docker-php-ext-enable mongodb
+
+#### SOCKET CONNECTION ####
+RUN docker-php-ext-install sockets
+
+USER laradock
+
+ADD ./config/php-fpm/laravel.ini /usr/local/etc/php/conf.d
+ADD ./config/php-fpm/laravel.pool.conf /usr/local/etc/php-fpm.d/
+
+USER root
+
+RUN rm -r /var/lib/apt/lists/*
+
+RUN usermod -u 1000 www-data
+
+VOLUME /var/www/laravel
+
+RUN chown -R www-data:www-data /var/www/laravel
+
+WORKDIR /var/www/laravel
+USER root
+CMD ["php-fpm"]
+
+EXPOSE 9000

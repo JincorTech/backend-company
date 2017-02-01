@@ -202,7 +202,7 @@ class Department extends \App\Domains\Company\Entities\Department implements \Do
     /**
      * {@inheritDoc}
      */
-    public function addEmployee(\App\Domains\Company\Entities\Employee $employee)
+    public function addEmployee(\App\Domains\Employee\Entities\Employee $employee)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addEmployee', [$employee]);

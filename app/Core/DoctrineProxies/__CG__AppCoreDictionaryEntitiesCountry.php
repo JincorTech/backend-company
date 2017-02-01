@@ -176,7 +176,7 @@ class Country extends \App\Core\Dictionary\Entities\Country implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getName(string $locale = 'en'): string
+    public function getName($locale = NULL): string
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', [$locale]);

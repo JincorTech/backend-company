@@ -1,4 +1,4 @@
-@extends('emails.registration.abstract')
+@extends('emails.abstract')
 
 @section('content')
     <tr>

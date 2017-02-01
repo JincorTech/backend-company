@@ -19,10 +19,10 @@ class CompanyTransformer extends TransformerAbstract
     {
         return [
             'id' => $company->getId(),
-            'legalName' => $company->getLegalName(),
-            'country' => $company->getLegalAddress()->getFormattedAddress(),
-            'formattedAddress' => $company->getLegalAddress()->getFormattedAddress(),
-            'type' => $company->getType()->getName(App::getLocale()),
+            'legalName' => $company->getProfile()->getName(),
+            'country' => $company->getProfile()->getAddress()->getFormattedAddress(),
+            'formattedAddress' => $company->getProfile()->getAddress()->getFormattedAddress(),
+            'type' => $company->getProfile()->getType()->getName(App::getLocale()),
         ];
     }
 }

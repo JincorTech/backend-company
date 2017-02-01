@@ -9,7 +9,7 @@
 
 namespace App\Applications\Company\Transformers;
 
-use App\Domains\Company\Entities\EmployeeVerification;
+use App\Domains\Employee\Entities\EmployeeVerification;
 use League\Fractal\TransformerAbstract;
 
 class EmployeeVerificationTransformer extends TransformerAbstract
@@ -18,7 +18,7 @@ class EmployeeVerificationTransformer extends TransformerAbstract
     {
         return [
             'id' => $verification->getId(),
-            'companyId' => $verification->getCompany()->getId(),
+            'companyId' => $verification->getCompany() ? $verification->getCompany()->getId() : null,
 
             'email' => [
                 'value' => $verification->getEmail(),
@@ -26,7 +26,7 @@ class EmployeeVerificationTransformer extends TransformerAbstract
             ],
             'phone' => [
                 'value' => $verification->getPhone(),
-                'isVerified' => $verification->isPhoneVerified(),
+                'isVerified' => false,
             ],
         ];
     }

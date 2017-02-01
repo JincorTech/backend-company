@@ -10,6 +10,7 @@
 namespace App\Core\Dictionary\Entities;
 
 use App\Core\ValueObjects\CurrencyISOCodes;
+use App\Core\ValueObjects\TranslatableString;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
@@ -27,8 +28,11 @@ class Currency
     protected $id;
 
     /**
-     * @var array
-     * @ODM\Field(type="hash")
+     * @var TranslatableString
+     *
+     * @ODM\EmbedOne(
+     *     targetDocument="App\Core\ValueObjects\TranslatableString"
+     * )
      */
     protected $names;
 
@@ -62,13 +66,9 @@ class Currency
      * @param string $locale
      * @return string
      */
-    public function getName(string $locale = 'en') : string
+    public function getName($locale = null) : string
     {
-        if (array_key_exists($locale, $this->names)) {
-            return $this->names[$locale];
-        }
-
-        return $this->names['en'];
+        return $this->names->getValue($locale);
     }
 
     /**
@@ -108,10 +108,7 @@ class Currency
      */
     public function setNames(array $names)
     {
-        if (!array_key_exists('en', $names) || empty($names['en'])) {
-            throw  new \InvalidArgumentException("English name('en' key) must be presented in the names array and be not empty");
-        }
-        $this->names = $names;
+        $this->names = new TranslatableString($names);
     }
 
     /**
@@ -132,4 +129,5 @@ class Currency
         }
         $this->sign = $sign;
     }
+
 }

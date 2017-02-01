@@ -33,7 +33,6 @@ class CountryISOCodesEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers CountryISOCodes::__construct
      */
     public function createEqualsTest(UnitTester $I)
     {
@@ -68,10 +67,6 @@ class CountryISOCodesEntityCest
     /**
      * @param UnitTester $I
      *
-     * @covers CountryISOCodes::getISO2Code
-     * @covers CountryISOCodes::getNumericCode
-     * @covers CountryISOCodes::getAlpha2Code
-     * @covers CountryISOCodes::getAlpha3Code
      */
     public function gettersTest(UnitTester $I)
     {
@@ -84,10 +79,6 @@ class CountryISOCodesEntityCest
     /**
      * @param UnitTester $I
      *
-     * @covers CountryISOCodes::setISO2Code
-     * @covers CountryISOCodes::setNumericCode
-     * @covers CountryISOCodes::setAlpha2Code
-     * @covers CountryISOCodes::setAlpha3Code
      */
     public function settersTest(UnitTester $I)
     {

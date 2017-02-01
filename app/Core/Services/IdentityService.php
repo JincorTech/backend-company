@@ -9,10 +9,10 @@
 
 namespace App\Core\Services;
 
-use App\Domains\Company\Entities\Employee;
-use App\Domains\Company\Exceptions\PasswordMismatchException;
+use App\Domains\Employee\Exceptions\CompanyNotFound;
+use App\Domains\Employee\Exceptions\PasswordMismatchException;
 use App\Domains\Company\Services\CompanyService;
-use App\Domains\Company\Services\EmployeeService;
+use App\Domains\Employee\Services\EmployeeService;
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
 use Illuminate\Support\Collection;
 
@@ -66,8 +66,23 @@ class IdentityService extends BaseRestService
         return $this->employeeService->getEmployeesCompanies($employees);
     }
 
-    public function login(string $email, string $password, string $company)
+    /**
+     * @param string $email
+     * @param string $password
+     * @param string|null $company
+     * @return bool|mixed
+     * @throws DocumentNotFoundException
+     * @throws PasswordMismatchException
+     */
+    public function login(string $email, string $password, $company)
     {
+        if (!$company) {
+            $companies = $this->getMatchingCompanies($email, $password);
+            if ($companies->count() !== 1) {
+                throw new CompanyNotFound();
+            }
+            $company = $companies->first()->getId();
+        }
         $employee = $this->employeeService->findByCompanyIdAndEmail($company, $email);
         if (!$employee) {
             throw new DocumentNotFoundException('Employee not found');
@@ -85,7 +100,7 @@ class IdentityService extends BaseRestService
         if ($response->getStatusCode() === 200) {
             $data = json_decode($response->getBody()->getContents(), true);
             if (array_key_exists('accessToken', $data)) {
-                return $data;
+                return $data['accessToken'];
             }
 
             return false;

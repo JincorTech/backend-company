@@ -29,21 +29,17 @@ class Address
     protected $formattedAddress;
 
     /**
-     * @var Point
-     * @ODM\Field(type="hash")
-     */
-    protected $geoPoint;
-
-    /**
      * @var Country
-     * @ODM\ReferenceOne(targetDocument="App\Core\Dictionary\Entities\Country")
+     * @ODM\ReferenceOne(
+     *     targetDocument="App\Core\Dictionary\Entities\Country",
+     *     cascade={"persist"}
+     * )
      */
     protected $country;
 
-    public function __construct(string $address, Country $country, Point $coordinates)
+    public function __construct(string $address, Country $country)
     {
         $this->formattedAddress = $address;
-        $this->geoPoint = $coordinates->jsonSerialize();
         $this->country = $country;
     }
 
@@ -56,21 +52,12 @@ class Address
     }
 
     /**
-     * @return Point
-     */
-    public function getGeoPoint() : Point
-    {
-        return $this->geoPoint;
-    }
-
-    /**
      * @return array
      */
     public function jsonSerialize() : array
     {
         return [
             'formattedAddress' => $this->getFormattedAddress(),
-            'geoPoint' => $this->getGeoPoint()->jsonSerialize(),
             'country' => $this->country->getId(),
         ];
     }
