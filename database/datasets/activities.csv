@@ -1,0 +1,224 @@
+A,Сельское хозяйство и лесозаготовка / Agriculture & Forestry
+AA,Растениеводство / Crop Production
+AAA,Тепличное растениеводство / Protected Cropping
+AAB,Растениеводство в открытом грунте / Open-Field Cropping
+AB,Грибоводство / Mushrooms & Fungi Cultivation
+AC,Животноводство / Animal Farming
+AD,Лесоводство и лесозаготовка / Forestry & Logging
+AE,Рыболовство и аквакультура / Fisheries & Aquaculture
+AF,"Разведение, генетика и селекция / Breeding & Genetics"
+AFA,Генетика и селекция растений / Plant Breeding & Genetics
+AFB,Генетика и селекция грибов / Fungi Breeding & Genetics
+AFC,Генетика и селекция животных / Animal Breeding & Genetics
+AFD,Лесная генетика и селекция / Forest Genetics & Tree Breeding
+AFE,Генетика и селекция аквакультуры / Aquaculture Breeding & Genetics
+B,Горнодобывающая промышленность / Mining & Quarrying
+BA,Добыча и обогащение угля / Coal Mining & Processing
+BB,Добыча сырой нефти и природного газа / Crude Oil & Natural Gas Drilling
+BC,Добыча торфа / Peat Extraction & Processing
+BD,Добыча и обогащение металлических руд / Metal Ore Mining & Processing
+BE,Добыча нерудного строительного сырья / Mining of Construction Aggregates & Sand
+BF,Добыча драгоценных камней / Mining of Gemstones
+BG,Добыча нерудного минерального сырья / Mining of Industrial Minerals
+C,Обрабатывающая промышленность / Manufacturing Industry
+CA,Производство продуктов питания / Food Products Manufacturing
+CAA,Производство мяса и мясопродуктов / Manufacture of Meat & Meat Products
+CAB,Производство рыбы и морепродуктов / Manufacture of Fish & Seafood Products
+CAC,Производство переработанной плодоовощной продукции / Manufacture of Fruit & Vegetable Products
+CAD,Производство масложировой продукции / Manufacture of Edible Oils & Fats
+CAE,Производство молочной продукции / Manufacture of Dairy Products
+CAF,Производство мукомольно-крупяной продукции / Manufacture of Grain Milling Products
+CAG,Производство макаронных изделий / Manufacture of Pasta Products
+CAH,Крахмалопаточная промышленность / Production of Starches & Starch Derivatives
+CAI,Производство кондитерских и хлебобулочных изделий / Manufacture of Bakery & Confectionary Products
+CAJ,Производство сахара / Sugar Production
+CAK,Производство табачной продукции / Manufacture of Tobacco Products
+CAL,Производство питьевой воды и напитков / Manufacture of Beverages
+CAM,"Производство чая, кофе и какао / Manufacture of Tea, Coffee & Cocoa"
+CAN,"Производство соусов, приправ и специй / Manufacture of Condiments & Seasonings"
+CAO,Производство готовых пищевых продуктов и блюд / Manufacture of Prepared Meals & Dishes
+CAP,Производство детского питания / Manufacture of Baby Food
+CAQ,Производство пищевых добавок и ингредиентов / Manufacture of Food Additives & Contaminants
+CAR,Производство прочих пищевых продуктов / Manufacture of Other Food Products
+CAS,Производство кормов для животных / Manufacture of Animal Feeds
+CB,"Производство текстиля, меха и кожи / Manufacture of Textile, Fur & Leather Products"
+CC,"Производство одежды, обуви и аксессуаров / Manufacture of Clothes, Footwear & Accessories"
+CD,Производство продукции деревообработки / Manufacture of Wood & Lumber Products
+CE,Производство мебельной продукции / Manufacture of Furniture & Fixtures
+CF,"Производство целлюлозно-бумажной продукции / Manufacture of Pulp, Paper & Paper Products"
+CG,Переработка нефти и природного газа / Oil Refining & Natural Gas Processing
+CH,Производство коксохимической продукции / Manufacture of Coke Oven Products
+CI,Производство химической продукции / Manufacture of Chemical Products
+CIA,Производство базовых химических продуктов / Manufacture of Basic (Commodity) Chemicals
+CIB,Производство продукции тонкой и специальной химии / Manufacture of Speciality & Fine Chemicals
+CIC,Производство технических газов / Manufacture of Industrial Gases
+CID,Производство агрохимических продуктов / Manufacture of Fertilizers & Agricultural Chemicals
+CIE,Производство фармацевтической продукции / Manufacture of Biochemicals & Pharmaceuticals
+CIF,"Производство бытовой химии, парфюмерии и косметики / Manufacture of Household & Personal Care Chemicals"
+CJ,Производство стекольной и керамической продукции / Manufacture of Glass & Ceramic Products
+CJA,Производство стекольной продукции  / Manufacture of Glass & Glass Products
+CJB,Производство строительной керамики / Manufacture of Structural Ceramics
+CJC,Производство абразивных материалов / Manufacture of Abrasive Products
+CJD,Производство огнеупорных материалов / Manufacture of Refractories
+CJE,Производство фарфоро-фаянсовой продукции / Manufacture of Whiteware Ceramics
+CJF,Производство технической керамики / Manufacture of Advanced Ceramics
+CK,Производство металлов и сплавов / Manufacture of Metals & Alloys
+CKA,Производство черных металлов и ферросплавов / Manufacture of Ferrous Metals & Ferro-Alloys
+CKB,Производство основных цветных металлов и сплавов / Manufacture of Base Metals & Alloys
+CKC,Производство малых (редких) металлов и сплавов / Manufacture of Minor Metals & Alloys
+CKD,Производство драгоценных металлов и сплавов / Manufacture of Precious Metals & Alloys
+CKE,Производство редкоземельных металлов и сплавов / Manufacture of Rare Earth Metals & Alloys
+CKF,Производство ядерного топлива / Manufacture of Nuclear Fuel
+CL,Готовые металлические изделия / Fabricated Metal Products
+CM,Машины и оборудование / Machinery & Equipment
+CMA,Сельскохозяйственное оборудование / Agricultural Equipment
+CMB,Горнодобывающее оборудование / Mining Equipment
+CMC,Нефтегазовое оборудование / Oil & Gas Equipment
+CMD,Пищевое оборудование / Food Processing Equipment
+CME,Текстильное и швейное оборудование / Textile & Clothing Equipment
+CMF,Оборудование для деревообработки / Woodworking Machinery & Equipment
+CMG,"Металлообрабатывающее оборудование, станки и инстументы / Metalworking Machinery, Tools & Equipment"
+CMH,Оборудование для целлюлозно-бумажной промышленности / Pulp & Paper Machinery
+CMI,Оборудование для переработки нефти и газа / Oil & Gas Refinery Equiment
+CMJ,Химическое оборудование / Chemical Machinery & Equipment
+CMK,Фармацевтическое оборудование / Pharmaceutical Machinery & Equipment
+CML,Стекольное и керамическое оборудование / Glass & Ceramics Equipment
+CMM,Металлургическое оборудование / Metallurgical Equipment
+CMN,Энергетическое и электротехническое оборудование / Power & Electrical Equipment
+CMO,Оборудование для водоснабжения и канализации / Water Supply & Sewerage Equipment
+CMP,Оборудование для управления отходами / Waste Management Equipment
+CMQ,Строительная техника / Construction Machinery & Equipment
+CMR,Логистическое оборудование / Material Handling & Logistics Equipment
+CMS,Оборудования для гостинично-ресторанного бизнеса / Catering & Hospitality Equipment
+CMT,Полиграфическое оборудование / Printing & Publishing Equipment
+CMU,Телекоммуникационное оборудование / Telecommunications Equipment
+CMV,Лабораторное и научное оборудование / Laboratory & Scientific Equipment
+CMW,Медицинское оборудование / Healthcare Equipment
+CMX,Оборудования общего назначения / General Purpose Machinery & Equipment
+CN,Электронные  компоненты / Electronic Components
+CO,Транспортные средства и техника / Transportation Equipment
+COA,Автомобильная техника / Automotive
+COB,Авиационная и космическая техника / Aviation & Aerospace
+COC,Железнодорожная техника / Railroad Rolling Stock
+COD,Морские и речные суда / Ship & Boat Equipment
+CP,Бытовая техника и электроника / Home Appliances & Consumer Electronics
+CQ,Производство прочих готовых изделий / Manufacture of Other Products
+CQA,Производство ювелирных изделий / Manufacture of Jewellery
+CQB,Производство музыкальных инструментов / Manufacture of Musical Instruments
+CQC,Производство спортивных товаров / Manufacture of Sporting Goods
+CQD,Производство игрушек и товаров для детей / Manufacture of Toys & Children Products
+D,Энергетика и коммунальное хозяйство / Power & Utulities
+DA,Производство электроэнергии / Electric Power Generation
+DAA,Гидрогенерация электроэнергии / Hydroelectric Power Generation
+DAB,Топливная генерация электроэнергии / Fossil Fuel Electric Power Generation
+DAC,Атомная генерация электроэнергии / Nuclear Electric Power Generation
+DAD,Солнечная генерация электроэнергии / Solar Electric Power Generation
+DAE,Ветряная генерация электроэнергии / Wind Electric Power Generation
+DAF,Геотермальная генерация электроэнергии / Geothermal Electric Power Generation
+DAG,Биогенерация электроэнергии / Biomass Electric Power Generation
+DB,"Передача и распределение электроэнергии / Electric Power Transmission, Control & Distribution"
+DC,Теплогенерация и теплоснабжение / Heat Generation & Distribution
+DD,Газоснабжение и газораспределение / Gaseous Fuels Distribution
+DE,Водоснабжение и канализация / Water Supply & Sewerage
+E,Управление отходами / Waste Management & Remediation
+F,Строительство / Construction
+FA,Инфраструктурное (гражданское) строительство / Civil Engineering Constructrion
+FB,Жилищное строительство / Residential Construction
+FC,Коммерческое строительство / Commercial Construction
+FD,Промышленное строительство / Industrial Construction
+FE,Энергетическое строительство / Power Construction
+FF,Военное строительство / Military Construction
+FG,Сельскохозяйственное строительство / Agricultural Construction
+FH,Специализированные строительные работы / Special Construction Works
+G,Оптовая и розничная торговля / Wholesale & Retail Trade
+GA,Оптовая торговля / Wholesale
+GB,Розничная торговля / Retail Trade
+GBA,Продуктовый ритейл / Grocery Retail
+GBB,Fashion-ритейл / Fashion Retail
+GBC,Ритейл бытовой техники и электроники / Electronics & Appliance Retail
+GBD,Парфюмерно-косметический ритейл / Perfume & Cosmetics Retail
+GBE,Фармацевтический ритейл / Pharmacy Retail
+GBF,Ритейл бытовой химии / Household Chemicals Retail
+GBG,Спортивный ритейл / Sporting Goods Retail
+GBH,DIY-ритейл / DIY Retail
+GBI,Luxury-ритейл / Luxury Retail
+GBJ,Мебельный ритейл / Home Furnishings Retail
+GBK,Автомобильный и топливный ритейл / Automotive & Fuel Retail
+H,Логистика и транспорт / Transportation & Logistics
+HA,Пассажироперевозки / Passenger Transportation
+HB,Грузоперевозки / Freight Transportation
+HC,Складская логистика / Warehousing & Storage
+HD,Почтовая и курьерская деятельность / Postal & Courier Services
+HE,Деятельность транспортных терминалов / Terminal Services
+I,"Гостиничный и ресторанный бизнес / Restaurant, Catering & Hospitality"
+IA,Временное размещение / Hospitality Industry
+IB,Общественное питание / Restaurant & Catering Industry
+J,Информация и связь / Information & Communication
+JA,Издательство и полиграфия / Printing & Publishing
+JB,Медиапроизводство / Media Production
+JC,Телерадиовещание / Broadcasting
+JD,Телекоммуникации / Telecommunications
+JE,IT-отрасль / IT Industry
+K,Финансы и страхование / Finance & Insurance
+KA,Банковский сектор / Banking
+KB,Инвестиции / Investments
+KC,Страхование / Insurance
+KD,Лизинг / Leasing
+L,"Профессиональные услуги и консалтинг / Professional, Scientific & Technical Services"
+LA,"Юридические, бухгалтерские, аудиторские услуги / Legal Services, Audit & Accounting"
+LB,Управленческий консалтинг / Management Consulting
+LC,Научные исследования и разработки / Research & Development
+LD,Инжиниринг / Engineering
+LDA,Сельскохозяйственный инжиниринг и технологии / Agricultural Engineering
+LDB,Горнодобывающий инжиниринг и технологии / Mining Engineering & Technologies
+LDC,Нефтегазовый инжиниринг / Petroleum Engineering & Technologies
+LDD,Пищевая инженерия и технологии / Food Engineering & Technologies
+LDE,Текстильная и швейная инженерия / Fashion & Apparel Engineering
+LDF,Инженерия деревопереработки / Wood Engineering
+LDG,Механическая инженерия / Mechanical Engineering
+LDH,Электронная инженерия / Electronic Engineering
+LDI,Автомобильная инженерия / Automotive Engineering
+LDJ,Аэрокосмическая инженерия / Aerospace Engineering
+LDK,Военная инженерия / Military Engineering
+LDL,Инженерия целлюлозно-бумажного производства / Paper Engineering
+LDM,Инженерия нефтепереработки / Petroleum Refining Engineering
+LDN,Химическая инженерия / Chemical Engineering
+LDO,Фармацевтическая инженерия / Pharmaceutical Engineering
+LDP,Керамическая инженерия / Ceramic Engineering
+LDQ,Металлургическая инженерия / Metallurgical Engineering
+LDR,Энергетическая инженерия / Power Engineering
+LDS,Коммунальная инженерия / Utility Engineering
+LDT,Строительная инженерия / Construction Engineering
+LDU,Логистическая инженерия / Logistics Engineering
+LDV,Телекоммуникационная инженерия / Telecommunications Engineering
+LDW,Медицинская инженерия / Healthcare Engineering
+LE,Реклама и маркетинг / Marketing & Advertising
+M,Административные и вспомогательные услуги / Administrative & Support Services
+MA,Арендная деятельность / Rental Services
+MB,Кадровые услуги / Human Resource Services
+MC,Туристические услуги / Travel Services
+MD,Обеспечение безопасности / Security Services
+ME,Обслуживание зданий и территорий / Building Maintenance
+N,Образование / Education & Training
+NA,Общее образование / General Education
+NB,Профессиональное образование / Professional Education
+NC,Дополнительное образование / Supplementary Education
+O,Здравоохранение и социальные услуги / Healthcare & Social Assistance
+OA,Медицина и здравоохранение / Healthcare
+OB,Ветеринарная медицина / Veterinary Services
+OC,Социальные услуги / Social Assistance
+P,"Искусство, культура, сфера развлечений и отдыха / Arts, Entertainment & Recreation"
+PA,Культура и искусство / Arts & Culture
+PB,"Азартные игры, пари, лотереи / Gambling"
+PC,Спорт и отдых / Sport & Recreation
+Q,Прочие потребительские услуги / Miscellaneous Personal Services
+R,"Общественные организации, государственные и экстерриториальные органы / Public Administration & Defence"
+RA,Общественные организации и объединения / Non-Profit Organizations
+RAA,Коммерческие и предпринимательские организации / Business Associations
+RAB,Профессиональные членские организации и союзы / Professional Associations
+RAC,Благотворительные и правозащитные организации / Charities & Human Rights Organizations
+RAD,Природоохранные и экологические организации / Environmental Organizations
+RAE,Религиозные организации и объединения / Religious Organizations
+RAF,Политические партии и движения / Political Organizations
+RB,Государственные органы / State Bodies
+RC,Экстерриториальные организации и органы / Extraterritorial Organizations & Bodies

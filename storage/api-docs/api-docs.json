@@ -1,0 +1,1123 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Universal Business Network API",
+        "contact": {
+            "name": "Andrey Degtyaruk",
+            "email": "hlogeon1@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "host": "",
+    "basePath": "/api/v1",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "paths": {
+        "/company/taxNumberInfo/{taxNumber}": {
+            "get": {
+                "tags": [
+                    "company"
+                ],
+                "summary": "Get info about Company by it's tax number",
+                "description": "Return the info about company by tax number",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "taxNumber",
+                        "in": "path",
+                        "description": "Tax number you want to get info about",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "UUID4 of the country where company supposed to be registered",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requested Company Entity",
+                        "schema": {
+                            "$ref": "#/definitions/InfoByTaxNumberResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/taxRules/{country}": {
+            "get": {
+                "tags": [
+                    "company"
+                ],
+                "summary": "Get get validation for tax rules by the country UUID4",
+                "description": "Get get validation for tax rules by the country UUID4",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "country",
+                        "in": "path",
+                        "description": "UUID4 of the country",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requested Company Entity",
+                        "schema": {
+                            "$ref": "#/definitions/TaxRulesResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/{companyId}": {
+            "get": {
+                "tags": [
+                    "company"
+                ],
+                "summary": "Get company Entity",
+                "description": "Return the fully qualified Company Entity",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "path",
+                        "description": "ID of the Company Department belongs to",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requested Company Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "company"
+                ],
+                "summary": "Update company info",
+                "description": "Update information of Company Specified",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "path",
+                        "description": "Id of company you are going to modify",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "company",
+                        "in": "body",
+                        "description": "Company Entity",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Resource available only for authorized users",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. Client don't have permissions to access this content",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/company": {
+            "post": {
+                "tags": [
+                    "company"
+                ],
+                "summary": "Register the new Company",
+                "description": "Register the new Company. Note that default Department Entity will be created during processing this request as well",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "body",
+                        "description": "Company Registration Entity",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CompanyRegistration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Company registered successfully",
+                        "schema": {
+                            "$ref": "#/definitions/CompanyRegisterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/{companyId}/activities": {
+            "put": {
+                "tags": [
+                    "company"
+                ],
+                "summary": "Set company activity types",
+                "description": "Set the list of company activity types",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "path",
+                        "description": "Company Identifier",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "activityTypes",
+                        "in": "body",
+                        "description": "The list of Company Activity types",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CompanyActivityTypes"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Resource available only for authorized users",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. Client don't have permissions to access this content",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/{companyId}/goods": {
+            "put": {
+                "tags": [
+                    "company"
+                ],
+                "summary": "Set company goods types",
+                "description": "Set the list of company goods types",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "path",
+                        "description": "Company Identifier",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "goods",
+                        "in": "body",
+                        "description": "The list of Company Goods types",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CompanyGoods"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Resource available only for authorized users",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. Client don't have permissions to access this content",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/{companyId}/departments": {
+            "get": {
+                "tags": [
+                    "company",
+                    "department"
+                ],
+                "summary": "Get the list of all departments of the company",
+                "description": "Return the collection of Department Entities attached to specified company",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "path",
+                        "description": "ID of the company you want to get the list of Departments for",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Departments Collection",
+                        "schema": {
+                            "$ref": "#/definitions/CompanyDepartmentsCollection"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/resetPassword": {
+            "put": {
+                "tags": [
+                    "employee"
+                ],
+                "summary": "Set the new password for employee",
+                "description": "Update Employees password",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "New password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password changed"
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Resource available only for authorized users",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. Client don't have permissions to access this content",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/verifyEmail": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "summary": "Verify email activation pin code",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "context",
+                        "in": "query",
+                        "description": "Context of the action",
+                        "required": true,
+                        "type": "string",
+                        "default": "activation",
+                        "enum": [
+                            "activation",
+                            "restoring"
+                        ]
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email of Employee",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "companyId",
+                        "in": "query",
+                        "description": "ID of the Company this Employee belongs to",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email activation PIN verified"
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "employee"
+                ],
+                "summary": "Verify email activation pin code",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "verificationId",
+                        "in": "query",
+                        "description": "Id of verification process",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "emailPin",
+                        "in": "query",
+                        "description": "Email activation pin code",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email activation PIN verified"
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/verifyPhone": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "summary": "Verify email activation pin code",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "context",
+                        "in": "query",
+                        "description": "Context of the action",
+                        "required": true,
+                        "type": "string",
+                        "default": "activation",
+                        "enum": [
+                            "activation",
+                            "restoring"
+                        ]
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "Phone number of Employee",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "companyId",
+                        "in": "query",
+                        "description": "ID of the Company this Employee belongs to",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email activation PIN verified"
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "employee"
+                ],
+                "summary": "Verify email activation pin code",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "verificationId",
+                        "in": "query",
+                        "description": "Id of verification process",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phonePin",
+                        "in": "query",
+                        "description": "Phone activation pin code",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email activation PIN verified"
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/{employeeId}": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "summary": "Get Employee Entity",
+                "description": "Return the fully qualified Employee Entity",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeId",
+                        "in": "path",
+                        "description": "ID of the Employee",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requested Employee Entity",
+                        "schema": {
+                            "$ref": "#/definitions/Employee"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/dictionary/country": {
+            "get": {
+                "tags": [
+                    "dictionary"
+                ],
+                "summary": "Get list of countries",
+                "description": "Return the list of countries. You can add optional params to the query in order to perform server filtering",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name to perform %LIKE% request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale you are looking name with. MUST be presented if 'name' param presented",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "alpha2",
+                        "in": "query",
+                        "description": "2-digit ISO code of the needle",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection of found Countries",
+                        "schema": {
+                            "$ref": "#/definitions/RegistrationCountryListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/dictionary/companyType": {
+            "get": {
+                "tags": [
+                    "dictionary"
+                ],
+                "summary": "Get list of company Types",
+                "description": "Return the list of company types.",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection of company types",
+                        "schema": {
+                            "$ref": "#/definitions/RegistrationCompanyTypesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/dictionary/country/area": {
+            "get": {
+                "tags": [
+                    "dictionary"
+                ],
+                "summary": "Get list of Administrative Areas Level 1 for specified country",
+                "description": "Return the list of Administrative Areas Level 1. You can add optional params to the query in order to perform server filtering",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "countryId",
+                        "in": "query",
+                        "description": "Id of the Country",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale you are looking name with. MUST be presented if 'name' param presented",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "alpha2",
+                        "in": "query",
+                        "description": "Alpha-2 ISO code of the needle",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection of found AdministrativeAreas",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/AdminAreaListResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/dictionary/phoneCode": {
+            "get": {
+                "tags": [
+                    "dictionary"
+                ],
+                "summary": "Get list of phone Codes",
+                "description": "Return the list of Phone codes. You can add optional params to the query in order to perform server filtering",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "countryId",
+                        "in": "query",
+                        "description": "Country unique identifier(uuid4)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "alpha2",
+                        "in": "query",
+                        "description": "2-digit ISO code of the country you want to get the list of codes for",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection of found PhoneCodes",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ListPhoneCodesResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/dictionary/currency": {
+            "get": {
+                "tags": [
+                    "dictionary"
+                ],
+                "summary": "Get list of currencies",
+                "description": "Return the list of currencies matching your request. You can add optional params to the query in order to perform server filtering",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "countryId",
+                        "in": "query",
+                        "description": "Country unique identifier(uuid4)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "alpha3",
+                        "in": "query",
+                        "description": "3-chars ISO code of the Currency you are looking information for",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection of found Currencies",
+                        "schema": {
+                            "$ref": "#/definitions/ListCurrenciesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/dictionary/good": {
+            "get": {
+                "tags": [
+                    "dictionary"
+                ],
+                "summary": "Get list of goods",
+                "description": "Return the list of goods. You can add optional params to the query in order to perform server filtering",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name to perform %LIKE% request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale of the name you want to search for",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of the needle",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "activityCodes",
+                        "in": "query",
+                        "description": "The list of ActivityType codes you are looking corresponding Goods for",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection of found Goods",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Goods"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/dictionary/activityType": {
+            "get": {
+                "tags": [
+                    "dictionary"
+                ],
+                "summary": "Get list of activity types",
+                "description": "Return the list of activity types. You can add optional params to the query in order to perform server filtering",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name to perform %LIKE% request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "locale",
+                        "in": "query",
+                        "description": "Locale of the name you want to search for",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of the needle",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "goodCodes",
+                        "in": "query",
+                        "description": "The list of goods codes you are looking corresponding ActivityTypes for(comma-separated)",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection of found ActivityTypes",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ActivityType"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Error": {
+            "required": [
+                "status_code",
+                "message"
+            ],
+            "properties": {
+                "status_code": {
+                    "description": "Copyright (c) 2016  Universal Business Network - All rights reserved.\n\nCreated by hlogeon <email: hlogeon1@gmail.com>\nDate: 10/18/16\nTime: 3:45 PM",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "description": "Copyright (c) 2016  Universal Business Network - All rights reserved.\n\nCreated by hlogeon <email: hlogeon1@gmail.com>\nDate: 10/18/16\nTime: 3:45 PM",
+                    "type": "string"
+                }
+            }
+        },
+        "InfoByTaxNumberResponse": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/InfoByTaxNumber"
+                }
+            }
+        },
+        "TaxRulesResponse": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "InfoByTaxNumber": {
+            "properties": {
+                "legalName": {
+                    "type": "string"
+                },
+                "taxNumber": {
+                    "type": "string"
+                },
+                "formattedAddress": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "RegistrationCountryListResponse": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RegistrationCountryElement"
+                    }
+                }
+            }
+        },
+        "RegistrationCompanyTypesResponse": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RegistrationCompanyType"
+                    }
+                }
+            }
+        },
+        "AdminAreaListResponse": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CountryAdminAreaElement"
+                    }
+                }
+            }
+        },
+        "ListPhoneCodesResponse": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PhoneCode"
+                    }
+                }
+            }
+        },
+        "ListCurrenciesResponse": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Currency"
+                    }
+                }
+            }
+        },
+        "RegistrationCompanyType": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                }
+            }
+        },
+        "RegistrationCountryElement": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "alpha2": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "taxValidation": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

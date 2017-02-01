@@ -1,0 +1,8 @@
+/docker/data
+/docker/logs
+/public/storage
+/vendor
+/.idea
+.env
+
+tests/_output/*
