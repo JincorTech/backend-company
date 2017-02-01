@@ -45,7 +45,10 @@ class CompanySeeder extends Seeder
         $company = new Company('MyCompany', $address, $companyType);
         $this->getDm()->persist($company);
         $verification = $this->getEmployeeVerificationService()->beginVerificationProcess($company);
-        $this->getEmployeeVerificationService()->sendEmailVerification($verification->getId(), 'hlogeon1@gmail.com');
+        $this->getEmployeeVerificationService()->sendEmailVerification(
+            $verification->getId(),
+            env('TEST_MAIL_ADDRESS', 'hlogeon1@gmail.com')
+            );
         $this->getEmployeeVerificationService()->verifyEmail($verification->getId(), $verification->getEmailCode());
         $profile = new EmployeeProfile('Test', 'Tester', 'Admin');
         $this->getEmployeeRegistrationService()->register($verification->getId(), $profile, 'test');

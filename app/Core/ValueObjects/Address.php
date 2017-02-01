@@ -40,10 +40,9 @@ class Address
      */
     protected $country;
 
-    public function __construct(string $address, Country $country, Point $coordinates)
+    public function __construct(string $address, Country $country)
     {
         $this->formattedAddress = $address;
-        $this->geoPoint = $coordinates->jsonSerialize();
         $this->country = $country;
     }
 

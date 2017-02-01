@@ -34,14 +34,15 @@ class AddressServiceTest extends \Codeception\Test\Unit
     // tests
     public function testBuildsAddress()
     {
+        /** @var \App\Core\Dictionary\Entities\Country[] $countries */
         $countries = $this->repository->findAll();
         $countryID = $countries[0]->getId();
-        $correctAddress = '603000, Нижний Новогоро, Волжская Набережная, 9, 180';
-        $coordinates = [
-            'lat' => 56.345365,
-            'lng' => 43.9385753,
-        ];
-        $address = $this->service->build($correctAddress, $countryID, $coordinates);
+//        $correctAddress = '603000, Нижний Новогоро, Волжская Набережная, 9, 180';
+//        $coordinates = [
+//            'lat' => 56.345365,
+//            'lng' => 43.9385753,
+//        ];
+        $address = $this->service->build($countryID);
         $this->tester->assertInstanceOf(\App\Core\ValueObjects\Address::class, $address);
     }
 

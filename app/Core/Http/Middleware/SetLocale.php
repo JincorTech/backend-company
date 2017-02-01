@@ -28,6 +28,8 @@ class SetLocale
         if ($request->has('locale') || $request->hasHeader('locale')) {
             $locale = $request->get('locale') ?: $request->header('locale');
             App::setLocale($locale);
+        } else {
+            App::setLocale(config('locale'));
         }
 
         return $next($request);

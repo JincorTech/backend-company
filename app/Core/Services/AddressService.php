@@ -15,6 +15,7 @@ use App\Core\ValueObjects\Address;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use GeoJson\Geometry\Point;
 use InvalidArgumentException;
+use App;
 
 class AddressService
 {
@@ -24,26 +25,26 @@ class AddressService
 
     public function __construct()
     {
-        $this->dm = \App::make(DocumentManager::class);
+        $this->dm = App::make(DocumentManager::class);
         $this->countryRepository = $this->dm->getRepository(Country::class);
     }
 
-    public function build(string $address, string $country)//, array $coordinates)
+    public function build(string $country)//, array $coordinates)
     {
-        if (empty($address)) {
-            throw new InvalidArgumentException('Formatted address cannot be empty!');
-        }
+//        if (empty($address)) {
+//            throw new InvalidArgumentException('Formatted address cannot be empty!');
+//        }
 //        if (!array_key_exists('lng', $coordinates) || !array_key_exists('lat', $coordinates)) {
 //            throw new InvalidArgumentException("Coordinates must have lat and lng keys");
 //        }
-        $geoCoordinates = [47.7467108,61.1279301]; //TODO: replace with real stuff
-        $geoPoint = new Point($geoCoordinates);
+//        $geoCoordinates = [47.7467108,61.1279301]; //TODO: replace with real stuff
+//        $geoPoint = new Point($geoCoordinates);
         /** @var Country|null $country */
         $country = $this->countryRepository->find($country);
         if (!$country) {
             throw new InvalidArgumentException('Country must represent existing country');
         }
 
-        return new Address($address, $country, $geoPoint);
+        return new Address('', $country);
     }
 }

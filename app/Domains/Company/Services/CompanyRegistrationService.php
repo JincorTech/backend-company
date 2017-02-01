@@ -46,11 +46,9 @@ class CompanyRegistrationService
     public function register(
         string $country,
         string $legalName,
-        string $formattedAddress,
-//        array $coordinates,
         string $companyType
     ) {
-        $address = $this->addressService->build($formattedAddress, $country);
+        $address = $this->addressService->build($country);
         $ct = $this->getDm()->getRepository(CompanyType::class)->find($companyType);
         if (!$ct) {
             throw new NotFoundHttpException(trans('registration-messages.typeNotFound', [

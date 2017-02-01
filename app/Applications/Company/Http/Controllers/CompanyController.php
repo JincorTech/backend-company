@@ -62,6 +62,11 @@ class CompanyController extends BaseController
         return $this->response->item($company, new CompanyTransformer());
     }
 
+    public function invite()
+    {
+
+    }
+
     /**
      * Register new company.
      *
@@ -73,7 +78,6 @@ class CompanyController extends BaseController
         $verification = $this->registrationService->register(
             $request->getCountryId(),
             $request->getLegalName(),
-            $request->getFormattedAddress(),
             $request->getCompanyTypeId()
         );
         $transformer = new EmployeeVerificationTransformer();

@@ -176,7 +176,6 @@ class Country
         if ($this->id instanceof UuidInterface) {
             return $this->id->toString();
         }
-
         return $this->id;
     }
 

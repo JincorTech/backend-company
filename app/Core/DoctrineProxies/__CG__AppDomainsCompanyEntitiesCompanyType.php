@@ -202,7 +202,7 @@ class CompanyType extends \App\Domains\Company\Entities\CompanyType implements \
     /**
      * {@inheritDoc}
      */
-    public function getName(string $locale = 'en'): string
+    public function getName($locale = NULL): string
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', [$locale]);

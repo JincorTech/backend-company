@@ -24,15 +24,15 @@ class RegistrationService
         $this->addressService = $addressService;
     }
 
+    //TODO: refactor (find usages and remove address)
     public function register(
         string $country,
         string $tax,
         string $legalName,
-        string $formattedAddress,
         array $coordinates,
         string $companyType
     ) {
-        $address = $this->addressService->build($formattedAddress, $country, $coordinates);
+        $address = $this->addressService->build($country);
     }
 
     public function getInfoByTaxNumber(string $country, string $taxNumber)

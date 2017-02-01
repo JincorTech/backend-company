@@ -71,12 +71,15 @@ class CompanyType
      * @param string $locale
      * @return mixed
      */
-    public function getName(string $locale = 'en') : string
+    public function getName($locale = null) : string
     {
+        if($locale === null) {
+            $locale = config('locale');
+        }
         if (array_key_exists($locale, $this->names)) {
             return $this->names[$locale];
         }
 
-        return $this->names['en'];
+        return $this->names[config('locale')];
     }
 }

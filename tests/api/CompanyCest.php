@@ -1,5 +1,9 @@
 <?php
 
+use App\Domains\Company\Repositories\CompanyRepository;
+use App\Domains\Company\Entities\Company;
+use Doctrine\ODM\MongoDB\DocumentManager;
+
 /**
  * Class CompanyCest.
  *
@@ -7,6 +11,23 @@
  */
 class CompanyCest
 {
+
+    /**
+     * @var \Doctrine\ODM\MongoDB\DocumentManager
+     */
+    private $dm;
+
+    /**
+     * @var \App\Domains\Company\Repositories\CompanyRepository
+     */
+    private $companyRepository;
+
+    public function __construct()
+    {
+        $this->dm = App::make(DocumentManager::class);
+        $this->companyRepository = $this->dm->getRepository(Company::class);
+    }
+
     public function _before(ApiTester $I)
     {
     }
@@ -24,6 +45,7 @@ class CompanyCest
      */
     public function getCompanyTest(ApiTester $I)
     {
+
         $I->sendGET('company/1');
         $I->seeResponseCodeIs(200);
         //TODO: implement test body
