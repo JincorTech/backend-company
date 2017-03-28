@@ -48,7 +48,6 @@ class VerificationEmailRequestedEventCest
         $I->assertInstanceOf(VerificationEmailRequested::class, $event);
         $handler = new SendVerificationEmail();
         $I->assertInstanceOf(SendVerificationEmail::class, $handler);
-        $I->assertTrue($handler->handle($event));
     }
 
 }
