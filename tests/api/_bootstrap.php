@@ -4,6 +4,6 @@
 require 'bootstrap/autoload.php';
 /** @var \Illuminate\Foundation\Application $app */
 $app = require 'bootstrap/app.php';
-$app->loadEnvironmentFrom('.env.test');
+$app->loadEnvironmentFrom('.env');
 $app->instance('request', new \Illuminate\Http\Request);
 $app->make('Illuminate\Contracts\Http\Kernel')->bootstrap();

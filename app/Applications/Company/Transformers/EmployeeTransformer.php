@@ -9,7 +9,7 @@
 
 namespace App\Applications\Company\Transformers;
 
-use App\Domains\Company\Entities\Employee;
+use App\Domains\Employee\Entities\Employee;
 use League\Fractal\TransformerAbstract;
 
 class EmployeeTransformer extends TransformerAbstract
@@ -27,7 +27,7 @@ class EmployeeTransformer extends TransformerAbstract
             ],
             'company' => [
                 'id' => $employee->getCompany()->getId(),
-                'name' => $employee->getCompany()->getLegalName(),
+                'name' => $employee->getCompany()->getProfile()->getName(),
             ],
         ];
     }

@@ -9,6 +9,11 @@
 
 namespace App\Domains\Company\ValueObjects;
 
+use App\Core\ValueObjects\Address;
+use App\Core\ValueObjects\TranslatableString;
+use App\Domains\Company\Entities\CompanyType;
+use App\Domains\Company\Entities\EconomicalActivityType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
@@ -18,30 +23,185 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  */
 class CompanyProfile
 {
+
     /**
-     * @var array
-     * @ODM\Field(type="hash")
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    protected $legalName;
+
+    /**
+     * @var TranslatableString
+     *
+     * @ODM\EmbedOne(
+     *     targetDocument="App\Core\ValueObjects\TranslatableString"
+     * )
      */
     protected $brandName;
 
     /**
-     * TODO: company types dictionary.
-     * @var
+     * @var CompanyType
+     *
+     * @ODM\ReferenceOne(
+     *     targetDocument="App\Domains\Company\Entities\CompanyType",
+     *     cascade={"persist"}
+     * )
      */
     protected $companyType;
 
+
     /**
-     * @var string
+     * @var EconomicalActivityType
+     *
+     * @ODM\ReferenceMany(
+     *     targetDocument="App\Domains\Company\Entities\EconomicalActivityType",
+     *     cascade={"persist"}
+     * )
      */
-    protected $website;
+    protected $economicalActivities;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ODM\EmbedMany(
+     *     targetDocument="App\Domains\Company\ValueObjects\CompanyExternalLink",
+     * )
+     */
+    protected $links;
 
     /**
      * @var string
+     *
+     * @ODM\Field(type="string")
      */
     protected $phone;
 
     /**
      * @var string
+     *
+     * @ODM\Field(type="string")
      */
     protected $email;
+
+
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    protected $picture;
+
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="string")
+     */
+    protected $description;
+
+
+    /**
+     * @var Address
+     *
+     * @ODM\EmbedOne(
+     *     targetDocument="App\Core\ValueObjects\Address",
+     * )
+     */
+    protected $address;
+
+
+
+    public function __construct(string $name, Address $address, CompanyType $type)
+    {
+        $this->legalName = $name;
+        $this->address  = $address;
+        $this->companyType = $type;
+        $this->economicalActivities = new ArrayCollection([]);
+        $this->links = new ArrayCollection([]);
+    }
+
+    public function getEconomicalActivities() : ArrayCollection
+    {
+        return $this->economicalActivities;
+    }
+
+    /**
+     * @param EconomicalActivityType[] $activities
+     */
+    public function setEconomicalActivities(array $activities)
+    {
+        $this->economicalActivities = new ArrayCollection($activities);
+    }
+
+
+    /**
+     * @return Address
+     */
+    public function getAddress() : Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function changeAddress(Address $address)
+    {
+        $this->address = $address;
+    }
+
+
+    /**
+     * @param CompanyExternalLink[] $links
+     */
+    public function setLinks(array $links)
+    {
+        $this->links = new ArrayCollection($links);
+    }
+
+
+    /**
+     *
+     * @return ArrayCollection
+     */
+    public function getLinks() : ArrayCollection
+    {
+        return $this->links;
+    }
+
+
+    /**
+     * @return CompanyType
+     */
+    public function getType() : CompanyType
+    {
+        return $this->companyType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() : string
+    {
+        return $this->legalName;
+    }
+
+    /**
+     * @param array $names
+     */
+    public function setBrandNames(array $names)
+    {
+        $this->brandName = new TranslatableString($names);
+    }
+
+    /**
+     * @param null $locale
+     * @return mixed|string
+     */
+    public function getBrandName($locale = null)
+    {
+        return $this->brandName->getValue($locale);
+    }
+
+
 }

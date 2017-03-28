@@ -46,6 +46,7 @@ $api->version('v1', function ($api) {
             $api->get('/types', ['as' => 'company.types', 'uses' => $namespace.'CompanyController@companyTypes']);
             $api->get('/activityTypes', ['as' => 'company.eatypes', 'uses' => $namespace.'CompanyController@economicalActivityTypes']);
             $api->get('/{id}', ['as' => 'company.info', 'uses' => $namespace.'CompanyController@info']);
+            $api->post('/invite', ['as' => 'company.invite', 'uses' => $namespace.'CompanyController@invite']);
 
 //            $api->put('/{id}', ['as' => 'company.update', 'uses' => $namespace.'CompanyController@update']);
 
@@ -56,9 +57,11 @@ $api->version('v1', function ($api) {
         $api->group(['prefix' => 'employee'], function ($api) {
             /* @var \Dingo\Api\Routing\Router $api */
             $namespace = 'App\Applications\Company\Http\Controllers\\';
-            $api->put('/resetPassword', ['as' => 'employee.password.reset', 'uses' => $namespace.'EmployeeController@resetPassword']);
+            $api->post('/restorePassword', ['as' => 'employee.password.restore', 'uses' => $namespace.'EmployeeController@sendRestorePasswordEmail']);
             $api->post('/verifyEmail', ['as' => 'employee.email.verify', 'uses' => $namespace.'EmployeeController@verifyEmail']);
             $api->get('/verifyEmail', ['as' => 'employee.email.sendPin', 'uses' => $namespace.'EmployeeController@sendEmailCode']);
+
+            $api->put('/changePassword', ['as' => 'employee.email.password.change', 'uses' => $namespace.'EmployeeController@changePassword']);
 
 //            $api->post('/verifyPhone', ['as' => 'employee.phone.verify', 'uses' => $namespace.'EmployeeController@verifyPhone']);
 //            $api->get('/verifyPhone', ['as' => 'employee.phone.sendPin', 'uses' => $namespace.'EmployeeController@sendPhoneCode']);

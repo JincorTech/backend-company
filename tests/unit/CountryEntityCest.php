@@ -59,7 +59,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::getNumericCode
      */
     public function getCountryNumericCodeTest(UnitTester $I)
     {
@@ -68,7 +67,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::getAlpha2Code
      */
     public function getCountryAlpha2CodeTest(UnitTester $I)
     {
@@ -77,7 +75,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::getAlpha3Code
      */
     public function getCountryAlpha3CodeTest(UnitTester $I)
     {
@@ -86,7 +83,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::getCurrency
      */
     public function getCountryCurrency(UnitTester $I)
     {
@@ -95,7 +91,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::getBounds
      */
     public function countryBoundsTest(UnitTester $I)
     {
@@ -105,7 +100,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::getName
      */
     public function getCountryNameTest(UnitTester $I)
     {
@@ -117,7 +111,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::setPhoneCode
      */
     public function setCountryNamesTest(UnitTester $I)
     {
@@ -133,7 +126,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::setPhoneCode
      */
     public function setCountryPhoneCodeTest(UnitTester $I)
     {
@@ -151,7 +143,6 @@ class CountryEntityCest
 
     /**
      * @param UnitTester $I
-     * @covers App\Domains\Dictionary\Entities\Country::setFlagUrl
      */
     public function setCountryFlagUrlTest(UnitTester $I)
     {

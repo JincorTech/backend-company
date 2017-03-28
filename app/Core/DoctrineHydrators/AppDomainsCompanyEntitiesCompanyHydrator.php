@@ -41,26 +41,14 @@ class AppDomainsCompanyEntitiesCompanyHydrator implements HydratorInterface
             $hydratedData['id'] = $return;
         }
 
-        /** @Field(type="string") */
-        if (isset($data['legalName']) || (! empty($this->class->fieldMappings['legalName']['nullable']) && array_key_exists('legalName', $data))) {
-            $value = $data['legalName'];
-            if ($value !== null) {
-                $return = (string) $value;
-            } else {
-                $return = null;
-            }
-            $this->class->reflFields['legalName']->setValue($document, $return);
-            $hydratedData['legalName'] = $return;
-        }
-
         /** @EmbedOne */
-        if (isset($data['legalAddress'])) {
-            $embeddedDocument = $data['legalAddress'];
-            $className = $this->unitOfWork->getClassNameForAssociation($this->class->fieldMappings['legalAddress'], $embeddedDocument);
+        if (isset($data['profile'])) {
+            $embeddedDocument = $data['profile'];
+            $className = $this->unitOfWork->getClassNameForAssociation($this->class->fieldMappings['profile'], $embeddedDocument);
             $embeddedMetadata = $this->dm->getClassMetadata($className);
             $return = $embeddedMetadata->newInstance();
 
-            $this->unitOfWork->setParentAssociation($return, $this->class->fieldMappings['legalAddress'], $document, 'legalAddress');
+            $this->unitOfWork->setParentAssociation($return, $this->class->fieldMappings['profile'], $document, 'profile');
 
             $embeddedData = $this->dm->getHydratorFactory()->hydrate($return, $embeddedDocument, $hints);
             $embeddedId = $embeddedMetadata->identifier && isset($embeddedData[$embeddedMetadata->identifier]) ? $embeddedData[$embeddedMetadata->identifier] : null;
@@ -69,25 +57,8 @@ class AppDomainsCompanyEntitiesCompanyHydrator implements HydratorInterface
                 $this->unitOfWork->registerManaged($return, $embeddedId, $embeddedData);
             }
 
-            $this->class->reflFields['legalAddress']->setValue($document, $return);
-            $hydratedData['legalAddress'] = $return;
-        }
-
-        /** @ReferenceOne */
-        if (isset($data['type'])) {
-            $reference = $data['type'];
-            if (isset($this->class->fieldMappings['type']['storeAs']) && $this->class->fieldMappings['type']['storeAs'] === ClassMetadataInfo::REFERENCE_STORE_AS_ID) {
-                $className = $this->class->fieldMappings['type']['targetDocument'];
-                $mongoId = $reference;
-            } else {
-                $className = $this->unitOfWork->getClassNameForAssociation($this->class->fieldMappings['type'], $reference);
-                $mongoId = $reference['$id'];
-            }
-            $targetMetadata = $this->dm->getClassMetadata($className);
-            $id = $targetMetadata->getPHPIdentifierValue($mongoId);
-            $return = $this->dm->getReference($className, $id);
-            $this->class->reflFields['type']->setValue($document, $return);
-            $hydratedData['type'] = $return;
+            $this->class->reflFields['profile']->setValue($document, $return);
+            $hydratedData['profile'] = $return;
         }
 
         /** @Many */

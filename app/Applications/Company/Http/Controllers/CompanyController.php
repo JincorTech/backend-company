@@ -11,6 +11,7 @@
 
 namespace App\Applications\Company\Http\Controllers;
 
+use App\Applications\Company\Http\Requests\Company\InviteEmployees;
 use App\Applications\Company\Http\Requests\PublicDictionaryRequest;
 use App\Applications\Company\Http\Requests\Company\RegisterCompany;
 use App\Applications\Company\Http\Requests\PublicEconomicalActivityTypesRequest;
@@ -18,33 +19,43 @@ use App\Applications\Company\Transformers\CompanyTransformer;
 use App\Applications\Company\Transformers\CompanyTypeTransformer;
 use App\Applications\Company\Transformers\EconomicalActivityTypeTransformer;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
-use App\Domains\Company\Services\CompanyRegistrationService;
+use App\Applications\Company\Transformers\InviteToCompanyResult;
 use App\Domains\Company\Services\CompanyService;
+use App\Domains\Employee\Services\EmployeeService;
 use Dingo\Api\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use App;
+
 
 class CompanyController extends BaseController
 {
-    /**
-     * @var CompanyRegistrationService
-     */
-    private $registrationService;
 
     /**
      * @var CompanyService
      */
     private $companyService;
 
+
+    /**
+     * @var EmployeeService
+     */
+    private $employeeService;
+
     /**
      * CompanyController constructor.
-     * @param CompanyRegistrationService $registrationService
      * @param CompanyService $companyService
+     * @param $employeeService EmployeeService
      */
-    public function __construct(CompanyRegistrationService $registrationService, CompanyService $companyService)
+    public function __construct(
+        CompanyService $companyService,
+        EmployeeService $employeeService
+    )
     {
-        $this->registrationService = $registrationService;
         $this->companyService = $companyService;
+        $this->employeeService = $employeeService;
+
     }
 
     /**
@@ -58,13 +69,25 @@ class CompanyController extends BaseController
                 'cId' => $id,
             ]));
         }
-
         return $this->response->item($company, new CompanyTransformer());
     }
 
     public function invite()
     {
 
+    }
+
+    /**
+     * @param InviteEmployees $request
+     *
+     * Invite many employees to the current company
+     * @return JsonResponse
+     */
+    public function invite(InviteEmployees $request)
+    {
+        $result = $this->employeeService->inviteMany(Collection::make($request->getEmails()), App::make('AppUser'));
+        $transformer = new InviteToCompanyResult();
+        return new JsonResponse(['data' => $transformer->transform($result)]);
     }
 
     /**
@@ -75,7 +98,7 @@ class CompanyController extends BaseController
      */
     public function register(RegisterCompany $request)
     {
-        $verification = $this->registrationService->register(
+        $verification = $this->companyService->register(
             $request->getCountryId(),
             $request->getLegalName(),
             $request->getCompanyTypeId()
@@ -84,7 +107,7 @@ class CompanyController extends BaseController
 
         return $this->response->created(
             '/api/v1/company/'.$verification->getCompany()->getId(),
-            $transformer->transform($verification)
+            ['data' => $transformer->transform($verification)]
         );
     }
 

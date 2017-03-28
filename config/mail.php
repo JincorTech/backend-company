@@ -112,4 +112,9 @@ return [
 
     'sendmail' => '/usr/sbin/sendmail -bs',
 
+
+    'invitations' => [
+        'max_company_user' => 3,
+    ]
+
 ];

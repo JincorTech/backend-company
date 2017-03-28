@@ -9,6 +9,8 @@
 
 namespace App\Domains\Company\Entities;
 
+use App\Core\ValueObjects\TranslatableString;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Ramsey\Uuid\Uuid;
@@ -33,9 +35,11 @@ class EconomicalActivityType
     protected $id;
 
     /**
-     * @var array
+     * @var TranslatableString
      *
-     * @ODM\Field(type="hash")
+     * @ODM\EmbedOne(
+     *     targetDocument="App\Core\ValueObjects\TranslatableString"
+     * )
      */
     protected $names;
 
@@ -89,6 +93,7 @@ class EconomicalActivityType
         $this->id = Uuid::uuid4();
         $this->setNames($names);
         $this->internalCode = $internalCode;
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -105,11 +110,7 @@ class EconomicalActivityType
      */
     public function getName(string $locale = null) : string
     {
-        if (array_key_exists($locale, $this->names)) {
-            return $this->names[$locale];
-        }
-
-        return $this->names['en'];
+        return $this->names->getValue($locale);
     }
 
     /**
@@ -117,10 +118,7 @@ class EconomicalActivityType
      */
     public function setNames(array $names)
     {
-        if (!array_key_exists('en', $names)) {
-            throw new \InvalidArgumentException("English name('en' key) must be presented in names array");
-        }
-        $this->names = $names;
+        $this->names = new TranslatableString($names);
     }
 
     /**
@@ -155,12 +153,18 @@ class EconomicalActivityType
         return $this->path;
     }
 
+    /**
+     * @return string
+     */
     public function getCode()
     {
         return $this->internalCode;
     }
 
-    public function getChildren()
+    /**
+     * @return ArrayCollection
+     */
+    public function getChildren() : ArrayCollection
     {
         return $this->children;
     }

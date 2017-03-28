@@ -1,0 +1,1152 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Jincor",
+		"_postman_id": "ec408ab9-f531-4c4b-a0a0-e5bb633fba6a",
+		"description": "Jincor API for local development",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Country List",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/dictionary/country",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Andrey\",\n  \"lastName\": \"Degtyaruk\",\n  \"password\": \"cm2jpmrt6c\",\n  \"verificationId\": \"bb69ec2e-9294-41fc-a593-a01a0f973f46\",\n  \"position\": \"Директор\"\n}"
+				},
+				"description": "Get the list of Country instances"
+			},
+			"response": []
+		},
+		{
+			"name": "Company Types",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/company/types",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Andrey\",\n  \"lastName\": \"Degtyaruk\",\n  \"password\": \"cm2jpmrt6c\",\n  \"verificationId\": \"bb69ec2e-9294-41fc-a593-a01a0f973f46\",\n  \"position\": \"Директор\"\n}"
+				},
+				"description": "Get the list of Company types"
+			},
+			"response": []
+		},
+		{
+			"name": "Activity Types",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/company/activityTypes",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Andrey\",\n  \"lastName\": \"Degtyaruk\",\n  \"password\": \"cm2jpmrt6c\",\n  \"verificationId\": \"bb69ec2e-9294-41fc-a593-a01a0f973f46\",\n  \"position\": \"Директор\"\n}"
+				},
+				"description": "Get the list of ActivityType instances"
+			},
+			"response": []
+		},
+		{
+			"name": "Register new company",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/company",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"legalName\": \"Jincor limited\",\n    \"countryId\": \"24d686dd-b2a7-4a32-83c9-6cad5bef9c58\",\n    \"companyType\": \"f9479b0e-3083-4c01-a0ba-88f4be44c662\"\n}"
+				},
+				"description": "Register new company"
+			},
+			"response": []
+		},
+		{
+			"name": "Send verification email",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/verifyEmail?verificationId=99a6810b-85cf-48b2-9760-58362a5c251a&email=hlogeon1@gmail.com",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"verificationId\": \"44b9a909-b271-4792-a4bd-9ca7c6bb8791\",\n  \"verificationCode\": \"240837\"\n}"
+				},
+				"description": "Send verification code to email address"
+			},
+			"response": []
+		},
+		{
+			"name": "Verify email",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/verifyEmail",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"verificationId\": \"44b9a909-b271-4792-a4bd-9ca7c6bb8791\",\n  \"verificationCode\": \"240837\"\n}"
+				},
+				"description": "Verify email by the code provided"
+			},
+			"response": []
+		},
+		{
+			"name": "Register employee",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/register",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Andrey\",\n    \"lastName\": \"Degtyaruk\",\n    \"password\": \"cm2jpmrt6c\",\n    \"verificationId\": \"99a6810b-85cf-48b2-9760-58362a5c251a\",\n    \"position\": \"Директор\"\n}"
+				},
+				"description": "Register new employee"
+			},
+			"response": []
+		},
+		{
+			"name": "Invite employees",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/company/invite",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "ru",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMzN2Y2MDY4LThiMzYtNDNkNS1iNjQ4LTg2NGNhMTc5N2M0NyIsImxvZ2luIjoiNWRhZTQyZWYtNmMzZC00MDBmLWFiMjYtMjQ1MmM1ZGM1Y2E1Omhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiY29tcGFueS1hZG1pbiIsImRldmljZUlkIjoiMTIzNDUiLCJqdGkiOiIzMzdmNjA2OC04YjM2LTQzZDUtYjY0OC04NjRjYTE3OTdjNDcxMjM0NTE0OTA2MjY4ODkwNDYiLCJpYXQiOjE0OTA2MjY4ODkwNDYsImV4cCI6MTQ5MDYyNzQ5Mzg0Nn0.GbYrIKQcU8H0TZ_vVLn75L1uuLPWa7VyxlBpLfCCyUc",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"emails\": [\"degtyaruk.a@yandex.ru\", \"hlogeon1@gmail.com\"]\n}"
+				},
+				"description": "Invite employees to a company"
+			},
+			"response": []
+		},
+		{
+			"name": "Company List by verificationId",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/companies?verificationId=44b9a909-b271-4792-a4bd-9ca7c6bb8791",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Andrey\",\n  \"lastName\": \"Degtyaruk\",\n  \"password\": \"cm2jpmrt6c\",\n  \"verificationId\": \"bb69ec2e-9294-41fc-a593-a01a0f973f46\",\n  \"position\": \"Директор\"\n}"
+				},
+				"description": "Get the list of users Companies by verificationId"
+			},
+			"response": []
+		},
+		{
+			"name": "Company List by email and password",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/companies?email=hlogeon1@gmail.com&password=cm2jpmrt6c",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "en",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Andrey\",\n  \"lastName\": \"Degtyaruk\",\n  \"password\": \"cm2jpmrt6c\",\n  \"verificationId\": \"bb69ec2e-9294-41fc-a593-a01a0f973f46\",\n  \"position\": \"Директор\"\n}"
+				},
+				"description": "Get the list of Companies user with provided credentials belongs to"
+			},
+			"response": []
+		},
+		{
+			"name": "Restore Password",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/restorePassword",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "ru",
+						"description": ""
+					},
+					{
+						"key": "//Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ2ZDZiYThjLTRhZDUtNGY3YS1hYTgzLTdiM2ZkMTg4NjlhYiIsImxvZ2luIjoiOGM2MjRjNzctMTJhNS00N2VjLTg3ZmQtZmJmNDNkOTNhNjlmOmhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiY29tcGFueS1hZG1pbiIsImRldmljZUlkIjoiMTIzNDUiLCJqdGkiOiI0NmQ2YmE4Yy00YWQ1LTRmN2EtYWE4My03YjNmZDE4ODY5YWIxMjM0NTE0ODc3MzkyNDg3NjgiLCJpYXQiOjE0ODc3MzkyNDg3NjgsImV4cCI6MTQ4NzczOTg1MzU2OH0.TbZV9DwUiV_uiFu1hnVJXKePfaBkUJSwJBVUKI0xQmY",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"hlogeon1@gmail.com\"\n}"
+				},
+				"description": ""
+			},
+			"response": [
+				{
+					"id": "56623fe9-7895-4eca-b188-5ffc1fd4569d",
+					"name": "createdVerification",
+					"originalRequest": {
+						"url": "http://127.0.0.1/api/v1/employee/restorePassword",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"enabled": false,
+								"description": "Options that are desired for the connection",
+								"warning": "Restricted Header (use Postman Interceptor)"
+							},
+							{
+								"key": "Origin",
+								"value": "https://admin.booking.com",
+								"enabled": false,
+								"warning": "Restricted Header (use Postman Interceptor)"
+							},
+							{
+								"key": "X-Booking-CSRF",
+								"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+								"enabled": false,
+								"warning": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"enabled": true,
+								"description": "The mime type of this content",
+								"warning": ""
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/javascript, */*; q=0.01",
+								"enabled": true,
+								"warning": ""
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"enabled": true,
+								"description": "Mainly used to identify Ajax requests. Most JavaScript frameworks send this header with value of XMLHttpRequest",
+								"warning": ""
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate",
+								"enabled": false,
+								"warning": "Restricted Header (use Postman Interceptor)"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+								"enabled": true,
+								"warning": ""
+							},
+							{
+								"key": "Locale",
+								"value": "ru",
+								"enabled": true,
+								"warning": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ2ZDZiYThjLTRhZDUtNGY3YS1hYTgzLTdiM2ZkMTg4NjlhYiIsImxvZ2luIjoiOGM2MjRjNzctMTJhNS00N2VjLTg3ZmQtZmJmNDNkOTNhNjlmOmhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiY29tcGFueS1hZG1pbiIsImRldmljZUlkIjoiMTIzNDUiLCJqdGkiOiI0NmQ2YmE4Yy00YWQ1LTRmN2EtYWE4My03YjNmZDE4ODY5YWIxMjM0NTE0ODc3MzkyNDg3NjgiLCJpYXQiOjE0ODc3MzkyNDg3NjgsImV4cCI6MTQ4NzczOTg1MzU2OH0.TbZV9DwUiV_uiFu1hnVJXKePfaBkUJSwJBVUKI0xQmY",
+								"enabled": false,
+								"warning": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"hlogeon1@gmail.com\"\n}"
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "text",
+					"header": [
+						{
+							"name": "Access-Control-Allow-Origin",
+							"key": "Access-Control-Allow-Origin",
+							"value": "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop",
+							"description": ""
+						},
+						{
+							"name": "Cache-Control",
+							"key": "Cache-Control",
+							"value": "private, must-revalidate",
+							"description": ""
+						},
+						{
+							"name": "Connection",
+							"key": "Connection",
+							"value": "keep-alive",
+							"description": ""
+						},
+						{
+							"name": "Content-Type",
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": ""
+						},
+						{
+							"name": "Date",
+							"key": "Date",
+							"value": "Wed, 22 Feb 2017 06:45:47 GMT",
+							"description": ""
+						},
+						{
+							"name": "ETag",
+							"key": "ETag",
+							"value": "\"994a327cbb73d3d49fc0f1040e6b6c9ed8b4ed09\"",
+							"description": ""
+						},
+						{
+							"name": "Server",
+							"key": "Server",
+							"value": "nginx",
+							"description": ""
+						},
+						{
+							"name": "Transfer-Encoding",
+							"key": "Transfer-Encoding",
+							"value": "chunked",
+							"description": ""
+						},
+						{
+							"name": "Vary",
+							"key": "Vary",
+							"value": "Origin",
+							"description": ""
+						},
+						{
+							"name": "X-Powered-By",
+							"key": "X-Powered-By",
+							"value": "PHP/7.0.9",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"responseTime": "1560",
+					"body": "{\"data\":{\"id\":\"fff41be8-4cea-4b89-a690-6f15d8b7eb2a\",\"companyId\":null,\"email\":{\"value\":\"hlogeon1@gmail.com\",\"isVerified\":false},\"phone\":{\"value\":null,\"isVerified\":false}}}"
+				}
+			]
+		},
+		{
+			"name": "Change Password(verificationID)",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/changePassword",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "ru",
+						"description": ""
+					},
+					{
+						"key": "//Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ2ZDZiYThjLTRhZDUtNGY3YS1hYTgzLTdiM2ZkMTg4NjlhYiIsImxvZ2luIjoiOGM2MjRjNzctMTJhNS00N2VjLTg3ZmQtZmJmNDNkOTNhNjlmOmhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiY29tcGFueS1hZG1pbiIsImRldmljZUlkIjoiMTIzNDUiLCJqdGkiOiI0NmQ2YmE4Yy00YWQ1LTRmN2EtYWE4My03YjNmZDE4ODY5YWIxMjM0NTE0ODc3MzkyNDg3NjgiLCJpYXQiOjE0ODc3MzkyNDg3NjgsImV4cCI6MTQ4NzczOTg1MzU2OH0.TbZV9DwUiV_uiFu1hnVJXKePfaBkUJSwJBVUKI0xQmY",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"companyId\": \"23cb5afd-93f0-4062-b774-dcf9ee5f4a0c\",\n  \"verificationId\": \"44b9a909-b271-4792-a4bd-9ca7c6bb8791\",\n  \"password\": \"cm3jpmrt7c\"\n}"
+				},
+				"description": "Change password of Employee"
+			},
+			"response": []
+		},
+		{
+			"name": "Change Password(oldPassword)",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/changePassword",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "ru",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA5ODQ1YmI4LTYwNjktNGUxZS1iZjY1LTZiZDg1MjBkZGI3ZCIsImxvZ2luIjoiMjNjYjVhZmQtOTNmMC00MDYyLWI3NzQtZGNmOWVlNWY0YTBjOmhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjpudWxsLCJkZXZpY2VJZCI6IjEyMzQ1IiwianRpIjoiMDk4NDViYjgtNjA2OS00ZTFlLWJmNjUtNmJkODUyMGRkYjdkMTIzNDUxNDkwNjI1MjkwODU0IiwiaWF0IjoxNDkwNjI1MjkwODU0LCJleHAiOjE0OTA2MjU4OTU2NTR9.S1In9-f45YZmP2eZJP7_ApaXZmLrU8ADP_OTYC7WeIc",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"companyId\": \"23cb5afd-93f0-4062-b774-dcf9ee5f4a0c\",\n  \"password\": \"czmkimczm\",\n  \"oldPassword\": \"cm3jpmrt7c\"\n}"
+				},
+				"description": "Change password of Employee"
+			},
+			"response": []
+		},
+		{
+			"name": "Login(email,password,companyId)",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "ru",
+						"description": ""
+					},
+					{
+						"key": "//Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ2ZDZiYThjLTRhZDUtNGY3YS1hYTgzLTdiM2ZkMTg4NjlhYiIsImxvZ2luIjoiOGM2MjRjNzctMTJhNS00N2VjLTg3ZmQtZmJmNDNkOTNhNjlmOmhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiY29tcGFueS1hZG1pbiIsImRldmljZUlkIjoiMTIzNDUiLCJqdGkiOiI0NmQ2YmE4Yy00YWQ1LTRmN2EtYWE4My03YjNmZDE4ODY5YWIxMjM0NTE0ODc3MzkyNDg3NjgiLCJpYXQiOjE0ODc3MzkyNDg3NjgsImV4cCI6MTQ4NzczOTg1MzU2OH0.TbZV9DwUiV_uiFu1hnVJXKePfaBkUJSwJBVUKI0xQmY",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"companyId\": \"23cb5afd-93f0-4062-b774-dcf9ee5f4a0c\",\n  \"email\": \"hlogeon1@gmail.com\",\n  \"password\": \"cm3jpmrt7c\"\n}"
+				},
+				"description": "Login"
+			},
+			"response": []
+		},
+		{
+			"name": "Login(email,pasword)",
+			"request": {
+				"url": "http://127.0.0.1/api/v1/employee/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Connection",
+						"value": "keep-alive",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//Origin",
+						"value": "https://admin.booking.com",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "//X-Booking-CSRF",
+						"value": "whQQVwAAAAA=bfbPuRkrtfgpUwoVI6Fg3f3IDZe4Um3Y4v939STR9EbMPQw6PBNYCiH_2puo_IqYBkhDx7vIjvUSjtXdao3EigAEDemyFCHC9PGtsSrFIZRrrypKufqSpGflOgih9xLQIaB95xROT2iOqmT2EdZKstfN8e3BGmbANuR5zd8x1s2RsC-3TTRANThdf7g",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01",
+						"description": ""
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest",
+						"description": ""
+					},
+					{
+						"key": "//Accept-Encoding",
+						"value": "gzip, deflate",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4",
+						"description": ""
+					},
+					{
+						"key": "Locale",
+						"value": "ru",
+						"description": ""
+					},
+					{
+						"key": "//Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ2ZDZiYThjLTRhZDUtNGY3YS1hYTgzLTdiM2ZkMTg4NjlhYiIsImxvZ2luIjoiOGM2MjRjNzctMTJhNS00N2VjLTg3ZmQtZmJmNDNkOTNhNjlmOmhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiY29tcGFueS1hZG1pbiIsImRldmljZUlkIjoiMTIzNDUiLCJqdGkiOiI0NmQ2YmE4Yy00YWQ1LTRmN2EtYWE4My03YjNmZDE4ODY5YWIxMjM0NTE0ODc3MzkyNDg3NjgiLCJpYXQiOjE0ODc3MzkyNDg3NjgsImV4cCI6MTQ4NzczOTg1MzU2OH0.TbZV9DwUiV_uiFu1hnVJXKePfaBkUJSwJBVUKI0xQmY",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"hlogeon1@gmail.com\",\n  \"password\": \"cm3jpmrt7c\"\n}"
+				},
+				"description": "Login"
+			},
+			"response": []
+		}
+	]
+}

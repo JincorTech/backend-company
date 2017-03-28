@@ -53,14 +53,22 @@ class AppDomainsCompanyEntitiesCompanyTypeHydrator implements HydratorInterface
             $hydratedData['code'] = $return;
         }
 
-        /** @Field(type="hash") */
-        if (isset($data['names']) || (! empty($this->class->fieldMappings['names']['nullable']) && array_key_exists('names', $data))) {
-            $value = $data['names'];
-            if ($value !== null) {
-                $return = $value;
-            } else {
-                $return = null;
+        /** @EmbedOne */
+        if (isset($data['names'])) {
+            $embeddedDocument = $data['names'];
+            $className = $this->unitOfWork->getClassNameForAssociation($this->class->fieldMappings['names'], $embeddedDocument);
+            $embeddedMetadata = $this->dm->getClassMetadata($className);
+            $return = $embeddedMetadata->newInstance();
+
+            $this->unitOfWork->setParentAssociation($return, $this->class->fieldMappings['names'], $document, 'names');
+
+            $embeddedData = $this->dm->getHydratorFactory()->hydrate($return, $embeddedDocument, $hints);
+            $embeddedId = $embeddedMetadata->identifier && isset($embeddedData[$embeddedMetadata->identifier]) ? $embeddedData[$embeddedMetadata->identifier] : null;
+
+            if (empty($hints[Query::HINT_READ_ONLY])) {
+                $this->unitOfWork->registerManaged($return, $embeddedId, $embeddedData);
             }
+
             $this->class->reflFields['names']->setValue($document, $return);
             $hydratedData['names'] = $return;
         }

@@ -2,6 +2,7 @@
 
 namespace App\Core\Providers;
 
+use App\Core\Mapping\DoctrineTypes\VerificationActionType;
 use Doctrine\MongoDB\Connection as MongoConnection;
 use Illuminate\Database\Connection;
 use Illuminate\Support\ServiceProvider;
@@ -78,6 +79,7 @@ class DoctrineServiceProvider extends ServiceProvider
         $this->app->singleton(DocumentManager::class, function ($app) use ($connection, $config, $evm) {
             return DocumentManager::create($connection, $config, $evm);
         });
+        Type::addType('verificationAction', VerificationActionType::class);
 //        Type::overrideType('collection', 'App\Core\Doctrine\Types\Collection');
     }
 

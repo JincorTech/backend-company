@@ -11,7 +11,9 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+use App\Domains\Company\Entities\CompanyType;
+
+$factory->define(CompanyType::class, function (Faker\Generator $faker) {
     static $password;
 
     return [

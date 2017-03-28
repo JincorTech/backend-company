@@ -20,7 +20,8 @@
         "ramsey/uuid": "^3.5",
         "jenssegers/mongodb": "^3.1",
         "maatwebsite/excel": "~2.1.0",
-        "firebase/php-jwt": "^4.0"
+        "firebase/php-jwt": "^4.0",
+        "flow/jsonpath": "^0.3.4"
     },
     "repositories": [
         {
@@ -40,7 +41,8 @@
         "league/factory-muffin": "^3.0",
         "league/factory-muffin-faker": "^2.0",
         "squizlabs/php_codesniffer": "2.*",
-        "pdepend/pdepend" : "2.2.4"
+        "pdepend/pdepend" : "2.2.4",
+        "phpstan/phpstan": "^0.6.4"
     },
     "autoload": {
         "classmap": [
@@ -52,7 +54,8 @@
     },
     "autoload-dev": {
         "classmap": [
-            "tests/TestCase.php"
+            "tests/TestCase.php",
+            "tests/factories"
         ]
     },
     "scripts": {

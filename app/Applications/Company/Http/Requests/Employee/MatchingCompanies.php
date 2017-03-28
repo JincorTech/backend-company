@@ -16,18 +16,33 @@ class MatchingCompanies extends GetAPIRequest
     public function rules()
     {
         return [
-            'email' => 'string|email|required',
-            'password' => 'string|required',
+            'email' => 'string|email|required_with:password',
+            'password' => 'string|required_with:email',
+            'verificationId' => 'string|size:36|required_without:email,password',
         ];
     }
 
-    public function getEmail() : string
+    /**
+     * @return string
+     */
+    public function getEmail()
     {
         return $this->get('email');
     }
 
-    public function getPassword() : string
+    /**
+     * @return string|null
+     */
+    public function getPassword()
     {
         return $this->get('password');
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVerificationId()
+    {
+        return $this->get('verificationId');
     }
 }

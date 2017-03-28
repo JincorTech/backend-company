@@ -32,25 +32,15 @@ class Company
     protected $id;
 
     /**
-     * @var string
-     * @ODM\Field(type="string")
+     * @var CompanyProfile
+     *
+     * @ODM\EmbedOne(
+     *     targetDocument="App\Domains\Company\ValueObjects\CompanyProfile",
+     * )
      */
-    protected $legalName;
+    protected $profile;
 
-    /**
-     * @var Address
-     * @ODM\EmbedOne(targetDocument="App\Core\ValueObjects\Address")
-     */
-    protected $legalAddress;
 
-   /**
-    * @var
-    *
-    * @ODM\ReferenceOne(
-    *     targetDocument="App\Domains\Company\Entities\CompanyType"
-    * )
-    */
-   protected $type;
 
     /**
      * @var ArrayCollection
@@ -68,11 +58,8 @@ class Company
         CompanyType $type
     ) {
         $this->id = Uuid::uuid4()->toString();
-        $this->legalName = $legalName;
-        $this->legalAddress = $address;
-        $this->type = $type;
-        $this->departments = new ArrayCollection([]);
-        $this->addDepartment(new Department('initial'));
+        $this->profile = new CompanyProfile($legalName, $address, $type);
+        $this->initializeDepartment();
     }
 
     /**
@@ -84,50 +71,30 @@ class Company
     }
 
     /**
-     * @return string
+     * @return CompanyProfile|null
      */
-    public function getLegalName() : string
-    {
-        return $this->legalName;
-    }
-
-    /**
-     * @return Address
-     */
-    public function getLegalAddress() : Address
-    {
-        return $this->legalAddress;
-    }
-
-    /**
-     * @return CompanyProfile
-     */
-    public function getProfile() : CompanyProfile
+    public function getProfile()
     {
         return $this->profile;
     }
 
-    public function addEmployee(Employee $employee)
+    /**
+     * Initialize empty department with name 'intial'
+     */
+    private function initializeDepartment()
     {
-        /** @var Department $department */
-        $department = $this->departments->first();
-        $department->addEmployee($employee);
-    }
-
-    public function addDepartment(Department $department)
-    {
+        $this->departments = new ArrayCollection([]);
+        $department = new Department('initial');
         $this->departments[] = $department;
         $department->associateCompany($this);
     }
 
+    /**
+     * @return Department
+     */
     public function getRootDepartment() : Department
     {
         return $this->departments->first();
-    }
-
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**

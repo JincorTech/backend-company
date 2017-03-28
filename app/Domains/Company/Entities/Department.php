@@ -9,6 +9,7 @@
 
 namespace App\Domains\Company\Entities;
 
+use App\Domains\Employee\Entities\Employee;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Ramsey\Uuid\Uuid;
@@ -38,7 +39,7 @@ class Department
     /**
      * @var ArrayCollection
      * @ODM\ReferenceMany(
-     *     targetDocument="App\Domains\Company\Entities\Employee",
+     *     targetDocument="App\Domains\Employee\Entities\Employee",
      *     mappedBy="department"
      * )
      */
@@ -48,7 +49,8 @@ class Department
      * @var Company
      * @ODM\ReferenceOne(
      *     targetDocument="App\Domains\Company\Entities\Company",
-     *     inversedBy="companies"
+     *     inversedBy="companies",
+     *     cascade={"persist"}
      * )
      */
     protected $company;
@@ -90,7 +92,6 @@ class Department
     public function addEmployee(Employee $employee)
     {
         $this->employees->add($employee);
-        $employee->attachToDepartment($this);
     }
 
     public function associateCompany(Company $company)

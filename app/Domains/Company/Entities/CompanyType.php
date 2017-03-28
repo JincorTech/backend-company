@@ -9,6 +9,7 @@
 
 namespace App\Domains\Company\Entities;
 
+use App\Core\ValueObjects\TranslatableString;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
@@ -34,8 +35,11 @@ class CompanyType
     protected $code;
 
     /**
-     * @var array
-     * @ODM\Field(type="hash")
+     * @var TranslatableString
+     *
+     * @ODM\EmbedOne(
+     *     targetDocument="App\Core\ValueObjects\TranslatableString"
+     * )
      */
     protected $names;
 
@@ -47,7 +51,7 @@ class CompanyType
     public function __construct(array $names, string $code)
     {
         $this->id = Uuid::uuid4()->toString();
-        $this->names = $names;
+        $this->setNames($names);
         $this->code = $code;
     }
 
@@ -73,13 +77,14 @@ class CompanyType
      */
     public function getName($locale = null) : string
     {
-        if($locale === null) {
-            $locale = config('locale');
-        }
-        if (array_key_exists($locale, $this->names)) {
-            return $this->names[$locale];
-        }
+        return $this->names->getValue($locale);
+    }
 
-        return $this->names[config('locale')];
+    /**
+     * @param array $names
+     */
+    private function setNames(array $names)
+    {
+        $this->names = new TranslatableString($names);
     }
 }

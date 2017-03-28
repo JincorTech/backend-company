@@ -9,18 +9,31 @@
 
 namespace App\Domains\Company\Services;
 
-use App\Domains\Company\Entities\Company;
-use App\Domains\Company\Entities\CompanyType;
+use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Company\Entities\EconomicalActivityType;
+use App\Domains\Company\Entities\CompanyType;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Domains\Company\Entities\Company;
+use App\Core\Services\AddressService;
 use App;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class CompanyService
 {
+    /**
+     * @var DocumentManager|mixed
+     */
     private $dm;
 
+    /**
+     * @var \Doctrine\ODM\MongoDB\DocumentRepository
+     */
     private $repository;
 
+    /**
+     * @var \Doctrine\ODM\MongoDB\DocumentRepository
+     */
     private $typesRepository;
 
     /**
@@ -34,6 +47,30 @@ class CompanyService
         $this->repository = $this->dm->getRepository(Company::class);
         $this->typesRepository = $this->dm->getRepository(CompanyType::class);
         $this->eActivityRepository = $this->dm->getRepository(EconomicalActivityType::class);
+    }
+
+    public function register(
+        string $country,
+        string $legalName,
+        string $companyType
+    ) {
+        try {
+            $address = $this->address()->build($country);
+        } catch (\InvalidArgumentException $e) {
+            throw new UnprocessableEntityHttpException(trans('registration.countryNotFound', [
+                'country' => $country,
+            ]));
+        }
+        $ct = $this->dm->getRepository(CompanyType::class)->find($companyType);
+        if (!$ct) {
+            throw new UnprocessableEntityHttpException(trans('registration.typeNotFound', [
+                'ct' => $companyType,
+            ]));
+        }
+        $company = new Company($legalName, $address, $ct);
+        $this->dm->persist($company);
+
+        return $this->verification()->beginVerificationProcess($company);
     }
 
     /**
@@ -61,13 +98,28 @@ class CompanyService
         return $this->eActivityRepository->findAll();
     }
 
-    public function getEATree($type)
-    {
-        return $type->getChildren()->getValues();
-    }
 
     public function getEARoot()
     {
         return $this->eActivityRepository->getRootNodes();
     }
+
+    /**
+     * TODO: replace with DI
+     * @return AddressService
+     */
+    private function address()
+    {
+        return new AddressService();
+    }
+
+    /**
+     * @TODO: replace with DI
+     * @return EmployeeVerificationService
+     */
+    private function verification()
+    {
+        return new EmployeeVerificationService();
+    }
+
 }

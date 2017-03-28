@@ -37,7 +37,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByNumericCode
      */
     public function findByNumericCodeTest(UnitTester $I)
     {
@@ -55,7 +54,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByAlpha2Code
      */
     public function findByAlpha2Test(UnitTester $I)
     {
@@ -73,7 +71,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByAlpha3Code
      */
     public function findByAlpha3Test(UnitTester $I)
     {
@@ -91,7 +88,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByISO2Code
      */
     public function findByISO2Test(UnitTester $I)
     {
@@ -109,7 +105,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByName
      */
     public function findByNameTest(UnitTester $I)
     {
@@ -125,7 +120,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByPhoneCode
      */
     public function findByPhoneCodeTest(UnitTester $I)
     {
@@ -137,7 +131,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByCurrency
      */
     public function findByCurrencyTest(UnitTester $I)
     {
@@ -150,7 +143,6 @@ class CountryRepositoryCest
 
     /**
      * @param UnitTester $I
-     * @covers \App\Domains\Dictionary\Repositories\CountryRepository::findByCurrencyCode
      */
     public function findByCurrencyCodeTest(UnitTester $I)
     {

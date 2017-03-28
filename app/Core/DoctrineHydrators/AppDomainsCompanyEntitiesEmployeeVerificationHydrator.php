@@ -122,6 +122,18 @@ class AppDomainsCompanyEntitiesEmployeeVerificationHydrator implements HydratorI
             $hydratedData['company'] = $return;
         }
 
+        /** @Field(type="verificationAction") */
+        if (isset($data['action']) || (! empty($this->class->fieldMappings['action']['nullable']) && array_key_exists('action', $data))) {
+            $value = $data['action'];
+            if ($value !== null) {
+                $return = new $value;
+            } else {
+                $return = null;
+            }
+            $this->class->reflFields['action']->setValue($document, $return);
+            $hydratedData['action'] = $return;
+        }
+
         /** @Field(type="bool") */
         if (isset($data['phoneVerified']) || (! empty($this->class->fieldMappings['phoneVerified']['nullable']) && array_key_exists('phoneVerified', $data))) {
             $value = $data['phoneVerified'];
