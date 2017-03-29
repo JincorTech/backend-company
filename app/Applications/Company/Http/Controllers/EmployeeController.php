@@ -87,7 +87,7 @@ class EmployeeController extends BaseController
     /**
      * @param Register $request
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function register(Register $request)
     {
@@ -101,11 +101,11 @@ class EmployeeController extends BaseController
             $request->getPassword(),
             $employee->getCompany()->getId()
         );
-        return $this->response->item(new Collection([
-            'data' => [
-                'employee' => $employee, 'token' => $token
-            ]
-        ]), EmployeeRegisterSuccess::class);
+        $transformer = new EmployeeRegisterSuccess();
+        $result = $transformer->transform(Collection::make([
+            'employee' => $employee, 'token' => $token
+        ]));
+        return new JsonResponse($result);
     }
 
 
