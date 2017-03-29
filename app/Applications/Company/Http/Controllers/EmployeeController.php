@@ -16,12 +16,13 @@ use App\Applications\Company\Http\Requests\Employee\MatchingCompanies;
 use App\Applications\Company\Http\Requests\Employee\ChangePassword;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
 use App\Applications\Company\Http\Requests\Employee\VerifyByCode;
+use App\Applications\Company\Transformers\Employee\SelfProfile;
 use App\Applications\Company\Transformers\EmployeeTransformer;
 use App\Applications\Company\Http\Requests\Employee\Register;
 use App\Applications\Company\Transformers\CompanyTransformer;
-use App\Domains\Employee\Services\EmployeeRegistrationService;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Applications\Company\Http\Requests\Employee\Login;
+use App\Applications\Company\Http\Requests\Employee\Me;
 use App\Domains\Employee\Services\EmployeeService;
 use App\Core\Services\IdentityService;
 use Illuminate\Support\Collection;
@@ -100,7 +101,11 @@ class EmployeeController extends BaseController
             $request->getPassword(),
             $employee->getCompany()->getId()
         );
-        return $this->response->item(new Collection(['employee' => $employee, 'token' => $token]), EmployeeRegisterSuccess::class);
+        return $this->response->item(new Collection([
+            'data' => [
+                'employee' => $employee, 'token' => $token
+            ]
+        ]), EmployeeRegisterSuccess::class);
     }
 
 
@@ -170,10 +175,13 @@ class EmployeeController extends BaseController
         }
     }
 
-    public function me()
+    /**
+     * @param Me $request
+     * @return Response
+     */
+    public function me(Me $request)
     {
-        $employee = App::make('AppUser');
-
+        return $this->response->item($request->getUser(), SelfProfile::class);
     }
 
 }
