@@ -41,7 +41,6 @@ class AddressService
 //        $geoPoint = new Point($geoCoordinates);
         /** @var Country|null $country */
         $country = $this->countryRepository->find($country);
-        dd($country);
         if (!$country) {
             throw new InvalidArgumentException('Country must represent existing country');
         }
