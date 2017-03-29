@@ -61,6 +61,7 @@ $api->version('v1', function ($api) {
             $api->post('/verifyEmail', ['as' => 'employee.email.verify', 'uses' => $namespace.'EmployeeController@verifyEmail']);
             $api->get('/verifyEmail', ['as' => 'employee.email.sendPin', 'uses' => $namespace.'EmployeeController@sendEmailCode']);
 
+            $api->get('/me', ['as' => 'employee.me', 'uses' => $namespace . 'EmployeeController@me']);
             $api->put('/changePassword', ['as' => 'employee.email.password.change', 'uses' => $namespace.'EmployeeController@changePassword']);
 
 //            $api->post('/verifyPhone', ['as' => 'employee.phone.verify', 'uses' => $namespace.'EmployeeController@verifyPhone']);
