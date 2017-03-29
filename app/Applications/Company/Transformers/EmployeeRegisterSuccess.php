@@ -23,19 +23,23 @@ class EmployeeRegisterSuccess extends TransformerAbstract
         /** @var Employee $employee */
         $employee = $data['employee'];
         return [
-            'id' => $employee->getId(),
-            'profile' => [
-                'name' => $employee->getProfile()->getName(),
+            'data' => [
+                'employee' => [
+                    'id' => $employee->getId(),
+                    'profile' => [
+                        'name' => $employee->getProfile()->getName(),
+                    ],
+                    'contacts' => [
+                        'email' => $employee->getContacts()->getEmail(),
+                        'phone' => $employee->getContacts()->getPhone(),
+                    ],
+                    'company' => [
+                        'id' => $employee->getCompany()->getId(),
+                        'name' => $employee->getCompany()->getProfile()->getName(),
+                    ],
+                ],
+                'token' => $data['token']
             ],
-            'contacts' => [
-                'email' => $employee->getContacts()->getEmail(),
-                'phone' => $employee->getContacts()->getPhone(),
-            ],
-            'company' => [
-                'id' => $employee->getCompany()->getId(),
-                'name' => $employee->getCompany()->getProfile()->getName(),
-            ],
-            'token' => $data['token']
         ];
     }
 
