@@ -20,9 +20,6 @@ class SendVerificationEmail
 
     public function handle(VerificationEmailRequested $event)
     {
-        if (env('APP_ENV') === 'testing') {
-            return true;
-        }
         Mail::to($event->getEmail())->queue(new VerifyEmail($event->getCode()));
     }
 

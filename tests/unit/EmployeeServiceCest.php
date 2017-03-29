@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 class EmployeeServiceCest
 {
     private $employeePassword = 'Test2Test2Test';
-    private $email = 'test@test.com';
+    private $email = 'test2@test.com';
 
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentManager
@@ -128,12 +128,13 @@ class EmployeeServiceCest
     public function findByVerificationId(UnitTester $I)
     {
         $I->wantTo('Find existing employee by verification id');
-        $verification = $this->getVerifiedProcess($this->email);
+        $email = $this->faker->email;
+        $verification = $this->getVerifiedProcess($email);
         $this->dm->persist($verification);
         $this->dm->flush($verification);
         $employee = $this->registerEmployee($verification);
         $result = $this->employeeService->findByVerificationId($verification->getId());
-        $I->assertEquals($employee, $result->first());
+        $I->assertEquals($employee->getId(), $result->first()->getId());
         $I->wantToTest('Passing wrong id throws 404');
         $I->expectException(EmployeeVerificationNotFound::class , function () use ($verification) {
             $this->employeeService->findByVerificationId('z' . $verification->getId());
