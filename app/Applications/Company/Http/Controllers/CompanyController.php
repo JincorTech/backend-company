@@ -72,11 +72,6 @@ class CompanyController extends BaseController
         return $this->response->item($company, new CompanyTransformer());
     }
 
-    public function invite()
-    {
-
-    }
-
     /**
      * @param InviteEmployees $request
      *

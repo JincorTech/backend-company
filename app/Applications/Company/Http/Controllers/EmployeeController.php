@@ -170,4 +170,10 @@ class EmployeeController extends BaseController
         }
     }
 
+    public function me()
+    {
+        $employee = App::make('AppUser');
+
+    }
+
 }
