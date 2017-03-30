@@ -17,10 +17,12 @@ use App\Applications\Company\Http\Requests\Employee\ChangePassword;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
 use App\Applications\Company\Http\Requests\Employee\VerifyByCode;
 use App\Applications\Company\Transformers\Employee\SelfProfile;
+use App\Applications\Company\Http\Requests\Employee\Colleagues;
 use App\Applications\Company\Transformers\EmployeeTransformer;
-use App\Applications\Company\Http\Requests\Employee\Register;
-use App\Applications\Company\Transformers\CompanyTransformer;
 use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Applications\Company\Http\Requests\Employee\Register;
+use App\Applications\Company\Transformers\Company\CompanyTransformer;
+use App\Applications\Company\Transformers\Employee\Colleague;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
 use App\Domains\Employee\Services\EmployeeService;
@@ -53,6 +55,7 @@ class EmployeeController extends BaseController
      *
      * @param EmployeeService $employeeService
      * @param IdentityService $identityService
+     * @param EmployeeVerificationService $verificationService
      */
     public function __construct(EmployeeService $employeeService, IdentityService $identityService, EmployeeVerificationService $verificationService)
     {
@@ -69,7 +72,7 @@ class EmployeeController extends BaseController
     public function sendEmailCode(SendVerificationCode $request)
     {
         $verification = $this->verificationService->sendEmailVerification($request->getVerificationId(), $request->getEmail());
-        return $this->response->item($verification, new EmployeeVerificationTransformer());
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
     /**
@@ -80,7 +83,7 @@ class EmployeeController extends BaseController
     public function verifyEmail(VerifyByCode $request)
     {
         $verification = $this->verificationService->verifyEmail($request->getVerificationId(), $request->getVerificationCode());
-        return $this->response->item($verification, new EmployeeVerificationTransformer());
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
 
@@ -101,18 +104,23 @@ class EmployeeController extends BaseController
             $request->getPassword(),
             $employee->getCompany()->getId()
         );
-        $transformer = new EmployeeRegisterSuccess();
-        $result = $transformer->transform(Collection::make([
-            'employee' => $employee, 'token' => $token
-        ]));
-        return new JsonResponse($result);
+        return new JsonResponse(
+            (new EmployeeRegisterSuccess())
+                ->transform(Collection::make([
+                    'employee' => $employee, 'token' => $token,
+            ]))
+        );
     }
 
 
+    /**
+     * @param SendRestorePasswordEmail $request
+     * @return Response
+     */
     public function sendRestorePasswordEmail(SendRestorePasswordEmail $request)
     {
         $verification = $this->verificationService->sendEmailRestorePassword($request->getEmail())->getVerification();
-        return $this->response->item($verification, new EmployeeVerificationTransformer());
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
 
@@ -139,7 +147,7 @@ class EmployeeController extends BaseController
             $request->getPassword(),
             $oldPassword
         );
-        return $this->response->item($employee, new EmployeeTransformer());
+        return $this->response->item($employee, EmployeeTransformer::class);
     }
 
     /**
@@ -153,7 +161,7 @@ class EmployeeController extends BaseController
             'password' => $request->getPassword(),
             'verificationId' => $request->getVerificationId(),
         ]);
-        return $this->response->collection($companies, new CompanyTransformer());
+        return $this->response->collection($companies, CompanyTransformer::class);
     }
 
 
@@ -182,6 +190,16 @@ class EmployeeController extends BaseController
     public function me(Me $request)
     {
         return $this->response->item($request->getUser(), SelfProfile::class);
+    }
+
+    /**
+     * @param Colleagues $request
+     * @return Response
+     */
+    public function colleagues(Colleagues $request)
+    {
+        $response = Collection::make($this->employeeService->getColleagues($request->getUser())->toArray());
+        return $this->response->collection($response, Colleague::class);
     }
 
 }

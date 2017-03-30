@@ -1,0 +1,35 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: hlogeon
+ * Date: 30/03/2017
+ * Time: 13:11
+ */
+
+namespace App\Applications\Company\Http\Requests;
+
+
+use App\Domains\Employee\Entities\Employee;
+use App;
+
+trait AuthenticatedUser
+{
+
+    public function authorize()
+    {
+        if ($this->getUser() instanceof Employee) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * @return Employee
+     */
+    public function getUser()
+    {
+        return App::make('AppUser');
+    }
+
+}

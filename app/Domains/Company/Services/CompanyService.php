@@ -9,15 +9,15 @@
 
 namespace App\Domains\Company\Services;
 
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Domains\Company\Entities\CompanyType;
+use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Company\Entities\Company;
 use App\Core\Services\AddressService;
 use App;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class CompanyService
 {
@@ -49,6 +49,14 @@ class CompanyService
         $this->eActivityRepository = $this->dm->getRepository(EconomicalActivityType::class);
     }
 
+    /**
+     * Register new company
+     *
+     * @param string $country
+     * @param string $legalName
+     * @param string $companyType
+     * @return App\Domains\Employee\Entities\EmployeeVerification
+     */
     public function register(
         string $country,
         string $legalName,
@@ -72,6 +80,7 @@ class CompanyService
 
         return $this->verification()->beginVerificationProcess($company);
     }
+
 
     /**
      * @param string $id
@@ -99,6 +108,9 @@ class CompanyService
     }
 
 
+    /**
+     * @return array|mixed
+     */
     public function getEARoot()
     {
         return $this->eActivityRepository->getRootNodes();

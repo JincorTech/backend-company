@@ -9,6 +9,8 @@
 namespace App\Applications\Company\Transformers\Employee;
 
 
+use App\Domains\Employee\Entities\Employee;
+use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -17,12 +19,29 @@ use League\Fractal\TransformerAbstract;
  *
  * @TODO: implement transformation
  */
-class Colleague extends TransformerAbstract
+class Colleague extends SelfProfile
 {
 
-    public function transform()
+    public function transform(Employee $employee)
+    {
+        return array_merge(
+            parent::transform($employee),
+            ['meta' => $this->getMeta($employee)]
+        );
+    }
+
+    /**
+     * @param Employee $employee
+     * @return array
+     */
+    private function getMeta(Employee $employee)
     {
         //TODO
+        return [
+            'status' => 'active',
+            'invited_at' => Carbon::now()->toIso8601String(),
+            'registered_at' => Carbon::now()->toIso8601String(),
+        ];
     }
 
 }

@@ -7,7 +7,7 @@
  * Time: 3:35 AM
  */
 
-namespace App\Applications\Company\Transformers;
+namespace App\Applications\Company\Transformers\Company;
 
 use App\Domains\Company\Entities\Company;
 use League\Fractal\TransformerAbstract;
@@ -20,7 +20,7 @@ class CompanyTransformer extends TransformerAbstract
         return [
             'id' => $company->getId(),
             'legalName' => $company->getProfile()->getName(),
-            'country' => $company->getProfile()->getAddress()->getFormattedAddress(),
+            'country' => $company->getProfile()->getAddress()->getCountryId(),
             'formattedAddress' => $company->getProfile()->getAddress()->getFormattedAddress(),
             'type' => $company->getProfile()->getType()->getName(App::getLocale()),
         ];
