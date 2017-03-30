@@ -12,20 +12,22 @@
 namespace App\Applications\Company\Http\Controllers;
 
 use App\Applications\Company\Http\Requests\Company\InviteEmployees;
-use App\Applications\Company\Http\Requests\PublicDictionaryRequest;
-use App\Applications\Company\Http\Requests\Company\RegisterCompany;
 use App\Applications\Company\Http\Requests\PublicEconomicalActivityTypesRequest;
 use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Transformers\CompanyTypeTransformer;
 use App\Applications\Company\Transformers\EconomicalActivityTypeTransformer;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
+use App\Applications\Company\Http\Requests\PublicDictionaryRequest;
+use App\Applications\Company\Http\Requests\Company\RegisterCompany;
 use App\Applications\Company\Transformers\InviteToCompanyResult;
-use App\Domains\Company\Services\CompanyService;
+use App\Applications\Company\Http\Requests\Company\MyCompany;
+use App\Applications\Company\Transformers\Company\MyCompany as MyCompanyTransformer;
 use App\Domains\Employee\Services\EmployeeService;
-use Dingo\Api\Http\Request;
-use Illuminate\Http\JsonResponse;
+use App\Domains\Company\Services\CompanyService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Http\JsonResponse;
+use Dingo\Api\Http\Request;
 use App;
 
 
@@ -58,10 +60,17 @@ class CompanyController extends BaseController
 
     }
 
+    public function my(MyCompany $request)
+    {
+        return $this->response->item($request->getUser()->getCompany(), MyCompanyTransformer::class);
+    }
+
     /**
+     * @param App\Applications\Company\Http\Requests\Company\MyCompany $request
+     * @param string $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function info(Request $request, $id)
+    public function info(MyCompany $request, $id)
     {
         $company = $this->companyService->getCompany($id);
         if (!$company) {
@@ -101,7 +110,7 @@ class CompanyController extends BaseController
         $transformer = new EmployeeVerificationTransformer();
 
         return $this->response->created(
-            '/api/v1/company/'.$verification->getCompany()->getId(),
+            '/api/v1/company/' . $verification->getCompany()->getId(),
             ['data' => $transformer->transform($verification)]
         );
     }
@@ -130,3 +139,4 @@ class CompanyController extends BaseController
         return $this->response->paginator($paginator, $transformer);
     }
 }
+
