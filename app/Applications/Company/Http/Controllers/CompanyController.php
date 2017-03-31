@@ -15,7 +15,7 @@ use App\Applications\Company\Http\Requests\Company\InviteEmployees;
 use App\Applications\Company\Http\Requests\PublicDictionaryRequest;
 use App\Applications\Company\Http\Requests\Company\RegisterCompany;
 use App\Applications\Company\Http\Requests\PublicEconomicalActivityTypesRequest;
-use App\Applications\Company\Transformers\CompanyTransformer;
+use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Transformers\CompanyTypeTransformer;
 use App\Applications\Company\Transformers\EconomicalActivityTypeTransformer;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;

@@ -101,6 +101,21 @@ class EmployeeService
     }
 
     /**
+     * Get colleagues of an employee specified
+     *
+     * @param Employee $employee
+     * @return \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection
+     */
+    public function getColleagues(Employee $employee)
+    {
+        return $employee->getCompany()
+            ->getEmployees()
+            ->filter(function (Employee $empl) use ($employee) {
+                return $empl->getId() !== $employee->getId();
+            });
+    }
+
+    /**
      * @param string $email
      * @return Collection
      */

@@ -29,24 +29,9 @@ class SelfProfile extends TransformerAbstract
             'id' => $employee->getId(),
             'profile' => $this->getProfile($employee),
             'contacts' => $this->getContacts($employee),
-            'meta' => $this->getMeta($employee),
         ];
     }
 
-
-    /**
-     * @param Employee $employee
-     * @return array
-     */
-    private function getMeta(Employee $employee)
-    {
-        //TODO
-        return [
-            'status' => 'active',
-            'invited_at' => Carbon::now(),
-            'registered_at' => Carbon::now(),
-        ];
-    }
 
     /**
      * @param Employee $employee
