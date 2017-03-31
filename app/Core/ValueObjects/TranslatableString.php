@@ -44,6 +44,15 @@ class TranslatableString implements TranslatableContentInterface
         $this->values = $values;
     }
 
+    /**
+     * Values of translatable string
+     * @return array
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
+
 
     /**
      * Get value for the specified locale
