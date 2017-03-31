@@ -8,28 +8,19 @@
 
 namespace App\Applications\Company\Http\Requests\Company;
 
-use App\Core\Http\Requests\GetAPIRequest;
+use App\Applications\Company\Http\Requests\AuthenticatedUser;
 use App\Domains\Employee\Entities\Employee;
+use App\Core\Http\Requests\GetAPIRequest;
 use App;
 
 class MyCompany extends GetAPIRequest
 {
 
-    public function authorize()
-    {
-        return $this->getUser() instanceof Employee;
-    }
+   use AuthenticatedUser;
 
     public function rules()
     {
         return [];
     }
 
-    /**
-     * @return Employee|null
-     */
-    public function getUser()
-    {
-        return App::make('AppUser');
-    }
 }
