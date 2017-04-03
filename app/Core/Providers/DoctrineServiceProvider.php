@@ -79,7 +79,6 @@ class DoctrineServiceProvider extends ServiceProvider
         $this->app->singleton(DocumentManager::class, function ($app) use ($connection, $config, $evm) {
             return DocumentManager::create($connection, $config, $evm);
         });
-        Type::addType('verificationAction', VerificationActionType::class);
 //        Type::overrideType('collection', 'App\Core\Doctrine\Types\Collection');
     }
 

@@ -121,6 +121,7 @@ return [
     */
 
     'log' => env('APP_LOG', 'single'),
+    'search_distance' => env('SEARCH_DISTANCE', 10),
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
@@ -236,8 +237,9 @@ return [
 
 
     'entityPaths' => [
-        base_path('app/Core/Entities'),
-        base_path('app/Domains/Dictionary/Entities'),
+        base_path('app/Core/Dictionary/Entities'),
+        base_path('app/Domains/Company/Entities'),
+        base_path('app/Domains/Employee/Entities'),
     ],
 
 ];

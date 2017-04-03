@@ -14,8 +14,8 @@ namespace App\Applications\Company\Http\Controllers;
 use App\Applications\Company\Http\Requests\Company\InviteEmployees;
 use App\Applications\Company\Http\Requests\PublicEconomicalActivityTypesRequest;
 use App\Applications\Company\Transformers\Company\CompanyTransformer;
-use App\Applications\Company\Transformers\CompanyTypeTransformer;
-use App\Applications\Company\Transformers\EconomicalActivityTypeTransformer;
+use App\Applications\Company\Transformers\Company\CompanyType;
+use App\Applications\Company\Transformers\Company\EconomicalActivityTypeTransformer;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
 use App\Applications\Company\Http\Requests\PublicDictionaryRequest;
 use App\Applications\Company\Http\Requests\Company\RegisterCompany;
@@ -123,7 +123,7 @@ class CompanyController extends BaseController
     {
         $companyTypes = new Collection($this->companyService->getCompanyTypes());
 
-        return $this->response->collection($companyTypes, new CompanyTypeTransformer($request->getLocale()));
+        return $this->response->collection($companyTypes, new CompanyType($request->getLocale()));
     }
 
     public function economicalActivityTypes(PublicEconomicalActivityTypesRequest $typesRequest)

@@ -21,9 +21,21 @@ class MyCompany extends TransformerAbstract
      */
     private $link;
 
+    /**
+     * @var CompanyType
+     */
+    private $ct;
+
+    /**
+     * @var EconomicalActivityTypeTransformer
+     */
+    private $eaType;
+
     public function __construct()
     {
         $this->link = new ExternalLink();
+        $this->ct = new CompanyType();
+        $this->eaType = new EconomicalActivityTypeTransformer();
     }
 
     /**
@@ -36,8 +48,8 @@ class MyCompany extends TransformerAbstract
             'id' => $company->getId(),
             'legalName' => $company->getProfile()->getName(),
             'profile' => $this->transformProfile($company->getProfile()),
-            'economicalActivityType' => null,
-            'companyType' => null,
+            'economicalActivityTypes' => $this->transformEconomicalActivityTypes($company->getProfile()),
+            'companyType' => $this->ct->transform($company->getProfile()->getCompanyType()),
 
         ];
     }
@@ -55,8 +67,8 @@ class MyCompany extends TransformerAbstract
             'links' => $this->transformLinks($profile),
             'email' => $profile->getEmail(),
             'phone' => $profile->getPhone(),
-            'country' => $this->transformCountry($profile->getAddress()), //TODO: country transformer
-            'city' => $this->transformCity($profile->getAddress()), //TODO: region
+            'country' => $this->transformCountry($profile->getAddress()),
+            'city' => $this->transformCity($profile->getAddress()),
         ];
     }
 
@@ -79,18 +91,13 @@ class MyCompany extends TransformerAbstract
      * @param CompanyProfile $profile
      * @return array
      */
-    private function transformCompanyTypes(CompanyProfile $profile) : array
-    {
-        return [];
-    }
-
-    /**
-     * @param CompanyProfile $profile
-     * @return array
-     */
     private function transformEconomicalActivityTypes(CompanyProfile $profile) : array
     {
-        return [];
+        $result = [];
+        foreach ($profile->getEconomicalActivities() as $activity) {
+            $result[] = $this->eaType->transform($activity, false);
+        }
+        return $result;
     }
 
     /**
@@ -99,7 +106,10 @@ class MyCompany extends TransformerAbstract
      */
     private function transformCountry(Address $address) : array
     {
-        return [];
+        return [
+            'id' => $address->getCountry()->getId(),
+            'name' => $address->getCountry()->getName(),
+        ];
     }
 
     /**
@@ -108,7 +118,7 @@ class MyCompany extends TransformerAbstract
      */
     private function transformCity(Address $address) : array
     {
-        return [];
+        return []; //TODO
     }
 
 }
