@@ -12,6 +12,7 @@ namespace App\Domains\Company\Entities;
 use App\Core\ValueObjects\TranslatableString;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\PersistentCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -166,6 +167,9 @@ class EconomicalActivityType
      */
     public function getChildren() : ArrayCollection
     {
+        if ($this->children instanceof PersistentCollection) {
+            return new ArrayCollection($this->children->toArray());
+        }
         return $this->children;
     }
 }
