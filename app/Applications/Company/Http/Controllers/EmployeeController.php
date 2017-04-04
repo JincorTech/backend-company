@@ -13,7 +13,9 @@ use App\Applications\Company\Http\Requests\Employee\SendRestorePasswordEmail;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
 use App\Applications\Company\Http\Requests\Employee\SendVerificationCode;
 use App\Applications\Company\Http\Requests\Employee\MatchingCompanies;
+use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Http\Requests\Employee\ChangePassword;
+use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
 use App\Applications\Company\Http\Requests\Employee\VerifyByCode;
 use App\Applications\Company\Transformers\Employee\SelfProfile;
@@ -21,7 +23,6 @@ use App\Applications\Company\Http\Requests\Employee\Colleagues;
 use App\Applications\Company\Transformers\EmployeeTransformer;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Applications\Company\Http\Requests\Employee\Register;
-use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Transformers\Employee\Colleague;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
@@ -167,15 +168,23 @@ class EmployeeController extends BaseController
 
     /**
      * @param Login $request
-     * @return JsonResponse
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function login(Login $request)
     {
-        $result = $this->identityService->login(
-            $request->getEmail(),
-            $request->getPassword(),
-            $request->getCompanyId()
-        );
+        try {
+            $result = $this->identityService->login(
+                $request->getEmail(),
+                $request->getPassword(),
+                $request->getCompanyId()
+            );
+        } catch (MultipleCompanyLoginException $exception) {
+            $companies = $this->employeeService->getMatchingCompanies([
+                'email' => $request->getEmail(),
+                'password' => $request->getPassword()
+            ]);
+            return $this->response->collection($companies, CompanyTransformer::class);
+        }
         if ($result !== false) {
             return new JsonResponse([
                 'data' => $result,

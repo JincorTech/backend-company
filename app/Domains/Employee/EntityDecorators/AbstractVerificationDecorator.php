@@ -13,6 +13,11 @@ abstract class AbstractVerificationDecorator implements EmployeeVerificationDeco
 {
 
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
     public function __call($name, $arguments)
     {
         if (method_exists($this, $name)) {

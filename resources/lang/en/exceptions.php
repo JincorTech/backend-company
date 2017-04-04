@@ -21,6 +21,17 @@ return [
 
     'change-password' => [
         'mismatch' => 'Old password don\'t match'
+    ],
+
+    'login' => [
+        'multiple-companies' => 'User credentials matches to many companies. Please specify company id in order to login.'
+    ],
+    'employee' => [
+        'not_found' => 'Employee :email not found',
+        'password_mismatch' => 'Login and password do not match'
+    ],
+    'company' => [
+        'not_found' => 'Company not found on the server',
     ]
 
 ];
