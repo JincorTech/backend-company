@@ -15,6 +15,7 @@ use App\Domains\Company\Entities\CompanyType;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\PersistentCollection;
 
 /**
  * Class CompanyProfile.
@@ -122,6 +123,9 @@ class CompanyProfile
 
     public function getEconomicalActivities() : ArrayCollection
     {
+        if ($this->economicalActivities instanceof PersistentCollection) {
+            $this->economicalActivities = new ArrayCollection($this->economicalActivities->toArray());
+        }
         return $this->economicalActivities;
     }
 
@@ -166,6 +170,9 @@ class CompanyProfile
      */
     public function getLinks() : ArrayCollection
     {
+        if ($this->links instanceof PersistentCollection) {
+            $this->links = new ArrayCollection($this->links->toArray());
+        }
         return $this->links;
     }
 
@@ -195,13 +202,27 @@ class CompanyProfile
     }
 
     /**
-     * @param null $locale
-     * @return mixed|string
+     * @return TranslatableString|null
      */
-    public function getBrandName($locale = null)
+    public function getBrandName()
     {
-        return $this->brandName->getValue($locale);
+        return $this->brandName;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
 
 }

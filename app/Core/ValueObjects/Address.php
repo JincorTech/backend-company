@@ -62,8 +62,11 @@ class Address
         ];
     }
 
-    public function getCountryId() : string
+    /**
+     * @return Country
+     */
+    public function getCountry() : Country
     {
-        return $this->country->getId();
+        return $this->country;
     }
 }

@@ -29,7 +29,12 @@ trait AuthenticatedUser
      */
     public function getUser()
     {
-        return App::make('AppUser');
+        try {
+            return App::make('AppUser');
+
+        } catch (\Exception $exception) {
+            return null;
+        }
     }
 
 }

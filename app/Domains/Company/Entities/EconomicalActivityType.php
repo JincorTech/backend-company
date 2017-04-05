@@ -168,7 +168,7 @@ class EconomicalActivityType
     public function getChildren() : ArrayCollection
     {
         if ($this->children instanceof PersistentCollection) {
-            return new ArrayCollection($this->children->toArray());
+            $this->children = new ArrayCollection($this->children->toArray());
         }
         return $this->children;
     }

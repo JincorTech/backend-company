@@ -63,6 +63,14 @@ class TranslatableString implements TranslatableContentInterface
     }
 
     /**
+     * @return array
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    /**
      * @param string $key
      * @param string $value
      */

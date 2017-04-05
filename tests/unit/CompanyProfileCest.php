@@ -138,8 +138,8 @@ class CompanyProfileCest
             'en' => $en,
             'ru' => $ru,
         ]);
-        $I->assertEquals($en, $profile->getBrandName('en'));
-        $I->assertEquals($ru, $profile->getBrandName('ru'));
+        $I->assertEquals($en, $profile->getBrandName()->getValue('en'));
+        $I->assertEquals($ru, $profile->getBrandName()->getValue('ru'));
     }
 
 
