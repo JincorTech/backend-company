@@ -123,6 +123,9 @@ class CompanyProfile
 
     public function getEconomicalActivities() : ArrayCollection
     {
+        if ($this->economicalActivities instanceof PersistentCollection) {
+            $this->economicalActivities = new ArrayCollection($this->economicalActivities->toArray());
+        }
         return $this->economicalActivities;
     }
 

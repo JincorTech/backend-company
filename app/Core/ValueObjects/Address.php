@@ -67,6 +67,6 @@ class Address
      */
     public function getCountry() : Country
     {
-        return $this->getCountry();
+        return $this->country;
     }
 }

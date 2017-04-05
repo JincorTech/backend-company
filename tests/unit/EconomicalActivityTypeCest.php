@@ -24,4 +24,13 @@ class EconomicalActivityTypeCest
         $I->assertEquals($parent, $type->getParent());
     }
 
+    public function testGetChildren(UnitTester $I)
+    {
+        $type = EconomicalActivityTypeFactory::make();
+        $parent = EconomicalActivityTypeFactory::make();
+        $type->setParent($parent);
+        $parent->children->add($type);
+        $I->assertInstanceOf(\Doctrine\Common\Collections\ArrayCollection::class, $parent->getChildren());
+    }
+
 }
