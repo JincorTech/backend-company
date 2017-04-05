@@ -11,21 +11,23 @@
 
 namespace App\Applications\Company\Http\Controllers;
 
+use App\Applications\Company\Transformers\Dictionary\EconomicalActivityTypeTransformer;
+use App\Applications\Company\Http\Requests\PublicEconomicalActivityTypesRequest;
+use App\Applications\Company\Transformers\Dictionary\CompanyTypeTransformer;
+use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
+use App\Applications\Company\Transformers\Company\CompanyTransformer;
+use App\Applications\Company\Http\Requests\Company\MyCompanyRequest;
 use App\Applications\Company\Http\Requests\Company\InviteEmployees;
 use App\Applications\Company\Http\Requests\PublicDictionaryRequest;
 use App\Applications\Company\Http\Requests\Company\RegisterCompany;
-use App\Applications\Company\Http\Requests\PublicEconomicalActivityTypesRequest;
-use App\Applications\Company\Transformers\Company\CompanyTransformer;
-use App\Applications\Company\Transformers\CompanyTypeTransformer;
-use App\Applications\Company\Transformers\EconomicalActivityTypeTransformer;
-use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
 use App\Applications\Company\Transformers\InviteToCompanyResult;
+use App\Applications\Company\Transformers\Company\MyCompany;
 use App\Domains\Company\Services\CompanyService;
 use App\Domains\Employee\Services\EmployeeService;
-use Dingo\Api\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Http\JsonResponse;
+use Dingo\Api\Http\Request;
 use App;
 
 
@@ -73,6 +75,15 @@ class CompanyController extends BaseController
     }
 
     /**
+     * @param MyCompanyRequest $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function my(MyCompanyRequest $request)
+    {
+        return $this->response->item($request->getUser()->getCompany(), MyCompany::class);
+    }
+
+    /**
      * @param InviteEmployees $request
      *
      * Invite many employees to the current company
@@ -113,10 +124,13 @@ class CompanyController extends BaseController
     public function companyTypes(PublicDictionaryRequest $request)
     {
         $companyTypes = new Collection($this->companyService->getCompanyTypes());
-
-        return $this->response->collection($companyTypes, new CompanyTypeTransformer($request->getLocale()));
+        return $this->response->collection($companyTypes, CompanyTypeTransformer::class);
     }
 
+    /**
+     * @param PublicEconomicalActivityTypesRequest $typesRequest
+     * @return \Dingo\Api\Http\Response
+     */
     public function economicalActivityTypes(PublicEconomicalActivityTypesRequest $typesRequest)
     {
         $types = $this->companyService->getEARoot();
@@ -124,9 +138,6 @@ class CompanyController extends BaseController
         foreach ($types as $type) {
             $responseTypes->push($type);
         }
-        $transformer = new EconomicalActivityTypeTransformer($typesRequest->getLocale());
-        $paginator = new LengthAwarePaginator($responseTypes, $responseTypes->count(), config('view.perPage'));
-
-        return $this->response->paginator($paginator, $transformer);
+        return $this->response->collection($responseTypes, EconomicalActivityTypeTransformer::class);
     }
 }
