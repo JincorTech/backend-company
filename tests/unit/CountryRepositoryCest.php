@@ -21,7 +21,7 @@ class CountryRepositoryCest
 
     public function _before(UnitTester $I)
     {
-        $this->dm = $I->getDocumentManager();
+        $this->dm = App::make(\Doctrine\ODM\MongoDB\DocumentManager::class);
         $this->repository = $this->dm->getRepository(\App\Core\Dictionary\Entities\Country::class);
         $this->currencyRepository = $this->dm->getRepository(\App\Core\Dictionary\Entities\Currency::class);
     }
@@ -135,9 +135,7 @@ class CountryRepositoryCest
     public function findByCurrencyTest(UnitTester $I)
     {
         /** @var \App\Core\Dictionary\Entities\Currency $correctCurrency */
-        $correctCurrency = $this->currencyRepository->findOneBy([
-            'names.en' => 'Russian ruble',
-        ]);
+        $correctCurrency = $this->currencyRepository->findOneBy([]);
         $I->assertNotEmpty($this->repository->findByCurrency($correctCurrency));
     }
 
