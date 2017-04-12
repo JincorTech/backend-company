@@ -30,9 +30,7 @@ class Currency
     /**
      * @var TranslatableString
      *
-     * @ODM\EmbedOne(
-     *     targetDocument="App\Core\ValueObjects\TranslatableString"
-     * )
+     * @ODM\Field(type="translatableString")
      */
     protected $names;
 

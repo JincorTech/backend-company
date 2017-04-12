@@ -81,7 +81,7 @@ class CountryRepository extends DocumentRepository
      * @param string $locale
      * @return Country|null
      */
-    public function findByName(string $name, string $locale = 'en')
+    public function findByName(string $name, $locale = 'en')
     {
         $nameKey = 'names.'.$locale;
 
