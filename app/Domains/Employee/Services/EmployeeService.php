@@ -349,6 +349,7 @@ class EmployeeService
                     break;
                 case 'position':
                     $employee->getProfile()->changePosition($value);
+                    break;
             }
         }
         $this->dm->persist($employee);
@@ -367,6 +368,7 @@ class EmployeeService
     {
         $filepath = $employee->getCompany()->getId() . '/employees/avatars/' . uniqid('ava_') . '.png';
         $employee->getProfile()->setAvatar(App::make(ImageService::class)->upload($filepath, $data));
+        $this->dm->persist($employee);
         return $employee->getProfile()->getAvatar();
     }
 

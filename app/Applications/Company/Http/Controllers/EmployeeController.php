@@ -177,7 +177,7 @@ class EmployeeController extends BaseController
     public function login(Login $request)
     {
         try {
-            $result = $this->identityService->login(
+            $token = $this->identityService->login(
                 $request->getEmail(),
                 $request->getPassword(),
                 $request->getCompanyId()
@@ -189,10 +189,13 @@ class EmployeeController extends BaseController
             ]);
             return $this->response->collection($companies, CompanyTransformer::class);
         }
-        if ($result !== false) {
-            return new JsonResponse([
-                'data' => $result,
-            ]);
+        if ($token !== false) {
+            $employee = $this->employeeService->findByCompanyIdAndEmail($request->getCompanyId(), $request->getEmail());
+            $data = (object) [
+                'token' => $token,
+                'employee' => $employee,
+            ];
+            return $this->response->item($data, App\Applications\Company\Transformers\Employee\LoginResponse::class);
         }
     }
 
@@ -212,7 +215,7 @@ class EmployeeController extends BaseController
     public function update(UpdateRequest $request)
     {
         return $this->response->item(
-            $this->employeeService->updateEmployee($request->getUser(),$request->all()->toArray()),
+            $this->employeeService->updateEmployee($request->getUser(),$request->all()),
             SelfProfile::class
         );
     }
@@ -225,13 +228,5 @@ class EmployeeController extends BaseController
     {
         $response = Collection::make($this->employeeService->getColleagues($request->getUser())->toArray());
         return $this->response->collection($response, Colleague::class);
-    }
-
-
-    public function testFileUpload(Request $request)
-    {
-        $avatar = $request->get('avatar');
-        $filePath = 'avatars/' . uniqid('empl_') . '.' . 'png';
-        return new JsonResponse(['result' => App::make(App\Core\Services\ImageService::class)->upload($filePath, $avatar)]);
     }
 }

@@ -49,9 +49,13 @@ class UpdateRequest extends BaseAPIRequest
 
     public function all()
     {
-        return Collection::make($this->get('profile'))->filter(function($item) {
-            return !empty($item);
-        })->values();
+        $final = [];
+        foreach ($this->get('profile') as $field => $value) {
+            if (!empty($value)) {
+                $final[$field] = $value;
+            }
+        }
+        return $final;
     }
 
 }
