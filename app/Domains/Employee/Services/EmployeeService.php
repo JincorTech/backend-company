@@ -336,7 +336,24 @@ class EmployeeService
 
     public function updateEmployee(Employee $employee, array $data)
     {
-        
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case 'avatar':
+                    $this->uploadAvatar($employee, $value);
+                    break;
+                case 'firstName':
+                    $employee->getProfile()->changeFirstName($value);
+                    break;
+                case 'lastName':
+                    $employee->getProfile()->changeLastName($value);
+                    break;
+                case 'position':
+                    $employee->getProfile()->changePosition($value);
+            }
+        }
+        $this->dm->persist($employee);
+        $this->dm->flush();
+        return $employee;
     }
 
     /**

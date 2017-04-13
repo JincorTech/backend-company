@@ -26,6 +26,7 @@ use App\Applications\Company\Http\Requests\Employee\Register;
 use App\Applications\Company\Transformers\Employee\Colleague;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
+use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
 use App\Domains\Employee\Services\EmployeeService;
 use App\Core\Services\IdentityService;
 use Illuminate\Support\Collection;
@@ -202,6 +203,18 @@ class EmployeeController extends BaseController
     public function me(Me $request)
     {
         return $this->response->item($request->getUser(), SelfProfile::class);
+    }
+
+    /**
+     * @param UpdateRequest $request
+     * @return Response
+     */
+    public function update(UpdateRequest $request)
+    {
+        return $this->response->item(
+            $this->employeeService->updateEmployee($request->getUser(),$request->all()->toArray()),
+            SelfProfile::class
+        );
     }
 
     /**
