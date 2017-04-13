@@ -25,6 +25,15 @@ class EmployeeSeeder extends DatabaseSeeder
         $company = $this->getDm()->getRepository(Company::class)->findOneBy([
             'profile.legalName' => env('TEST_COMPANY_NAME'),
         ]);
+        $company2 = $this->getDm()->getRepository(Company::class)->findOneBy([
+            'profile.legalName' => 'Jincor Limited',
+        ]);
+        $this->registerEmployee($company);
+        $this->registerEmployee($company2);
+    }
+
+    private function registerEmployee(Company $company)
+    {
         $verification = $this->getEmployeeVerificationService()->beginVerificationProcess($company);
         $verification->associateEmail('test@test.com');
         $verification->verifyEmail($verification->getEmailCode());

@@ -173,7 +173,7 @@ class EmployeeController extends BaseController
     public function login(Login $request)
     {
         try {
-            $result = $this->identityService->login(
+            $token = $this->identityService->login(
                 $request->getEmail(),
                 $request->getPassword(),
                 $request->getCompanyId()
@@ -185,10 +185,13 @@ class EmployeeController extends BaseController
             ]);
             return $this->response->collection($companies, CompanyTransformer::class);
         }
-        if ($result !== false) {
-            return new JsonResponse([
-                'data' => $result,
-            ]);
+        if ($token !== false) {
+            $employee = $this->employeeService->findByCompanyIdAndEmail($request->getCompanyId(), $request->getEmail());
+            $data = (object) [
+                'token' => $token,
+                'employee' => $employee,
+            ];
+            return $this->response->item($data, App\Applications\Company\Transformers\Employee\LoginResponse::class);
         }
     }
 

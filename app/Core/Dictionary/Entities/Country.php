@@ -102,6 +102,9 @@ class Country
      */
     public function getName($locale = null) : string
     {
+        if (is_array($this->names)) {
+            $this->names = new TranslatableString($this->names);
+        }
         return $this->names->getValue($locale);
     }
 
