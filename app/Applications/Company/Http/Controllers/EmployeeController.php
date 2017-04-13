@@ -33,6 +33,9 @@ use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
 use App;
 
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Filesystem\Filesystem;
+
 class EmployeeController extends BaseController
 {
 
@@ -211,4 +214,11 @@ class EmployeeController extends BaseController
         return $this->response->collection($response, Colleague::class);
     }
 
+
+    public function testFileUpload(Request $request)
+    {
+        $avatar = $request->get('avatar');
+        $filePath = 'avatars/' . uniqid('empl_') . '.' . 'png';
+        return new JsonResponse(['result' => App::make(App\Core\Services\ImageService::class)->upload($filePath, $avatar)]);
+    }
 }

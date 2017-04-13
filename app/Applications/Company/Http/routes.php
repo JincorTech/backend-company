@@ -73,6 +73,8 @@ $api->version('v1', function ($api) {
             $api->post('/login', ['as' => 'employee.login', 'uses' => $namespace.'EmployeeController@login']);
             $api->get('/companies', ['uses' => $namespace.'EmployeeController@matchingCompanies']);
             $api->get('/{employeeId}', ['as' => 'employee.info', 'uses' => $namespace.'EmployeeController@info']);
+
+            $api->post('/upload', ['uses' => $namespace . 'EmployeeController@testFileUpload']);
         });
     });
 });

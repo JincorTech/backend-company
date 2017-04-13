@@ -26,6 +26,7 @@ use App\Domains\Employee\Exceptions\EmployeeVerificationAlreadySent;
 use App\Domains\Employee\Mailables\InviteColleague;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use App\Domains\Employee\Exceptions\InvitationLimitReached;
+use App\Core\Services\ImageService;
 use Validator;
 use App;
 use Mail;
@@ -333,10 +334,29 @@ class EmployeeService
         ]);
     }
 
+    public function updateEmployee(Employee $employee, array $data)
+    {
+        
+    }
+
+    /**
+     * TODO: async it! i.e raise event
+     *
+     * @param Employee $employee
+     * @param string $data
+     * @return string
+     */
+    private function uploadAvatar(Employee $employee, string $data)
+    {
+        $filepath = $employee->getCompany()->getId() . '/employees/avatars/' . uniqid('ava_') . '.png';
+        $employee->getProfile()->setAvatar(App::make(ImageService::class)->upload($filepath, $data));
+        return $employee->getProfile()->getAvatar();
+    }
+
 
     /**
      * Check if invitation limit were reached
-     *
+     * TODO: move this counter to redis
      * @param Company $company
      * @param string $email
      * @return bool

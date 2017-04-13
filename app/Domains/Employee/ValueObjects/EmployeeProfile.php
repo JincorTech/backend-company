@@ -29,6 +29,12 @@ class EmployeeProfile
      * @var string
      * @ODM\Field(type="string")
      */
+    protected $avatar;
+
+    /**
+     * @var string
+     * @ODM\Field(type="string")
+     */
     protected $firstName;
 
     /**
@@ -80,5 +86,18 @@ class EmployeeProfile
     public function setLogin(Company $company, string $email)
     {
         $this->login = $company->getId().':'.$email;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setAvatar(string $url)
+    {
+        $this->avatar = $url;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
     }
 }
