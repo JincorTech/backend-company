@@ -45,8 +45,11 @@ class CompanySeeder extends Seeder
             'code' => 'BT1',
         ]);
         $company = new Company(env('TEST_COMPANY_NAME'), $address, $companyType);
+        $company2 = new Company("Jincor Limited", $address, $companyType);
         $this->getDm()->persist($company);
+        $this->getDm()->persist($company2);
         $this->getDm()->flush();
+
     }
 
     /**
