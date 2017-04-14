@@ -10,6 +10,7 @@ namespace App\Applications\Company\Http\Requests\Employee;
 
 
 use App\Applications\Company\Http\Requests\AuthenticatedUser;
+use App\Applications\Company\Validators\EmployeeAvatar;
 use App\Core\Http\Requests\BaseAPIRequest;
 use Illuminate\Support\Collection;
 

@@ -8,6 +8,7 @@
 
 namespace App\Core\Services;
 
+use App\Core\Exceptions\InvalidImageException;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Storage;
 
@@ -30,10 +31,14 @@ class ImageService
      *
      * @param string $path
      * @param string $data
+     * @throws InvalidImageException
      * @return string
      */
     public function upload(string $path, string $data) : string
     {
+        if (strpos('data:image/png', $data) === false) {
+            throw new InvalidImageException(trans('validation.png_image'));
+        }
         $image = str_replace('data:image/png;base64,', '', $data);
         $this->fs->put($path, base64_decode($image), 'public');
         return $this->fs->url($path);

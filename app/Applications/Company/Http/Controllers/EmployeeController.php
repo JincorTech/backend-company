@@ -214,10 +214,14 @@ class EmployeeController extends BaseController
      */
     public function update(UpdateRequest $request)
     {
-        return $this->response->item(
-            $this->employeeService->updateEmployee($request->getUser(),$request->all()),
-            SelfProfile::class
-        );
+        try {
+            return $this->response->item(
+                $this->employeeService->updateEmployee($request->getUser(),$request->all()),
+                SelfProfile::class
+            );
+        } catch (App\Core\Exceptions\InvalidImageException $exception) {
+            $this->response->error($exception->getMessage(), 422);
+        }
     }
 
     /**
