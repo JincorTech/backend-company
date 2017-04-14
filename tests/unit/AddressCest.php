@@ -20,20 +20,4 @@ class AddressCest
         $I->assertEquals('ул. Пушкина, дом Колотушкина, г. Москва', $address->getFormattedAddress());
     }
 
-    /**
-     * Test we can serialize address to array and json
-     *
-     * @param UnitTester $I
-     */
-    public function canSerialize(UnitTester $I)
-    {
-        $country = CountryFactory::make();
-        $formattedAddress = 'ул. Пушкина, дом Колотушкина, г. Москва';
-        $address = new Address($formattedAddress, $country);
-        $I->assertArrayHasKey('formattedAddress', $address->jsonSerialize());
-        $I->assertEquals($formattedAddress, $address->jsonSerialize()['formattedAddress']);
-        $I->assertArrayHasKey('country', $address->jsonSerialize());
-        $I->assertEquals($country->getId(), $address->jsonSerialize()['country']);
-    }
-
 }
