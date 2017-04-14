@@ -253,7 +253,7 @@ class CompanyProfile
     /**
      * @return string
      */
-    public function getPicture(): string
+    public function getPicture()
     {
         return $this->picture;
     }

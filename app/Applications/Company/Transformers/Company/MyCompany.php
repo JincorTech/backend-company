@@ -9,13 +9,17 @@
 namespace App\Applications\Company\Transformers\Company;
 
 
+use App\Applications\Company\Transformers\Dictionary\CityTransformer;
 use App\Applications\Company\Transformers\Dictionary\CompanyTypeTransformer;
 use App\Applications\Company\Transformers\Dictionary\CountryTransformer;
 use App\Applications\Company\Transformers\Dictionary\EconomicalActivityTypeTransformer;
+use App\Core\Dictionary\Entities\City;
 use App\Core\Dictionary\Entities\Country;
+use App\Core\ValueObjects\Address;
 use App\Domains\Company\Entities\CompanyType;
 use App\Core\ValueObjects\TranslatableString;
 use App\Domains\Company\Entities\Company;
+use App\Domains\Company\ValueObjects\CompanyProfile;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\TransformerAbstract;
 
@@ -28,20 +32,50 @@ class MyCompany extends TransformerAbstract
         return [
             'id' => $company->getId(),
             'legalName' => $company->getProfile()->getName(),
-            'profile' => [
-                'brandName' => $this->transformBrandName($company->getProfile()->getBrandName()),
-                'picture' => $company->getProfile()->getPicture(),
-                'links' => $this->transformLinks($company->getProfile()->getLinks()),
-                'email' => $company->getProfile()->getEmail(),
-                'phone' => $company->getProfile()->getPhone(),
-                'country' => $this->transformCountry($company->getProfile()->getAddress()->getCountry()),
-                'city' => null, //TODO: implement city transformation
-            ],
+            'profile' => $this->transformProfile($company->getProfile()),
             'economicalActivityTypes' => $this->transformEconomicalActivities(
                 $company->getProfile()->getEconomicalActivities()
             ),
             'companyType' => $this->transformCompanyType($company->getProfile()->getType()),
         ];
+    }
+
+    /**
+     * @param CompanyProfile $profile
+     * @return array
+     */
+    protected function transformProfile(CompanyProfile $profile)
+    {
+        return [
+            'brandName' => $this->transformBrandName($profile->getBrandName()),
+            'picture' => $profile->getPicture(),
+            'links' => $this->transformLinks($profile->getLinks()),
+            'email' => $profile->getEmail(),
+            'phone' => $profile->getPhone(),
+            'formattedAddress' => $this->transformAddress($profile->getAddress()),
+        ];
+    }
+
+    /**
+     * @param Address $address
+     * @return array
+     */
+    private function transformAddress(Address $address)
+    {
+        return [
+            'country' => $this->transformCountry($address->getCountry()),
+            'city' => $address->getCity() ? $this->transformCity($address->getCity()) : null,
+            'formattedAddress' => $address->getFormattedAddress(),
+        ];
+    }
+
+    /**
+     * @param City $city
+     * @return array
+     */
+    private function transformCity(City $city)
+    {
+        return (new CityTransformer())->transform($city);
     }
 
 
@@ -72,7 +106,7 @@ class MyCompany extends TransformerAbstract
      * @param TranslatableString $brandName
      * @return array
      */
-    protected function transformBrandName($brandName) : array
+    protected function transformBrandName($brandName)
     {
         if ($brandName instanceof TranslatableString) {
             return $brandName->getValues();
