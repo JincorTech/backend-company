@@ -9,6 +9,8 @@
 namespace App\Applications\Company\Transformers\Employee;
 
 
+use App\Applications\Company\Transformers\Company\CompanyTransformer;
+use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\Entities\Employee;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
@@ -29,6 +31,7 @@ class SelfProfile extends TransformerAbstract
             'id' => $employee->getId(),
             'profile' => $this->getProfile($employee),
             'contacts' => $this->getContacts($employee),
+            'company' => $this->getCompany($employee->getCompany()),
         ];
     }
 
@@ -37,7 +40,7 @@ class SelfProfile extends TransformerAbstract
      * @param Employee $employee
      * @return array
      */
-    private function getContacts(Employee $employee)
+    protected function getContacts(Employee $employee)
     {
         return [
             'email' => $employee->getContacts()->getEmail(),
@@ -49,13 +52,18 @@ class SelfProfile extends TransformerAbstract
      * @param Employee $employee
      * @return array
      */
-    private function getProfile(Employee $employee)
+    protected function getProfile(Employee $employee)
     {
         return [
             'name' => $employee->getProfile()->getName(),
             'position' => $employee->getProfile()->getPosition(),
-            'avatar' => 'http://i.imgur.com/n613Ki4.jpg', //TODO
+            'avatar' => $employee->getProfile()->getAvatar(),
         ];
+    }
+
+    protected function getCompany(Company $company)
+    {
+        return (new CompanyTransformer())->transform($company);
     }
 
 }

@@ -7,7 +7,7 @@
  * Time: 9:24 PM
  */
 
-namespace App\Applications\Company\Transformers\Company;
+namespace App\Applications\Company\Transformers\Dictionary;
 
 use App\Domains\Company\Entities\EconomicalActivityType;
 use League\Fractal\TransformerAbstract;
@@ -23,11 +23,13 @@ class EconomicalActivityTypeTransformer extends TransformerAbstract
                 'name' => $type->getName(),
                 'code' => $type->getCode(),
             ];
-            $children = $type->getChildren()->getValues();
-            /** @var EconomicalActivityType $child */
-            foreach ($children as $key => $child) {
-                $children[$key] = $this->transform($child, false);
-                $eaType['children'] = $children;
+            if ($addChildren) {
+                $children = $type->getChildren()->getValues();
+                /** @var EconomicalActivityType $child */
+                foreach ($children as $key => $child) {
+                    $children[$key] = $this->transform($child, false);
+                    $eaType['children'] = $children;
+                }
             }
 
             return $eaType;

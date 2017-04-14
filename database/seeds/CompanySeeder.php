@@ -13,7 +13,7 @@ use App\Core\Dictionary\Entities\Country;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Employee\Services\EmployeeService;
-use App\Core\Dictionary\Repositories\CountryRepository;
+use Doctrine\ODM\MongoDB\DocumentRepository;
 use GeoJson\Geometry\Point;
 use App\Domains\Company\Entities\Company;
 use App\Core\ValueObjects\Address;
@@ -31,6 +31,7 @@ class CompanySeeder extends Seeder
      */
     private $ers;
 
+
     public function run()
     {
         $country = $this->getCountryRepository()->findByAlpha2Code('RU');
@@ -43,16 +44,12 @@ class CompanySeeder extends Seeder
         $companyType = $this->getDm()->getRepository(CompanyType::class)->findOneBy([
             'code' => 'BT1',
         ]);
-        $company = new Company('MyCompany', $address, $companyType);
+        $company = new Company(env('TEST_COMPANY_NAME'), $address, $companyType);
+        $company2 = new Company("Jincor Limited", $address, $companyType);
         $this->getDm()->persist($company);
-        $verification = $this->getEmployeeVerificationService()->beginVerificationProcess($company);
-        $this->getEmployeeVerificationService()->sendEmailVerification(
-            $verification->getId(),
-            env('TEST_MAIL_ADDRESS', 'hlogeon1@gmail.com')
-            );
-        $this->getEmployeeVerificationService()->verifyEmail($verification->getId(), $verification->getEmailCode());
-        $profile = new EmployeeProfile('Test', 'Tester', 'Admin');
-        $this->getEmployeeService()->register($verification->getId(), $profile, 'test');
+        $this->getDm()->persist($company2);
+        $this->getDm()->flush();
+
     }
 
     /**
@@ -64,34 +61,10 @@ class CompanySeeder extends Seeder
     }
 
     /**
-     * @return CountryRepository
+     * @return DocumentRepository
      */
-    private function getCountryRepository() : CountryRepository
+    private function getCountryRepository() : DocumentRepository
     {
         return $this->getDm()->getRepository(Country::class);
-    }
-
-    /**
-     * @return EmployeeVerificationService
-     */
-    private function getEmployeeVerificationService() : EmployeeVerificationService
-    {
-        if (!$this->evs) {
-            $this->evs = new EmployeeVerificationService();
-        }
-
-        return $this->evs;
-    }
-
-    /**
-     * @return EmployeeService
-     */
-    private function getEmployeeService() : EmployeeService
-    {
-        if (!$this->ers) {
-            $this->ers = new EmployeeService();
-        }
-
-        return $this->ers;
     }
 }

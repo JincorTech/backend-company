@@ -103,11 +103,11 @@ final class City
     }
 
     /**
-     * @return Point
+     * @return Coordinates
      */
-    public function getCoordinates(): Point
+    public function getCoordinates(): Coordinates
     {
-        return new Point([$this->coordinates->x, $this->coordinates->y]);
+        return $this->coordinates;
     }
 
 }

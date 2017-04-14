@@ -37,11 +37,6 @@ class Address
      */
     protected $country;
 
-    /**
-     * Address constructor.
-     * @param string $address
-     * @param Country $country
-     */
     public function __construct(string $address, Country $country)
     {
         $this->formattedAddress = $address;
@@ -54,6 +49,17 @@ class Address
     public function getFormattedAddress() : string
     {
         return $this->formattedAddress;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize() : array
+    {
+        return [
+            'formattedAddress' => $this->getFormattedAddress(),
+            'country' => $this->country->getId(),
+        ];
     }
 
     /**

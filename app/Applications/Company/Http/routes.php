@@ -45,6 +45,7 @@ $api->version('v1', function ($api) {
             $api->post('/', ['as' => 'company.register', 'uses' => $namespace.'CompanyController@register']);
             $api->get('/types', ['as' => 'company.types', 'uses' => $namespace.'CompanyController@companyTypes']);
             $api->get('/activityTypes', ['as' => 'company.eatypes', 'uses' => $namespace.'CompanyController@economicalActivityTypes']);
+            $api->get('/my', ['as' => 'company.my', 'uses' => $namespace . 'CompanyController@my']);
             $api->get('/{id}', ['as' => 'company.info', 'uses' => $namespace.'CompanyController@info']);
             $api->post('/invite', ['as' => 'company.invite', 'uses' => $namespace.'CompanyController@invite']);
 
@@ -62,6 +63,7 @@ $api->version('v1', function ($api) {
             $api->get('/verifyEmail', ['as' => 'employee.email.sendPin', 'uses' => $namespace.'EmployeeController@sendEmailCode']);
 
             $api->get('/me', ['as' => 'employee.me', 'uses' => $namespace . 'EmployeeController@me']);
+            $api->put('/me', ['as' => 'employee.update', 'uses' => $namespace . 'EmployeeController@update']);
             $api->get('/colleagues', ['as' => 'employee.colleagues', 'uses' => $namespace . 'EmployeeController@colleagues']);
             $api->put('/changePassword', ['as' => 'employee.email.password.change', 'uses' => $namespace.'EmployeeController@changePassword']);
 
@@ -72,6 +74,8 @@ $api->version('v1', function ($api) {
             $api->post('/login', ['as' => 'employee.login', 'uses' => $namespace.'EmployeeController@login']);
             $api->get('/companies', ['uses' => $namespace.'EmployeeController@matchingCompanies']);
             $api->get('/{employeeId}', ['as' => 'employee.info', 'uses' => $namespace.'EmployeeController@info']);
+
+            $api->post('/upload', ['uses' => $namespace . 'EmployeeController@testFileUpload']);
         });
     });
 });

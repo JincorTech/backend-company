@@ -13,7 +13,7 @@ class CurrencyRepositoryCest
 
     public function _before(UnitTester $I)
     {
-        $this->dm = $I->getDocumentManager();
+        $this->dm = App::make(\Doctrine\ODM\MongoDB\DocumentManager::class);
         $this->repository = $this->dm->getRepository(\App\Core\Dictionary\Entities\Currency::class);
     }
 

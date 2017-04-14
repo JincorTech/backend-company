@@ -186,6 +186,7 @@ return [
 
         App\Applications\Company\Providers\RouteServiceProvider::class,
         App\Applications\Dictionary\Providers\RouteServiceProvider::class,
+
     ],
 
     /*

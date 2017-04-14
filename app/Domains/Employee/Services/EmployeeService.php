@@ -26,6 +26,7 @@ use App\Domains\Employee\Exceptions\EmployeeVerificationAlreadySent;
 use App\Domains\Employee\Mailables\InviteColleague;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use App\Domains\Employee\Exceptions\InvitationLimitReached;
+use App\Core\Services\ImageService;
 use Validator;
 use App;
 use Mail;
@@ -104,15 +105,25 @@ class EmployeeService
      * Get colleagues of an employee specified
      *
      * @param Employee $employee
-     * @return \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getColleagues(Employee $employee)
     {
-        return $employee->getCompany()
+        $invitations = $this->verificationRepository->findBy([
+            'reason' => EmployeeVerification::REASON_INVITED_BY_EMPLOYEE,
+            'emailVerified' => false,
+        ]);
+        $active = $employee->getCompany()
             ->getEmployees()
             ->filter(function (Employee $empl) use ($employee) {
-                return $empl->getId() !== $employee->getId();
-            });
+                return $empl->getId() !== $employee->getId() && $empl->isActive();
+            })->toArray();
+        $deleted = $employee->getCompany()
+            ->getEmployees()
+            ->filter(function (Employee $empl) use ($employee) {
+                return $empl->getId() !== $employee->getId() && !$empl->isActive();
+            })->toArray();
+        return array_merge([], $invitations, $active, $deleted);
     }
 
     /**
@@ -333,10 +344,48 @@ class EmployeeService
         ]);
     }
 
+    public function updateEmployee(Employee $employee, array $data)
+    {
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case 'avatar':
+                    $this->uploadAvatar($employee, $value);
+                    break;
+                case 'firstName':
+                    $employee->getProfile()->changeFirstName($value);
+                    break;
+                case 'lastName':
+                    $employee->getProfile()->changeLastName($value);
+                    break;
+                case 'position':
+                    $employee->getProfile()->changePosition($value);
+                    break;
+            }
+        }
+        $this->dm->persist($employee);
+        $this->dm->flush();
+        return $employee;
+    }
+
+    /**
+     * TODO: async it! i.e raise event
+     *
+     * @param Employee $employee
+     * @param string $data
+     * @return string
+     */
+    private function uploadAvatar(Employee $employee, string $data)
+    {
+        $filepath = $employee->getCompany()->getId() . '/employees/avatars/' . uniqid('ava_') . '.png';
+        $employee->getProfile()->setAvatar(App::make(ImageService::class)->upload($filepath, $data));
+        $this->dm->persist($employee);
+        return $employee->getProfile()->getAvatar();
+    }
+
 
     /**
      * Check if invitation limit were reached
-     *
+     * TODO: move this counter to redis
      * @param Company $company
      * @param string $email
      * @return bool

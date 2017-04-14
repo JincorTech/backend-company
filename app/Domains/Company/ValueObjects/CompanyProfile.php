@@ -15,6 +15,7 @@ use App\Domains\Company\Entities\CompanyType;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\PersistentCollection;
 
 /**
  * Class CompanyProfile.
@@ -122,6 +123,9 @@ class CompanyProfile
 
     public function getEconomicalActivities() : ArrayCollection
     {
+        if ($this->economicalActivities instanceof PersistentCollection) {
+            $this->economicalActivities = new ArrayCollection($this->economicalActivities->toArray());
+        }
         return $this->economicalActivities;
     }
 
@@ -166,6 +170,9 @@ class CompanyProfile
      */
     public function getLinks() : ArrayCollection
     {
+        if ($this->links instanceof PersistentCollection) {
+            $this->links = new ArrayCollection($this->links->toArray());
+        }
         return $this->links;
     }
 
@@ -195,98 +202,27 @@ class CompanyProfile
     }
 
     /**
-     * @param bool $all
-     * @param null $locale
-     * @return mixed|string
+     * @return TranslatableString|null
      */
-    public function getBrandName($locale = null, bool $all = false)
+    public function getBrandName()
     {
-        if ($all) {
-            return $this->brandName->getValues();
-        }
-        return $this->brandName->getValue($locale);
+        return $this->brandName;
     }
 
     /**
-     * @return CompanyType
+     * @return string|null
      */
-    public function getCompanyType(): CompanyType
-    {
-        return $this->companyType;
-    }
-
-    /**
-     * @param CompanyType $companyType
-     */
-    public function setCompanyType(CompanyType $companyType)
-    {
-        $this->companyType = $companyType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPhone(): string
-    {
-        return $this->phone;
-    }
-
-    /**
-     * @param string $phone
-     */
-    public function setPhone(string $phone)
-    {
-        $this->phone = $phone;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail(): string
+    public function getEmail()
     {
         return $this->email;
     }
 
     /**
-     * @param string $email
+     * @return string|null
      */
-    public function setEmail(string $email)
+    public function getPhone()
     {
-        $this->email = $email;
+        return $this->phone;
     }
-
-    /**
-     * @return string
-     */
-    public function getPicture(): string
-    {
-        return $this->picture;
-    }
-
-    /**
-     * @param string $picture
-     */
-    public function setPicture(string $picture)
-    {
-        $this->picture = $picture;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-    }
-
-
 
 }

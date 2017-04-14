@@ -2,123 +2,104 @@
 /**
  * Created by PhpStorm.
  * User: hlogeon
- * Date: 31/03/2017
- * Time: 10:41
+ * Date: 05/04/2017
+ * Time: 14:49
  */
 
 namespace App\Applications\Company\Transformers\Company;
 
 
-use App\Core\ValueObjects\Address;
+use App\Applications\Company\Transformers\Dictionary\CompanyTypeTransformer;
+use App\Applications\Company\Transformers\Dictionary\CountryTransformer;
+use App\Applications\Company\Transformers\Dictionary\EconomicalActivityTypeTransformer;
+use App\Core\Dictionary\Entities\Country;
+use App\Domains\Company\Entities\CompanyType;
+use App\Core\ValueObjects\TranslatableString;
 use App\Domains\Company\Entities\Company;
-use App\Domains\Company\ValueObjects\CompanyProfile;
+use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\TransformerAbstract;
 
 class MyCompany extends TransformerAbstract
 {
-    /**
-     * @var ExternalLink
-     */
-    private $link;
 
-    /**
-     * @var CompanyType
-     */
-    private $ct;
 
-    /**
-     * @var EconomicalActivityTypeTransformer
-     */
-    private $eaType;
-
-    public function __construct()
-    {
-        $this->link = new ExternalLink();
-        $this->ct = new CompanyType();
-        $this->eaType = new EconomicalActivityTypeTransformer();
-    }
-
-    /**
-     * @param Company $company
-     * @return array
-     */
-    public function transform(Company $company) : array
+    public function transform(Company $company)
     {
         return [
             'id' => $company->getId(),
             'legalName' => $company->getProfile()->getName(),
-            'profile' => $this->transformProfile($company->getProfile()),
-            'economicalActivityTypes' => $this->transformEconomicalActivityTypes($company->getProfile()),
-            'companyType' => $this->ct->transform($company->getProfile()->getCompanyType()),
-
+            'profile' => [
+                'brandName' => $this->transformBrandName($company->getProfile()->getBrandName()),
+                'links' => $this->transformLinks($company->getProfile()->getLinks()),
+                'email' => $company->getProfile()->getEmail(),
+                'phone' => $company->getProfile()->getPhone(),
+                'country' => $this->transformCountry($company->getProfile()->getAddress()->getCountry()),
+                'city' => null, //TODO: implement city transformation
+            ],
+            'economicalActivityTypes' => $this->transformEconomicalActivities(
+                $company->getProfile()->getEconomicalActivities()
+            ),
+            'companyType' => $this->transformCompanyType($company->getProfile()->getType()),
         ];
     }
 
+
     /**
-     * Transform company profile
-     *
-     * @param CompanyProfile $profile
+     * @param Country $country
      * @return array
      */
-    private function transformProfile(CompanyProfile $profile) : array
+    protected function transformCountry(Country $country)
     {
-        return [
-            'brandName' => $profile->getBrandName(null, true),
-            'links' => $this->transformLinks($profile),
-            'email' => $profile->getEmail(),
-            'phone' => $profile->getPhone(),
-            'country' => $this->transformCountry($profile->getAddress()),
-            'city' => $this->transformCity($profile->getAddress()),
-        ];
+        return (new CountryTransformer())->transform($country);
     }
 
     /**
-     * Transform external links
-     *
-     * @param CompanyProfile $profile
+     * @param ArrayCollection $links
      * @return array
      */
-    private function transformLinks(CompanyProfile $profile) : array
+    protected function transformLinks(ArrayCollection $links)
     {
         $result = [];
-        foreach ($profile->getLinks() as $link) {
-            $result[] = $this->link->transform($link);
+        $transformer = new CompanyLink();
+        foreach ($links as $link) {
+            $result[] = $transformer->transform($link);
         }
         return $result;
     }
 
     /**
-     * @param CompanyProfile $profile
+     * @param TranslatableString $brandName
      * @return array
      */
-    private function transformEconomicalActivityTypes(CompanyProfile $profile) : array
+    protected function transformBrandName($brandName) : array
+    {
+        if ($brandName instanceof TranslatableString) {
+            return $brandName->getValues();
+        }
+        return [];
+    }
+
+    /**
+     * @param ArrayCollection $types
+     * @return array
+     */
+    protected function transformEconomicalActivities(ArrayCollection $types) : array
     {
         $result = [];
-        foreach ($profile->getEconomicalActivities() as $activity) {
-            $result[] = $this->eaType->transform($activity, false);
+        foreach ($types as $type) {
+            $result[] = (new EconomicalActivityTypeTransformer())->transform($type, false);
         }
         return $result;
     }
 
     /**
-     * @param Address $address
+     * @param CompanyType $companyType
      * @return array
      */
-    private function transformCountry(Address $address) : array
+    protected function transformCompanyType(CompanyType $companyType) : array
     {
-        return [
-            'id' => $address->getCountry()->getId(),
-            'name' => $address->getCountry()->getName(),
-        ];
+        return (new CompanyTypeTransformer())->transform($companyType);
     }
 
-    /**
-     * @param Address $address
-     * @return array
-     */
-    private function transformCity(Address $address) : array
-    {
-        return []; //TODO
-    }
 
 }

@@ -11,7 +11,6 @@
 
 namespace App\Core\Dictionary\Entities;
 
-use App\Core\Dictionary\Traits\HasTranslatableName;
 use App\Core\ValueObjects\CountryISOCodes;
 use App\Core\ValueObjects\TranslatableString;
 use GeoJson\Geometry\MultiPolygon;
@@ -30,9 +29,6 @@ use Ramsey\Uuid\UuidInterface;
  */
 class Country
 {
-
-    use HasTranslatableName;
-
     /**
      * @var string
      * @ODM\Id(strategy="NONE", type="bin_uuid")
@@ -42,9 +38,7 @@ class Country
     /**
      * @var TranslatableString
      *
-     * @ODM\EmbedOne(
-     *     targetDocument="App\Core\ValueObjects\TranslatableString"
-     * )
+     * @ODM\Field(type="translatableString")
      */
     protected $names;
 
@@ -100,6 +94,18 @@ class Country
         $this->setCurrency($currency);
         $this->setFlagUrl($flag);
         $this->setBounds($bounds);
+    }
+
+    /**
+     * @param string $locale
+     * @return mixed
+     */
+    public function getName($locale = null) : string
+    {
+        if (is_array($this->names)) {
+            $this->names = new TranslatableString($this->names);
+        }
+        return $this->names->getValue($locale);
     }
 
     /**
@@ -175,6 +181,14 @@ class Country
             return $this->id->toString();
         }
         return $this->id;
+    }
+
+    /**
+     * @param array $names
+     */
+    public function setNames(array $names)
+    {
+        $this->names = new TranslatableString($names);
     }
 
     /**

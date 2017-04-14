@@ -23,7 +23,7 @@ use Ramsey\Uuid\Uuid;
  *     repositoryClass="App\Domains\Company\Repositories\CompanyRepository"
  * )
  */
-class Company
+class   Company
 {
     /**
      * @var string

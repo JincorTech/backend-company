@@ -10,6 +10,7 @@
 namespace App\Core\Services;
 
 use App\Domains\Employee\Exceptions\CompanyNotFound;
+use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
 use App\Domains\Employee\Exceptions\PasswordMismatchException;
 use App\Domains\Company\Services\CompanyService;
 use App\Domains\Employee\Services\EmployeeService;
@@ -73,22 +74,26 @@ class IdentityService extends BaseRestService
      * @return bool|mixed
      * @throws DocumentNotFoundException
      * @throws PasswordMismatchException
+     * @throws MultipleCompanyLoginException
      */
     public function login(string $email, string $password, $company)
     {
         if (!$company) {
             $companies = $this->getMatchingCompanies($email, $password);
-            if ($companies->count() !== 1) {
-                throw new CompanyNotFound();
+            if ($companies->count() === 0) {
+                throw new DocumentNotFoundException(trans('exceptions.company.not_found'));
+            }
+            if ($companies->count() > 1) {
+                throw new MultipleCompanyLoginException(trans('exceptions.login.multiple-companies'));
             }
             $company = $companies->first()->getId();
         }
         $employee = $this->employeeService->findByCompanyIdAndEmail($company, $email);
         if (!$employee) {
-            throw new DocumentNotFoundException('Employee not found');
+            throw new DocumentNotFoundException(trans('exceptions.employee.not_found', ['email' => $email]));
         }
         if (!$employee->checkPassword($password)) {
-            throw new PasswordMismatchException('Login and password do not match');
+            throw new PasswordMismatchException(trans('exceptions.employee.password_mismatch'));
         }
         $response = $this->client->post('/auth', [
             'json' => [
