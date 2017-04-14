@@ -57,7 +57,7 @@ class SelfProfile extends TransformerAbstract
         return [
             'name' => $employee->getProfile()->getName(),
             'position' => $employee->getProfile()->getPosition(),
-            'avatar' => 'http://i.imgur.com/n613Ki4.jpg', //TODO
+            'avatar' => $employee->getProfile()->getAvatar(),
         ];
     }
 

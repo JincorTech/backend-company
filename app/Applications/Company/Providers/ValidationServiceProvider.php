@@ -9,7 +9,9 @@
 
 namespace App\Applications\Company\Providers;
 
+use App\Applications\Company\Validators\EmployeeAvatar;
 use Illuminate\Support\ServiceProvider;
+use \Validator;
 
 class ValidationServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,7 @@ class ValidationServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('is_png', EmployeeAvatar::class . '@validate');
     }
 
     /**
@@ -30,6 +32,6 @@ class ValidationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
     }
 }
