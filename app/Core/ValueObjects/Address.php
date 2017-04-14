@@ -37,10 +37,20 @@ class Address
      */
     protected $country;
 
-    public function __construct(string $address, Country $country)
+    /**
+     * @var App\Core\Dictionary\Entities\City
+     * @ODM\ReferenceOne(
+     *     targetDocument="App\Core\Dictionary\Entities\City",
+     *     cascade="{persist}"
+     * )
+     */
+    protected $city;
+
+    public function __construct(string $address, Country $country, $city = null)
     {
         $this->formattedAddress = $address;
         $this->country = $country;
+        $this->city = $city;
     }
 
     /**
@@ -68,5 +78,13 @@ class Address
     public function getCountry() : Country
     {
         return $this->country;
+    }
+
+    /**
+     * @return App\Core\Dictionary\Entities\City|null
+     */
+    public function getCity()
+    {
+        return $this->city;
     }
 }

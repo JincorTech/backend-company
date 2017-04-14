@@ -201,7 +201,11 @@ class CompanyProfile
      */
     public function setBrandNames(array $names)
     {
-        $this->brandName = new TranslatableString($names);
+        if ($this->brandName) {
+            $this->brandName = new TranslatableString(array_merge($this->brandName->getValues(), $names));
+        } else {
+            $this->brandName = new TranslatableString($names);
+        }
     }
 
     /**
@@ -255,11 +259,11 @@ class CompanyProfile
     }
 
     /**
-     * @param string $picture
+     * @param string $url
      */
-    public function setPicture(string $picture)
+    public function setPicture(string $url)
     {
-        $this->picture = $picture;
+        $this->picture = $url;
     }
 
     /**
@@ -276,6 +280,21 @@ class CompanyProfile
     public function setDescription(string $description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @param CompanyType $companyType
+     */
+    public function setCompanyType(CompanyType $companyType)
+    {
+        $this->companyType = $companyType;
+    }
+
+    public function changeName(string $name)
+    {
+        if ($this->legalName !== $name) {
+            $this->legalName = $name;
+        }
     }
 
 }

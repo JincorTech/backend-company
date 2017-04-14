@@ -30,6 +30,7 @@ class MyCompany extends TransformerAbstract
             'legalName' => $company->getProfile()->getName(),
             'profile' => [
                 'brandName' => $this->transformBrandName($company->getProfile()->getBrandName()),
+                'picture' => $company->getProfile()->getPicture(),
                 'links' => $this->transformLinks($company->getProfile()->getLinks()),
                 'email' => $company->getProfile()->getEmail(),
                 'phone' => $company->getProfile()->getPhone(),

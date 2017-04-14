@@ -12,11 +12,15 @@ namespace App\Domains\Company\Services;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Company\Entities\EconomicalActivityType;
+use App\Domains\Company\ValueObjects\CompanyExternalLink;
 use App\Domains\Company\Entities\CompanyType;
 use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Company\Entities\Company;
+use App\Core\Dictionary\Entities\Country;
+use App\Core\Dictionary\Entities\City;
 use App\Core\Services\AddressService;
+use App\Core\ValueObjects\Address;
 use App;
 
 class CompanyService
@@ -79,6 +83,86 @@ class CompanyService
         $this->dm->persist($company);
 
         return $this->verification()->beginVerificationProcess($company);
+    }
+
+    /**
+     * @param array $data
+     * @param Company $company
+     * @return Company
+     */
+    public function update(Company $company, array $data)
+    {
+        foreach ($data as $key => $value) {
+                switch ($key) {
+                    case 'brandName':
+                        $company->getProfile()->setBrandNames($value);
+                        break;
+                    case 'links':
+                        $links = [];
+                        foreach ($value as $linkKey => $link) {
+                            array_push($links, new CompanyExternalLink($link['name'], $link['value']));
+                        }
+                        $company->getProfile()->setLinks($links);
+                        break;
+                    case 'country':
+                        $country = $this->dm->getRepository(Country::class)->find($value);
+                        if (!$country) {
+                            throw new UnprocessableEntityHttpException(trans('exceptions.country.not_found'));
+                        }
+                        $address = new Address($company->getProfile()->getAddress()->getFormattedAddress(), $country);
+                        $company->getProfile()->changeAddress($address);
+                        break;
+                    case 'city':
+                        $city = $this->dm->getRepository(City::class)->find($value);
+                        if (!$city) {
+                            throw new UnprocessableEntityHttpException(trans('exceptions.city.not_found'));
+                        }
+                        $address = new Address($company->getProfile()->getAddress()->getFormattedAddress(), $city);
+                        $company->getProfile()->changeAddress($address);
+                        break;
+                    case 'phone':
+                        $company->getProfile()->setPhone($value);
+                        break;
+                    case 'email':
+                        $company->getProfile()->setEmail($value);
+                        break;
+                    case 'economicalActivityTypes':
+                        $types = [];
+                        foreach ($value as $eaKey => $ea) {
+                            $type = $this->eActivityRepository->find($ea);
+                            if (!$type)
+                                throw new UnprocessableEntityHttpException(trans('exceptions.economical_activity_type.not_found'));
+                            array_push($types, $type);
+                        }
+                        $company->getProfile()->setEconomicalActivities($types);
+                        break;
+                    case 'companyType':
+                        $type = $this->typesRepository->find($value);
+                        if (!$type)
+                            throw new UnprocessableEntityHttpException(trans('exceptions.company_type.not_found'));
+                        $company->getProfile()->setCompanyType($type);
+                        break;
+                    case 'picture':
+                        $this->uploadImage($company, $value);
+                        break;
+                    case 'legalName':
+                        $company->getProfile()->changeName($value);
+                        break;
+                }
+
+        }
+        $this->dm->persist($company);
+        $this->dm->flush();
+        return $company;
+
+    }
+
+    public function uploadImage(Company $company, string $data)
+    {
+        $filepath = $company->getId() . '/avatars/' . uniqid('pic_') . '.png';
+        $company->getProfile()->setPicture(App::make(App\Core\Services\ImageService::class)->upload($filepath, $data));
+        $this->dm->persist($company);
+        return $company->getProfile()->getPicture();
     }
 
 

@@ -57,6 +57,23 @@ class AppCoreValueObjectsAddressHydrator implements HydratorInterface
             $this->class->reflFields['country']->setValue($document, $return);
             $hydratedData['country'] = $return;
         }
+
+        /** @ReferenceOne */
+        if (isset($data['city'])) {
+            $reference = $data['city'];
+            if (isset($this->class->fieldMappings['city']['storeAs']) && $this->class->fieldMappings['city']['storeAs'] === ClassMetadataInfo::REFERENCE_STORE_AS_ID) {
+                $className = $this->class->fieldMappings['city']['targetDocument'];
+                $mongoId = $reference;
+            } else {
+                $className = $this->unitOfWork->getClassNameForAssociation($this->class->fieldMappings['city'], $reference);
+                $mongoId = $reference['$id'];
+            }
+            $targetMetadata = $this->dm->getClassMetadata($className);
+            $id = $targetMetadata->getPHPIdentifierValue($mongoId);
+            $return = $this->dm->getReference($className, $id);
+            $this->class->reflFields['city']->setValue($document, $return);
+            $hydratedData['city'] = $return;
+        }
         return $hydratedData;
     }
 }

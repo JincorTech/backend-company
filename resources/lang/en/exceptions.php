@@ -32,6 +32,18 @@ return [
     ],
     'company' => [
         'not_found' => 'Company not found on the server',
+    ],
+    'country' => [
+        'not_found' => 'Country not found on the server',
+    ],
+    'city' => [
+        'not_found' => 'City not found on the server',
+    ],
+    'economical_activity_type' => [
+        'not_found' => 'Economical activity type not found on the server',
+    ],
+    'company_type' => [
+        'not_found' => 'Company type not found on the server',
     ]
 
 ];
