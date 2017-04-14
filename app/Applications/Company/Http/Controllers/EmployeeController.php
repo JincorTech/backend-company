@@ -23,7 +23,7 @@ use App\Applications\Company\Http\Requests\Employee\Colleagues;
 use App\Applications\Company\Transformers\EmployeeTransformer;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Applications\Company\Http\Requests\Employee\Register;
-use App\Applications\Company\Transformers\Employee\Colleague;
+use App\Applications\Company\Transformers\Employee\ColleagueList;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
 use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
@@ -230,7 +230,7 @@ class EmployeeController extends BaseController
      */
     public function colleagues(Colleagues $request)
     {
-        $response = Collection::make($this->employeeService->getColleagues($request->getUser())->toArray());
-        return $this->response->collection($response, Colleague::class);
+        $response = Collection::make($this->employeeService->getColleagues($request->getUser()));
+        return $this->response->collection($response, ColleagueList::class);
     }
 }

@@ -2,45 +2,34 @@
 /**
  * Created by PhpStorm.
  * User: hlogeon
- * Date: 29/03/2017
- * Time: 17:32
+ * Date: 14/04/2017
+ * Time: 07:46
  */
 
 namespace App\Applications\Company\Transformers\Employee;
 
 
 use App\Domains\Employee\Entities\Employee;
-use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
-/**
- * Class Colleague
- * @package App\Applications\Company\Transformers\Employee
- *
- * @TODO: implement transformation
- */
 class Colleague extends SelfProfile
 {
 
     public function transform(Employee $employee)
     {
-        return array_merge(
-            parent::transform($employee),
-            ['meta' => $this->getMeta($employee)]
-        );
+        return [
+            'id' => $employee->getId(),
+            'profile' => $this->getProfile($employee),
+            'contacts' => $this->getContacts($employee),
+            'meta' => $this->getMeta($employee)
+        ];
     }
 
-    /**
-     * @param Employee $employee
-     * @return array
-     */
-    private function getMeta(Employee $employee)
+    public function getMeta(Employee $employee)
     {
-        //TODO
         return [
-            'status' => 'active',
-            'invited_at' => Carbon::now()->toIso8601String(),
-            'registered_at' => Carbon::now()->toIso8601String(),
+            'status' => $employee->isActive() ? 'active' : 'deleted',
+            'registered_at' => $employee->getRegisteredAt()->format(\DateTime::ISO8601)
         ];
     }
 

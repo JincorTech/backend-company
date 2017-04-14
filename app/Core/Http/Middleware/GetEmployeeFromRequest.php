@@ -48,10 +48,10 @@ class GetEmployeeFromRequest
 
         /** @var \App\Domains\Employee\Entities\Employee $employee */
         $employee = $this->employeeService->findByLogin($data['login']);
-        $employee->getProfile()->scope = $data['scope'];
         if (!$employee) {
-            throw new AuthenticationException('Cant find user by login');
+            throw new AuthenticationException('Cant find user by login. It means that your access token is invalid');
         }
+        $employee->getProfile()->scope = $data['scope'];
         $this->bindUser($employee);
 
         return $next($request);

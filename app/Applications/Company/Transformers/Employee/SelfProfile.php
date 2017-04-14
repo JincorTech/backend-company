@@ -40,7 +40,7 @@ class SelfProfile extends TransformerAbstract
      * @param Employee $employee
      * @return array
      */
-    private function getContacts(Employee $employee)
+    protected function getContacts(Employee $employee)
     {
         return [
             'email' => $employee->getContacts()->getEmail(),
@@ -52,7 +52,7 @@ class SelfProfile extends TransformerAbstract
      * @param Employee $employee
      * @return array
      */
-    private function getProfile(Employee $employee)
+    protected function getProfile(Employee $employee)
     {
         return [
             'name' => $employee->getProfile()->getName(),
@@ -61,7 +61,7 @@ class SelfProfile extends TransformerAbstract
         ];
     }
 
-    private function getCompany(Company $company)
+    protected function getCompany(Company $company)
     {
         return (new CompanyTransformer())->transform($company);
     }
