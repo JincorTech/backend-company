@@ -22,7 +22,8 @@
         "maatwebsite/excel": "~2.1.0",
         "firebase/php-jwt": "^4.0",
         "flow/jsonpath": "^0.3.4",
-        "league/flysystem-aws-s3-v3": "~1.0"
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "friendsofphp/php-cs-fixer": "^2.2"
     },
     "repositories": [
         {

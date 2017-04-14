@@ -70,7 +70,7 @@ class CompanyController extends BaseController
                 'cId' => $id,
             ]));
         }
-        return $this->response->item($company, new CompanyTransformer());
+        return $this->response->item($company, CompanyTransformer::class);
     }
 
     /**
