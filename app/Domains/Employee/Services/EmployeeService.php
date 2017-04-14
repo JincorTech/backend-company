@@ -105,15 +105,25 @@ class EmployeeService
      * Get colleagues of an employee specified
      *
      * @param Employee $employee
-     * @return \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getColleagues(Employee $employee)
     {
-        return $employee->getCompany()
+        $invitations = $this->verificationRepository->findBy([
+            'reason' => EmployeeVerification::REASON_INVITED_BY_EMPLOYEE,
+            'emailVerified' => false,
+        ]);
+        $active = $employee->getCompany()
             ->getEmployees()
             ->filter(function (Employee $empl) use ($employee) {
-                return $empl->getId() !== $employee->getId();
-            });
+                return $empl->getId() !== $employee->getId() && $empl->isActive();
+            })->toArray();
+        $deleted = $employee->getCompany()
+            ->getEmployees()
+            ->filter(function (Employee $empl) use ($employee) {
+                return $empl->getId() !== $employee->getId() && !$empl->isActive();
+            })->toArray();
+        return array_merge([], $invitations, $active, $deleted);
     }
 
     /**

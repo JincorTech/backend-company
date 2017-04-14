@@ -9,6 +9,7 @@
 
 namespace App\Domains\Employee\Entities;
 
+use App\Domains\Employee\Events\EmployeeDeactivated;
 use App\Domains\Employee\Events\EmployeeRegistered;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
 use App\Domains\Company\Entities\Company;
@@ -31,7 +32,7 @@ use Hash;
  *     repositoryClass="App\Domains\Employee\Repositories\EmployeeRepository"
  * )
  */
-class Employee
+class Employee implements MetaEmployeeInterface
 {
     /**
      * @var string
@@ -70,6 +71,12 @@ class Employee
      */
     protected $isActive;
 
+    /**
+     * @var \DateTime
+     * @ODM\Field(type="date")
+     */
+    protected $registeredAt;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4()->toString();
@@ -93,7 +100,8 @@ class Employee
         $employee->setScope($verification->getCompany());
 
         $employee->department = $verification->getCompany()->getRootDepartment();
-        $verification->getCompany()->getRootDepartment()->addEmployee($employee);
+        $employee->department->addEmployee($employee);
+        $employee->registeredAt = new \DateTime();
 
         event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
 
@@ -189,4 +197,22 @@ class Employee
         }
     }
 
+    private function deactivate()
+    {
+        $this->isActive = false;
+        event(new EmployeeDeactivated($this->getLogin(), $this->getCompany()));
+    }
+
+    public function isActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getRegisteredAt(): \DateTime
+    {
+        return $this->registeredAt;
+    }
 }

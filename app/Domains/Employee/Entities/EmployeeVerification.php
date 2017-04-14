@@ -9,15 +9,12 @@
 
 namespace App\Domains\Employee\Entities;
 
-use App\Domains\Company\Contracts\EmployeeVerificationActionContract;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\Exceptions\EmployeeVerificationException;
-use App\Domains\Company\ValueObjects\VerificationProcess\Actions\RestorePasswordAction;
-use App\Domains\Company\ValueObjects\VerificationProcess\EmployeeVerificationAction;
 use App\Domains\Employee\ValueObjects\VerificationPin;
-use App\Domains\Company\ValueObjects\VerificationProcess\MustReferCompany;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Ramsey\Uuid\Uuid;
+use DateTime;
 
 /**
  * Class EmployeeVerification.
@@ -27,7 +24,7 @@ use Ramsey\Uuid\Uuid;
  *     repositoryClass="App\Domains\Employee\Repositories\EmployeeVerificationRepository"
  * )
  */
-class EmployeeVerification
+class EmployeeVerification implements MetaEmployeeInterface
 {
 
 
@@ -90,12 +87,25 @@ class EmployeeVerification
     protected $reason;
 
     /**
+     * @var \DateTime
+     * @ODM\Field(type="date")
+     */
+    protected $createdAt;
+
+    /**
+     * @var \DateTime
+     * @ODM\Field(type="date")
+     */
+    protected $emailVerifiedAt;
+
+    /**
      * EmployeeVerification constructor.
      * @param $reason string|null
      */
     public function __construct($reason = null)
     {
         $this->id = Uuid::uuid4()->toString();
+        $this->createdAt = new DateTime();
         $this->emailPin = new VerificationPin();
         $this->phonePin = new VerificationPin();
         $this->emailVerified = false;
@@ -134,6 +144,7 @@ class EmployeeVerification
     {
         if ($this->emailPin->getCode() === $pin) {
             $this->emailVerified = true;
+            $this->emailVerifiedAt = new DateTime();
         } else {
             $this->emailVerified = false;
         }
@@ -195,5 +206,31 @@ class EmployeeVerification
     {
         return $this->company;
     }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getEmailVerifiedAt(): DateTime
+    {
+        return $this->emailVerifiedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReason()
+    {
+        return $this->reason;
+    }
+
+
 
 }
