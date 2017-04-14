@@ -39,7 +39,7 @@ class CompanySeeder extends Seeder
             55.7741912,
             37.6285343,
         ]);
-        $address = new Address('Москва, ул. Алая, д. 15, оф. 89, 602030', $country, $point);
+        $address = new Address('Москва, ул. Алая, д. 15, оф. 89, 602030', $country);
         /** @var CompanyType $companyType */
         $companyType = $this->getDm()->getRepository(CompanyType::class)->findOneBy([
             'code' => 'BT1',
