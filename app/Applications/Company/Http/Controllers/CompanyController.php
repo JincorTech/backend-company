@@ -60,9 +60,12 @@ class CompanyController extends BaseController
 
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
+
+    public function my()
+    {
+
+    }
+
     public function info(Request $request, $id)
     {
         $company = $this->companyService->getCompany($id);

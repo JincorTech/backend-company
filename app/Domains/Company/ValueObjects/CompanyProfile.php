@@ -121,6 +121,9 @@ class CompanyProfile
         $this->links = new ArrayCollection([]);
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getEconomicalActivities() : ArrayCollection
     {
         if ($this->economicalActivities instanceof PersistentCollection) {
@@ -223,6 +226,56 @@ class CompanyProfile
     public function getPhone()
     {
         return $this->phone;
+    }
+
+
+    /**
+     * @param string $phone
+     */
+    public function setPhone(string $phone)
+    {
+        $this->phone = $phone;
+    }
+
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPicture(): string
+    {
+        return $this->picture;
+    }
+
+    /**
+     * @param string $picture
+     */
+    public function setPicture(string $picture)
+    {
+        $this->picture = $picture;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
     }
 
 }
