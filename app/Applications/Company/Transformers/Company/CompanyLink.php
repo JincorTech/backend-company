@@ -16,8 +16,9 @@ class CompanyLink extends TransformerAbstract
 
     public function transform(CompanyExternalLink $link)
     {
-        //TODO: implement transformation
         return [
+            'name' => $link->getName(),
+            'value' => $link->getUrl(),
         ];
     }
 

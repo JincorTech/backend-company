@@ -46,6 +46,7 @@ $api->version('v1', function ($api) {
             $api->get('/types', ['as' => 'company.types', 'uses' => $namespace.'CompanyController@companyTypes']);
             $api->get('/activityTypes', ['as' => 'company.eatypes', 'uses' => $namespace.'CompanyController@economicalActivityTypes']);
             $api->get('/my', ['as' => 'company.my', 'uses' => $namespace . 'CompanyController@my']);
+            $api->put('/my', ['as' => 'company.update', 'uses' => $namespace . 'CompanyController@update']);
             $api->get('/{id}', ['as' => 'company.info', 'uses' => $namespace.'CompanyController@info']);
             $api->post('/invite', ['as' => 'company.invite', 'uses' => $namespace.'CompanyController@invite']);
 

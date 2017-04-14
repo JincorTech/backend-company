@@ -10,6 +10,7 @@ namespace App\Applications\Company\Transformers\Employee;
 
 
 use App\Applications\Company\Transformers\Company\CompanyTransformer;
+use App\Applications\Company\Transformers\Company\MyCompany;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\Entities\Employee;
 use Carbon\Carbon;
@@ -63,7 +64,7 @@ class SelfProfile extends TransformerAbstract
 
     protected function getCompany(Company $company)
     {
-        return (new CompanyTransformer())->transform($company);
+        return (new MyCompany())->transform($company);
     }
 
 }

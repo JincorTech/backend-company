@@ -20,6 +20,7 @@ use App\Applications\Company\Http\Requests\Company\MyCompanyRequest;
 use App\Applications\Company\Http\Requests\Company\InviteEmployees;
 use App\Applications\Company\Http\Requests\PublicDictionaryRequest;
 use App\Applications\Company\Http\Requests\Company\RegisterCompany;
+use App\Applications\Company\Http\Requests\Company\UpdateProfile;
 use App\Applications\Company\Transformers\InviteToCompanyResult;
 use App\Applications\Company\Transformers\Company\MyCompany;
 use App\Domains\Company\Services\CompanyService;
@@ -61,11 +62,6 @@ class CompanyController extends BaseController
     }
 
 
-    public function my()
-    {
-
-    }
-
     public function info(Request $request, $id)
     {
         $company = $this->companyService->getCompany($id);
@@ -84,6 +80,11 @@ class CompanyController extends BaseController
     public function my(MyCompanyRequest $request)
     {
         return $this->response->item($request->getUser()->getCompany(), MyCompany::class);
+    }
+
+    public function update(UpdateProfile $request)
+    {
+        return $this->response->item($this->companyService->update($request->getUser()->getCompany(), $request->all()), MyCompany::class);
     }
 
     /**
