@@ -44,6 +44,13 @@ class TranslatableString implements TranslatableContentInterface
         $this->values = $values;
     }
 
+    /**
+     * @return array
+     */
+    public function getValues() : array
+    {
+        return $this->values;
+    }
 
     /**
      * Get value for the specified locale
@@ -60,14 +67,6 @@ class TranslatableString implements TranslatableContentInterface
             return $this->values[$locale];
         }
         return $this->values[config('app.locale')];
-    }
-
-    /**
-     * @return array
-     */
-    public function getValues()
-    {
-        return $this->values;
     }
 
     /**

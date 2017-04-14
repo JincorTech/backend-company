@@ -176,17 +176,6 @@ class Currency extends \App\Core\Dictionary\Entities\Currency implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function getName($locale = NULL): string
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', [$locale]);
-
-        return parent::getName($locale);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getAlpha3Code(): string
     {
 
@@ -235,17 +224,6 @@ class Currency extends \App\Core\Dictionary\Entities\Currency implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function setNames(array $names)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNames', [$names]);
-
-        return parent::setNames($names);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setISOCodes(\App\Core\ValueObjects\CurrencyISOCodes $ISOCodes)
     {
 
@@ -263,6 +241,39 @@ class Currency extends \App\Core\Dictionary\Entities\Currency implements \Doctri
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSign', [$sign]);
 
         return parent::setSign($sign);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName($locale = NULL): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', [$locale]);
+
+        return parent::getName($locale);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNames(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNames', []);
+
+        return parent::getNames();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setNames(array $names)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNames', [$names]);
+
+        return parent::setNames($names);
     }
 
 }
