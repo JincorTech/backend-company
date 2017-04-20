@@ -10,7 +10,7 @@ namespace App\Applications\Company\Transformers\Employee;
 
 
 use App\Domains\Employee\Entities\Employee;
-use League\Fractal\TransformerAbstract;
+use DateTime;
 
 class Colleague extends SelfProfile
 {
@@ -25,12 +25,16 @@ class Colleague extends SelfProfile
         ];
     }
 
-    public function getMeta(Employee $employee)
+    public function getMeta(Employee $employee) : array
     {
-        return [
+        $meta =  [
             'status' => $employee->isActive() ? 'active' : 'deleted',
-            'registered_at' => $employee->getRegisteredAt()->format(\DateTime::ISO8601)
+            'registeredAt' => $employee->getRegisteredAt()->format(DateTime::ISO8601)
         ];
+        if (!$employee->isActive()) {
+            $meta['deletedAt'] = $employee->getDeletedAt()->format(DateTime::ISO8601);
+        }
+        return $meta;
     }
 
 }

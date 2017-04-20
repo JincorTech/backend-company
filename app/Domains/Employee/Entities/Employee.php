@@ -11,6 +11,7 @@ namespace App\Domains\Employee\Entities;
 
 use App\Domains\Employee\Events\EmployeeDeactivated;
 use App\Domains\Employee\Events\EmployeeRegistered;
+use App\Domains\Employee\Events\ScopeChanged;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Company\Entities\Department;
@@ -72,10 +73,16 @@ class Employee implements MetaEmployeeInterface
     protected $isActive;
 
     /**
+ * @var \DateTime
+ * @ODM\Field(type="date")
+ */
+    protected $registeredAt;
+
+    /**
      * @var \DateTime
      * @ODM\Field(type="date")
      */
-    protected $registeredAt;
+    protected $deletedAt;
 
     public function __construct()
     {
@@ -111,7 +118,7 @@ class Employee implements MetaEmployeeInterface
     /**
      * @return string
      */
-    public function getId() : string
+    public function getId(): string
     {
         return $this->id;
     }
@@ -119,7 +126,7 @@ class Employee implements MetaEmployeeInterface
     /**
      * @return EmployeeProfile
      */
-    public function getProfile() : EmployeeProfile
+    public function getProfile(): EmployeeProfile
     {
         return $this->profile;
     }
@@ -137,7 +144,7 @@ class Employee implements MetaEmployeeInterface
      */
     public function getLogin(): string
     {
-        return $this->getCompany()->getId().':'.$this->getContacts()->getEmail();
+        return $this->getCompany()->getId() . ':' . $this->getContacts()->getEmail();
     }
 
     /**
@@ -151,7 +158,7 @@ class Employee implements MetaEmployeeInterface
     /**
      * @return Company
      */
-    public function getCompany() : Company
+    public function getCompany(): Company
     {
         return $this->department->getCompany();
     }
@@ -160,7 +167,7 @@ class Employee implements MetaEmployeeInterface
      * @param string $password
      * @return bool
      */
-    public function checkPassword(string $password) : bool
+    public function checkPassword(string $password): bool
     {
         return Hash::check($password, $this->password);
     }
@@ -170,6 +177,7 @@ class Employee implements MetaEmployeeInterface
      */
     public function isAdmin()
     {
+//        dd($this->getProfile()->scope);
         return $this->getProfile()->scope === EmployeeRole::ADMIN;
     }
 
@@ -187,8 +195,22 @@ class Employee implements MetaEmployeeInterface
      * Set the scope based on company Instance
      *
      * @param Company $company
+     * @param string|null $scope
      */
-    private function setScope(Company $company)
+    public function setScope(Company $company, $scope = null)
+    {
+        $oldValue = $this->profile->scope;
+        if ($scope === null) {
+            $this->setDefaultScope($company);
+            $this->scopeChangedEvent($oldValue);
+            return;
+        }
+        $this->profile->scope = $scope;
+        $this->scopeChangedEvent($oldValue);
+    }
+
+
+    private function setDefaultScope(Company $company)
     {
         if ($company->getEmployees()->count() === 0) {
             $this->profile->scope = EmployeeRole::ADMIN;
@@ -197,9 +219,10 @@ class Employee implements MetaEmployeeInterface
         }
     }
 
-    private function deactivate()
+    public function deactivate()
     {
         $this->isActive = false;
+        $this->deletedAt = new \DateTime();
         event(new EmployeeDeactivated($this->getLogin(), $this->getCompany()));
     }
 
@@ -214,5 +237,24 @@ class Employee implements MetaEmployeeInterface
     public function getRegisteredAt(): \DateTime
     {
         return $this->registeredAt;
+    }
+
+    /**
+     * @return \DateTime|null
+     *
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param $oldValue
+     */
+    protected function scopeChangedEvent($oldValue)
+    {
+        if ($oldValue !== null) {
+            event(new ScopeChanged($this, $oldValue));
+        }
     }
 }

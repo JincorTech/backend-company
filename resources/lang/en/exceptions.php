@@ -28,7 +28,8 @@ return [
     ],
     'employee' => [
         'not_found' => 'Employee :email not found',
-        'password_mismatch' => 'Login and password do not match'
+        'password_mismatch' => 'Login and password do not match',
+        'access_denied' => 'You don\'t have permissions permissions to perform this action',
     ],
     'company' => [
         'not_found' => 'Company not found on the server',

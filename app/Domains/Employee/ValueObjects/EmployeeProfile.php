@@ -51,6 +51,7 @@ class EmployeeProfile
 
     /**
      * @var string
+     * @ODM\Field(type="string")
      */
     public $scope;
 

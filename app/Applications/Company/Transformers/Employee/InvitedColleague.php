@@ -18,12 +18,13 @@ class InvitedColleague extends TransformerAbstract
     public function transform(EmployeeVerification $employeeVerification)
     {
         return [
+            'id' => $employeeVerification->getId(),
             'contacts' => [
                 'email' => $employeeVerification->getEmail(),
             ],
             'meta' => [
                 'status' => 'invited',
-                'invited_at' => $employeeVerification->getCreatedAt()->format(\DateTime::ISO8601),
+                'invitedAt' => $employeeVerification->getCreatedAt()->format(\DateTime::ISO8601),
             ]
         ];
     }

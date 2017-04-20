@@ -1,10 +1,9 @@
 <?php
 /**
- * Copyright (c) 2017  Universal Business Network - All rights reserved
- *
- * Created by hlogeon <email: hlogeon1@gmail.com>
- * Date: 2/22/17
- * Time: 2:38 PM
+ * Created by PhpStorm.
+ * User: hlogeon
+ * Date: 19/04/2017
+ * Time: 18:33
  */
 
 namespace App\Domains\Employee\Events;
@@ -12,30 +11,17 @@ namespace App\Domains\Employee\Events;
 
 use App\Domains\Employee\Entities\Employee;
 
-class PasswordChanged
+class ScopeChanged
 {
 
-    /**
-     * @var Employee
-     */
-    private $employee;
+    protected $oldValue;
 
-    /**
-     * @var string
-     */
-    private $password;
+    public $employee;
 
-    /**
-     * @var string
-     */
-    private $old;
-
-
-    public function __construct(Employee $employee, $old)
+    public function __construct(Employee $employee, string $old)
     {
         $this->employee = $employee;
-        $this->old = $old;
-        $this->password = $employee->getPassword();
+        $this->oldValue = $old;
     }
 
     /**
@@ -47,7 +33,7 @@ class PasswordChanged
     {
         return [
             'email' => $this->employee->getContacts()->getEmail(),
-            'password' => $this->password,
+            'password' => $this->employee->getPassword(),
             'company' => $this->employee->getCompany()->getId(),
             'companyName' => $this->employee->getCompany()->getProfile()->getName(),
             'name' => $this->employee->getProfile()->getName(),

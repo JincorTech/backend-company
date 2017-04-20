@@ -17,16 +17,21 @@ use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Http\Requests\Employee\ChangePassword;
 use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
+use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
 use App\Applications\Company\Http\Requests\Employee\VerifyByCode;
+use App\Applications\Company\Transformers\Employee\ColleagueList;
+use App\Applications\Company\Transformers\Employee\LoginResponse;
 use App\Applications\Company\Transformers\Employee\SelfProfile;
 use App\Applications\Company\Http\Requests\Employee\Colleagues;
 use App\Applications\Company\Transformers\EmployeeTransformer;
 use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Applications\Company\Transformers\Employee\Colleague;
+use App\Domains\Employee\Exceptions\PermissionDenied;
+use App\Applications\Company\Http\Requests\Employee\MakeAdmin;
 use App\Applications\Company\Http\Requests\Employee\Register;
-use App\Applications\Company\Transformers\Employee\ColleagueList;
+use App\Applications\Company\Http\Requests\Employee\Delete;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
-use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
 use App\Domains\Employee\Services\EmployeeService;
 use App\Core\Services\IdentityService;
 use Illuminate\Support\Collection;
@@ -195,7 +200,7 @@ class EmployeeController extends BaseController
                 'token' => $token,
                 'employee' => $employee,
             ];
-            return $this->response->item($data, App\Applications\Company\Transformers\Employee\LoginResponse::class);
+            return $this->response->item($data, LoginResponse::class);
         }
     }
 
@@ -206,6 +211,43 @@ class EmployeeController extends BaseController
     public function me(Me $request)
     {
         return $this->response->item($request->getUser(), SelfProfile::class);
+    }
+
+
+    /**
+     * @param MakeAdmin $request
+     * @return Response
+     */
+    public function makeAdmin(MakeAdmin $request)
+    {
+        try {
+            return $this->response->item(
+                $this->employeeService->makeAdmin(
+                    $request->getUser(),
+                    $request->get('id'),
+                    $request->get('value')), Colleague::class
+            );
+        } catch (PermissionDenied $exception) {
+            $this->response->error($exception->getMessage(), 403);
+        } catch (App\Domains\Employee\Exceptions\EmployeeNotFound $exception) {
+            $this->response->error($exception->getMessage(), 404);
+        }
+    }
+
+    /**
+     * @param Delete $request
+     * @param string $id
+     * @return Response
+     */
+    public function delete(Delete $request, string $id)
+    {
+        try {
+            return $this->response->item($this->employeeService->deactivate($request->getUser(), $id), Colleague::class);
+        } catch (PermissionDenied $exception) {
+            $this->response->error($exception->getMessage(), 403);
+        } catch (App\Domains\Employee\Exceptions\EmployeeNotFound $exception) {
+            $this->response->error($exception->getMessage(), 404);
+        }
     }
 
     /**

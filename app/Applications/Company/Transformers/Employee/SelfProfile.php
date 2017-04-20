@@ -13,6 +13,7 @@ use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Transformers\Company\MyCompany;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\Entities\Employee;
+use App\Domains\Employee\ValueObjects\EmployeeRole;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
@@ -31,6 +32,7 @@ class SelfProfile extends TransformerAbstract
         return [
             'id' => $employee->getId(),
             'profile' => $this->getProfile($employee),
+            'admin' => $employee->isAdmin(),
             'contacts' => $this->getContacts($employee),
             'company' => $this->getCompany($employee->getCompany()),
         ];
@@ -58,6 +60,7 @@ class SelfProfile extends TransformerAbstract
         return [
             'name' => $employee->getProfile()->getName(),
             'position' => $employee->getProfile()->getPosition(),
+            'role' => $employee->isAdmin() ? EmployeeRole::ADMIN : EmployeeRole::EMPLOYEE,
             'avatar' => $employee->getProfile()->getAvatar(),
         ];
     }

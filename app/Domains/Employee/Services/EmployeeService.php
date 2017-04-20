@@ -25,7 +25,9 @@ use App\Domains\Employee\Exceptions\CompanyNotFound;
 use App\Domains\Employee\Exceptions\EmployeeVerificationAlreadySent;
 use App\Domains\Employee\Mailables\InviteColleague;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use App\Domains\Employee\Exceptions\PermissionDenied;
 use App\Domains\Employee\Exceptions\InvitationLimitReached;
+use App\Domains\Employee\ValueObjects\EmployeeRole;
 use App\Core\Services\ImageService;
 use Validator;
 use App;
@@ -124,6 +126,15 @@ class EmployeeService
                 return $empl->getId() !== $employee->getId() && !$empl->isActive();
             })->toArray();
         return array_merge([], $invitations, $active, $deleted);
+    }
+
+    /**
+     * @param string $id
+     * @return Employee
+     */
+    public function findById(string $id) : Employee
+    {
+        return $this->repository->find($id);
     }
 
     /**
@@ -281,6 +292,29 @@ class EmployeeService
 
 
     /**
+     * @param Employee $admin
+     * @param string $id
+     * @return Employee
+     *
+     * @throws App\Domains\Employee\Exceptions\PermissionDenied
+     */
+    public function deactivate(Employee $admin, string $id)
+    {
+        /** @var Employee $employee */
+        $employee = $this->repository->find($id);
+        if (!$employee) {
+            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+        }
+        if ($employee->getCompany()->getId() !== $admin->getCompany()->getId()) {
+            throw new PermissionDenied(trans('exceptions.employee.access_denied'));
+        }
+        $employee->deactivate();
+        $this->dm->persist($employee);
+        $this->dm->flush();
+        return $employee;
+    }
+
+    /**
      * Send invitation to the company to an email and associate verification process with company and email
      * @param string $email
      * @param Employee $inviter
@@ -366,6 +400,39 @@ class EmployeeService
         $this->dm->flush();
         return $employee;
     }
+
+
+    /**
+     * @param Employee $admin
+     * @param string $id
+     * @param bool $value
+     * @return Employee
+     * @throws App\Domains\Employee\Exceptions\EmployeeNotFound
+     * @throws PermissionDenied
+     */
+    public function makeAdmin(Employee $admin, string $id, bool $value)
+    {
+        /** @var Employee $employee */
+        $employee = $this->repository->find($id);
+        if (!$employee) {
+            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+        }
+        if ($employee->getCompany()->getId() !== $admin->getCompany()->getId()) {
+            throw new PermissionDenied(trans('exceptions.employee.access_denied'));
+        }
+        if (!$employee) {
+            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+        }
+        if ($value === true) {
+            $employee->setScope($employee->getCompany(), EmployeeRole::ADMIN);
+        } else {
+            $employee->setScope($employee->getCompany(), EmployeeRole::EMPLOYEE);
+        }
+        $this->dm->persist($employee);
+        $this->dm->flush();
+        return $employee;
+    }
+
 
     /**
      * TODO: async it! i.e raise event

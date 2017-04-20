@@ -17,10 +17,7 @@ trait AuthenticatedUser
 
     public function authorize()
     {
-        if ($this->getUser() instanceof Employee) {
-            return true;
-        }
-        return false;
+        return $this->getUser() instanceof Employee;
     }
 
 

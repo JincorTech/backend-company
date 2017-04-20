@@ -63,10 +63,13 @@ $api->version('v1', function ($api) {
             $api->post('/verifyEmail', ['as' => 'employee.email.verify', 'uses' => $namespace.'EmployeeController@verifyEmail']);
             $api->get('/verifyEmail', ['as' => 'employee.email.sendPin', 'uses' => $namespace.'EmployeeController@sendEmailCode']);
 
+            $api->delete('/{id}', ['as' => 'employee.delete', 'uses' => $namespace.'EmployeeController@delete']);
+
             $api->get('/me', ['as' => 'employee.me', 'uses' => $namespace . 'EmployeeController@me']);
             $api->put('/me', ['as' => 'employee.update', 'uses' => $namespace . 'EmployeeController@update']);
             $api->get('/colleagues', ['as' => 'employee.colleagues', 'uses' => $namespace . 'EmployeeController@colleagues']);
             $api->put('/changePassword', ['as' => 'employee.email.password.change', 'uses' => $namespace.'EmployeeController@changePassword']);
+            $api->put('/admin', ['as' => 'employee.admin', 'uses' => $namespace.'EmployeeController@makeAdmin']);
 
 //            $api->post('/verifyPhone', ['as' => 'employee.phone.verify', 'uses' => $namespace.'EmployeeController@verifyPhone']);
 //            $api->get('/verifyPhone', ['as' => 'employee.phone.sendPin', 'uses' => $namespace.'EmployeeController@sendPhoneCode']);
@@ -75,8 +78,6 @@ $api->version('v1', function ($api) {
             $api->post('/login', ['as' => 'employee.login', 'uses' => $namespace.'EmployeeController@login']);
             $api->get('/companies', ['uses' => $namespace.'EmployeeController@matchingCompanies']);
             $api->get('/{employeeId}', ['as' => 'employee.info', 'uses' => $namespace.'EmployeeController@info']);
-
-            $api->post('/upload', ['uses' => $namespace . 'EmployeeController@testFileUpload']);
         });
     });
 });
