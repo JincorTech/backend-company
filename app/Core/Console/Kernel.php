@@ -2,6 +2,8 @@
 
 namespace App\Core\Console;
 
+use App\Applications\Company\Console\Commands\GetIndex;
+use App\Applications\Company\Console\Commands\IndexCompanies;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        IndexCompanies::class,
+        GetIndex::class,
     ];
 
     /**

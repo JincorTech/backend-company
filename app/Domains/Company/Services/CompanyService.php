@@ -33,7 +33,7 @@ class CompanyService
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentRepository
      */
-    private $repository;
+    public $repository;
 
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentRepository
