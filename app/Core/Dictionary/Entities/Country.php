@@ -108,6 +108,16 @@ class Country
         return $this->names->getValue($locale);
     }
 
+
+    public function getNames()
+    {
+        if (is_array($this->names)) {
+            $this->names = new TranslatableString($this->names);
+        }
+        return $this->names->getValues();
+    }
+
+
     /**
      * @return Currency
      */

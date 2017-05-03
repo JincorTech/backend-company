@@ -50,11 +50,20 @@ class GetIndex extends Command
             'type' => $this->argument('type'),
             'body' => [
                 'query' => [
-                    'multi_match' => [
-                        'query' => 'Jincor Company',
-                        'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
-                        'type' => 'cross_fields'
-                    ]
+                    'bool' => [
+                        'must' => [
+                            'multi_match' => [
+                                'query' => 'Jincor Company',
+                                'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
+                                'type' => 'cross_fields'
+                            ]
+                        ],
+                        'filter' => [
+                            'term' => [
+                                'country' => 'ed680733-6f75-4273-8a65-de0c0517b056'
+                            ]
+                        ]
+                    ],
                 ]
             ]
         ]));

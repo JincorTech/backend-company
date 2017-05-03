@@ -69,6 +69,7 @@ class Address
         return [
             'formattedAddress' => $this->getFormattedAddress(),
             'country' => $this->country->getId(),
+            'city' => $this->city->getId(),
         ];
     }
 
@@ -86,5 +87,20 @@ class Address
     public function getCity()
     {
         return $this->city;
+    }
+
+    public function getStringValues() : array
+    {
+        $values = [];
+        foreach ($this->country->getNames() as $locale => $name) {
+            $values[$locale]['country'] = $name;
+        }
+        if ($this->getCity()) {
+            foreach ($this->city->getNames() as $loc => $city) {
+                $values[$loc]['city'] = $city;
+            }
+        }
+
+        return $values;
     }
 }

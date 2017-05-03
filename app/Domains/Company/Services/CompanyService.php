@@ -13,6 +13,8 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Domains\Company\ValueObjects\CompanyExternalLink;
+use App\Domains\Company\Events\CompanyUpdated;
+use App\Domains\Company\Events\CompanyAdded;
 use App\Domains\Company\Entities\CompanyType;
 use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -81,7 +83,7 @@ class CompanyService
         }
         $company = new Company($legalName, $address, $ct);
         $this->dm->persist($company);
-
+        event(new CompanyAdded($company));
         return $this->verification()->beginVerificationProcess($company);
     }
 
@@ -132,9 +134,14 @@ class CompanyService
                     case 'legalName':
                         $company->getProfile()->changeName($value);
                         break;
+
+                    case 'description':
+                        $company->getProfile()->setDescription($value);
+                        break;
                 }
 
         }
+        event(new CompanyUpdated($company));
         $this->dm->persist($company);
         $this->dm->flush();
         return $company;
@@ -164,9 +171,9 @@ class CompanyService
             $country = $company->getProfile()->getAddress()->getCountry();
         }
         if (array_key_exists('city', $value) && !empty($value['city'])) {
-            $city = $this->dm->getRepository(Country::class)->find($value['city']);
+            $city = $this->dm->getRepository(City::class)->find($value['city']);
             if (!$city) {
-                throw new UnprocessableEntityHttpException(trans('exceptions.country.not_found'));
+                throw new UnprocessableEntityHttpException(trans('exceptions.city.not_found'));
             }
         } else {
             $city = $company->getProfile()->getAddress()->getCity();

@@ -48,6 +48,7 @@ class MyCompany extends TransformerAbstract
     {
         return [
             'brandName' => $this->transformBrandName($profile->getBrandName()),
+            'description' => $profile->getDescription(),
             'picture' => $profile->getPicture(),
             'links' => $this->transformLinks($profile->getLinks()),
             'email' => $profile->getEmail(),

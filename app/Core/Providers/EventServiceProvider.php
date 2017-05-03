@@ -2,6 +2,11 @@
 
 namespace App\Core\Providers;
 
+use App\Core\Handlers\Company\Search\Index;
+use App\Core\Handlers\Company\Search\RemoveFromIndex;
+use App\Domains\Company\Events\CompanyAdded;
+use App\Domains\Company\Events\CompanyRemoved;
+use App\Domains\Company\Events\CompanyUpdated;
 use App\Domains\Employee\Events\EmployeeDeactivated;
 use App\Domains\Employee\Events\EmployeeRegistered;
 use App\Domains\Employee\Events\PasswordChanged;
@@ -41,7 +46,16 @@ class EventServiceProvider extends ServiceProvider
         ],
         EmployeeDeactivated::class => [
             EmployeeDeactivatedHandler::class,
-        ]
+        ],
+        CompanyAdded::class => [
+            Index::class,
+        ],
+        CompanyUpdated::class => [
+            Index::class,
+        ],
+        CompanyRemoved::class => [
+            RemoveFromIndex::class,
+        ],
     ];
 
     /**
@@ -52,7 +66,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

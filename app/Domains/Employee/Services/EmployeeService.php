@@ -35,7 +35,6 @@ use Mail;
 
 class EmployeeService
 {
-
     const VERIFICATION_ERR = 'error';
     const VERIFICATION_OK = 'ok';
 
@@ -241,7 +240,6 @@ class EmployeeService
         $employees->each(function (Employee $employee) use ($companies) {
             $companies->put($employee->getCompany()->getId(), $employee->getCompany());
         });
-
         return $companies;
     }
 

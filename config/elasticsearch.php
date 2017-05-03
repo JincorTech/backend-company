@@ -34,7 +34,12 @@ return [
              */
 
             'hosts' => [
-                'search:9200',
+                [
+                    'host' => env('ELASTIC_HOST', 'search'), //'search',
+                    'port' => env('ELASTIC_PORT', 9200),
+                    'user' => env('ELASTIC_USER', 'elastic'),
+                    'pass' => env('ELASTIC_PASSWORD', 'changeme')
+                ],
             ],
 
             /**
