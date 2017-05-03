@@ -49,12 +49,20 @@ class Index implements CompanyIndexContract
                 $fields['brandName'.$locale] = $brandName;
             }
         }
-        Elasticsearch::connection()->index([
-            'index' => self::INDEX,
-            'type' => self::TYPE,
-            'id' => $event->getCompany()->getId(),
-            'body' => $fields,
-        ]);
+        try {
+            Elasticsearch::connection()->index([
+                'index' => self::INDEX,
+                'type' => self::TYPE,
+                'id' => $event->getCompany()->getId(),
+                'body' => $fields,
+            ]);
+        } catch (\Exception $e) {
+            if (env('APP_ENV') === 'local') {
+                return;
+            } else {
+                throw $e;
+            }
+        }
     }
 
 }

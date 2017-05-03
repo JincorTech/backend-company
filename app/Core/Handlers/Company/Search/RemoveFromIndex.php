@@ -18,11 +18,19 @@ class RemoveFromIndex implements CompanyIndexContract
 
     public function handle(BaseCompanyEvent $event)
     {
-        Elasticsearch::connection()->delete([
-            'index' => self::INDEX,
-            'type' => self::TYPE,
-            'id' => $event->getCompany()->getId(),
-        ]);
+        try {
+            Elasticsearch::connection()->delete([
+                'index' => self::INDEX,
+                'type' => self::TYPE,
+                'id' => $event->getCompany()->getId(),
+            ]);
+        } catch (\Exception $e) {
+            if (env('APP_ENV') === 'local') {
+                return;
+            } else {
+                throw $e;
+            }
+        }
     }
 
 }

@@ -20,14 +20,14 @@ class CitySeeder extends DatabaseSeeder
         $en = Factory::create('en_US');
         $ru = Factory::create('ru_RU');
         $countries = $this->getDm()->getRepository(Country::class)->findAll();
-        $cities = [];
         /** @var Country $country */
         foreach ($countries as $country) {
+            $cities = [];
             while (count($cities) < 5) {
                 $city = new City([
                     'en' => $en->city,
                     'ru' => $ru->city,
-                ], $country, new Point([$en->longitude, $en->latitude]));
+                ], $country);
                 $this->getDm()->persist($city);
                 $cities[] = $city;
             }

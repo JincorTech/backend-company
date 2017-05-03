@@ -3,6 +3,7 @@
 namespace App\Core\Console;
 
 use App\Applications\Company\Console\Commands\GetIndex;
+use App\Applications\Company\Console\Commands\SeedIndex;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         GetIndex::class,
+        SeedIndex::class,
     ];
 
     /**

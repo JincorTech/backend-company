@@ -25,7 +25,7 @@ class CityRepository extends DocumentRepository
     {
         return new ArrayCollection($this->createQueryBuilder()
             ->field('country')->references($country)
-            ->getQuery()->execute()->toArray());
+            ->getQuery()->execute()->toArray(false));
     }
 
 

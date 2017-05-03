@@ -70,12 +70,12 @@ final class City
      * @param Country $country
      * @param Point $location
      */
-    public function __construct(array $names, Country $country, Point $location)
+    public function __construct(array $names, Country $country/*, Point $location*/)
     {
         $this->id = Uuid::uuid4();
         $this->setNames($names);
         $this->country = $country;
-        $this->setCoordinates(new Coordinates($location));
+//        $this->setCoordinates(new Coordinates($location));
     }
 
     /**

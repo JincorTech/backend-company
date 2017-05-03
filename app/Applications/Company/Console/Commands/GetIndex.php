@@ -9,14 +9,14 @@
 namespace App\Applications\Company\Console\Commands;
 
 
+use App\Domains\Company\Search\CompanyIndexContract;
 use App\Domains\Company\Services\CompanyService;
 use Illuminate\Console\Command;
 use Elasticsearch;
 
-class GetIndex extends Command
+class GetIndex extends Command implements CompanyIndexContract
 {
 
-    const COMPANIES = 'companies';
 
     /**
      * The name and signature of the console command.
@@ -30,7 +30,7 @@ class GetIndex extends Command
      *
      * @var string
      */
-    protected $description = 'Rebuild search index for specified collection(' . self::COMPANIES . ')';
+    protected $description = 'Rebuild search index for specified collection(' . self::INDEX . ')';
 
     /**
      * @var CompanyService
@@ -53,16 +53,21 @@ class GetIndex extends Command
                     'bool' => [
                         'must' => [
                             'multi_match' => [
-                                'query' => 'Jincor Company',
+                                'query' => 'Авто сервис',
                                 'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
                                 'type' => 'cross_fields'
                             ]
                         ],
-                        'filter' => [
-                            'term' => [
-                                'country' => 'ed680733-6f75-4273-8a65-de0c0517b056'
+                        'should' => [
+                            'match' => [
+                                'country' => '5a1f7bb6-3461-40f2-ab8b-110afe86980b'
                             ]
-                        ]
+                        ],
+//                        'filter' => [
+//                            'term' => [
+//                                'country' => 'ed680733-6f75-4273-8a65-de0c0517b056'
+//                            ]
+//                        ]
                     ],
                 ]
             ]
