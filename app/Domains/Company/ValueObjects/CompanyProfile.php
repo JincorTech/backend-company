@@ -266,6 +266,11 @@ class CompanyProfile
         $this->picture = $url;
     }
 
+    public function unsetPicture()
+    {
+        $this->picture = null;
+    }
+
     /**
      * @return string
      */

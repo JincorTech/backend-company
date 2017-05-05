@@ -151,7 +151,12 @@ class CompanyService
     public function uploadImage(Company $company, string $data)
     {
         $filepath = $company->getId() . '/avatars/' . uniqid('pic_') . '.png';
-        $company->getProfile()->setPicture(App::make(App\Core\Services\ImageService::class)->upload($filepath, $data));
+        if (empty($data) || is_null($data)) {
+            $company->getProfile()->unsetPicture();
+        } else {
+            $company->getProfile()->setPicture(App::make(App\Core\Services\ImageService::class)->upload($filepath, $data));
+        }
+
         $this->dm->persist($company);
         return $company->getProfile()->getPicture();
     }
