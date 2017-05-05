@@ -191,7 +191,7 @@ class CompanyService
     {
         $links = [];
         foreach ($value as $linkKey => $link) {
-            array_push($links, new CompanyExternalLink($link['name'], $link['value']));
+            array_push($links, new CompanyExternalLink($link));
         }
         $company->getProfile()->setLinks($links);
     }

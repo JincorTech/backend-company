@@ -36,12 +36,12 @@ class CompanyExternalLink
     private $url;
 
 
-    public function __construct(string $name, string $url)
+    public function __construct(string $url)
     {
         if (!$this->validateURL($url)) {
             throw new InvalidArgumentException("URL: " . $url . " should be a valid URL string");
         }
-        $this->name = $name;
+        $this->name = $this->getDomain($url);
         $this->url = $url;
     }
 
@@ -65,6 +65,16 @@ class CompanyExternalLink
     private function validateURL(string $url) : bool
     {
         return preg_match('#((https?)://(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)#i', $url);
+    }
+
+    public function getDomain($url)
+    {
+        $pieces = parse_url($url);
+        $domain = isset($pieces['host']) ? $pieces['host'] : '';
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return $regs['domain'];
+        }
+        return false;
     }
 
 
