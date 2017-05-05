@@ -18,6 +18,7 @@ $api->version('v1', function ($api) {
             $namespace = 'App\Applications\Dictionary\Http\Controllers\\';
 
             $api->get('/country', ['as' => 'dictionary.country.list', 'uses' => $namespace.'DictionaryController@listCountries']);
+            $api->get('/city', ['as' => 'dictionary.city.list', 'uses' => $namespace.'DictionaryController@listCities']);
             $api->get('/country/schema', ['as' => 'dictionary.country.schema', 'uses' => $namespace.'DictionaryController@countriesListSchema']);
         });
     });

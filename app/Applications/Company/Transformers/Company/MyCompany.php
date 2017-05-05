@@ -9,7 +9,7 @@
 namespace App\Applications\Company\Transformers\Company;
 
 
-use App\Applications\Company\Transformers\Dictionary\CityTransformer;
+use App\Applications\Dictionary\Transformers\CityTransformer;
 use App\Applications\Company\Transformers\Dictionary\CompanyTypeTransformer;
 use App\Applications\Company\Transformers\Dictionary\CountryTransformer;
 use App\Applications\Company\Transformers\Dictionary\EconomicalActivityTypeTransformer;

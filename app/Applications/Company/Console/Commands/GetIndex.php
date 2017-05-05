@@ -30,7 +30,7 @@ class GetIndex extends Command implements CompanyIndexContract
      *
      * @var string
      */
-    protected $description = 'Rebuild search index for specified collection(' . self::INDEX . ')';
+    protected $description = 'Test index searching';
 
     /**
      * @var CompanyService
@@ -51,23 +51,23 @@ class GetIndex extends Command implements CompanyIndexContract
             'body' => [
                 'query' => [
                     'bool' => [
-                        'must' => [
-                            'multi_match' => [
-                                'query' => 'Авто сервис',
-                                'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
-                                'type' => 'cross_fields'
-                            ]
-                        ],
-                        'should' => [
-                            'match' => [
+//                        'must' => [
+//                            'multi_match' => [
+//                                'query' => 'Авто',
+//                                'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
+//                                'type' => 'cross_fields'
+//                            ]
+//                        ],
+//                        'should' => [
+//                            'match' => [
+//                                'country' => '5a1f7bb6-3461-40f2-ab8b-110afe86980b'
+//                            ]
+//                        ],
+                        'filter' => [
+                            'term' => [
                                 'country' => '5a1f7bb6-3461-40f2-ab8b-110afe86980b'
                             ]
-                        ],
-//                        'filter' => [
-//                            'term' => [
-//                                'country' => 'ed680733-6f75-4273-8a65-de0c0517b056'
-//                            ]
-//                        ]
+                        ]
                     ],
                 ]
             ]

@@ -6,7 +6,7 @@
  * Time: 11:07
  */
 
-namespace App\Applications\Company\Transformers\Dictionary;
+namespace App\Applications\Dictionary\Transformers;
 
 
 use App\Core\Dictionary\Entities\City;
