@@ -442,7 +442,11 @@ class EmployeeService
     private function uploadAvatar(Employee $employee, string $data)
     {
         $filepath = $employee->getCompany()->getId() . '/employees/avatars/' . uniqid('ava_') . '.png';
-        $employee->getProfile()->setAvatar(App::make(ImageService::class)->upload($filepath, $data));
+        if (empty($data) || is_null($data)) {
+            $employee->getProfile()->unsetAvatar();
+        } else {
+            $employee->getProfile()->setAvatar(App::make(ImageService::class)->upload($filepath, $data));
+        }
         $this->dm->persist($employee);
         return $employee->getProfile()->getAvatar();
     }

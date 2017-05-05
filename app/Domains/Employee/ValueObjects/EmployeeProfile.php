@@ -109,6 +109,11 @@ class EmployeeProfile
         $this->avatar = $url;
     }
 
+    public function unsetAvatar()
+    {
+        $this->avatar  = null;
+    }
+
     public function getAvatar()
     {
         return $this->avatar;
