@@ -156,8 +156,6 @@ class CompanyService
         } else {
             $company->getProfile()->setPicture(App::make(App\Core\Services\ImageService::class)->upload($filepath, $data));
         }
-
-        $this->dm->persist($company);
         return $company->getProfile()->getPicture();
     }
 
