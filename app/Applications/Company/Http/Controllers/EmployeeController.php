@@ -118,7 +118,7 @@ class EmployeeController extends BaseController
             (new EmployeeRegisterSuccess())
                 ->transform(Collection::make([
                     'employee' => $employee, 'token' => $token,
-            ]))
+                ]))
         );
     }
 
@@ -131,47 +131,6 @@ class EmployeeController extends BaseController
     {
         $verification = $this->verificationService->sendEmailRestorePassword($request->getEmail())->getVerification();
         return $this->response->item($verification, EmployeeVerificationTransformer::class);
-    }
-
-
-    /**
-     * Force password change
-     *
-     * @param ChangePassword $request
-     * @return Response
-     */
-    public function changePassword(ChangePassword $request)
-    {
-        $oldPassword = null;
-        if ($request->getVerificationId()) {
-            $employee = $this->employeeService->matchVerificationAndCompany(
-                $request->getVerificationId(),
-                $request->getCompanyId()
-            );
-        } else {
-                $employee = App::make('AppUser');
-                $oldPassword = $request->getOldPassword();
-        }
-        $this->employeeService->changePassword(
-            $employee,
-            $request->getPassword(),
-            $oldPassword
-        );
-        return $this->response->item($employee, EmployeeTransformer::class);
-    }
-
-    /**
-     * @param MatchingCompanies $request
-     * @return Response
-     */
-    public function matchingCompanies(MatchingCompanies $request)
-    {
-        $companies = $this->employeeService->getMatchingCompanies([
-            'email' => $request->getEmail(),
-            'password' => $request->getPassword(),
-            'verificationId' => $request->getVerificationId(),
-        ]);
-        return $this->response->collection($companies, CompanyTransformer::class);
     }
 
 
@@ -203,6 +162,57 @@ class EmployeeController extends BaseController
             return $this->response->item($data, LoginResponse::class);
         }
     }
+
+
+    /**
+     * Force password change
+     *
+     * @param ChangePassword $request
+     * @return Response
+     */
+    public function changePassword(ChangePassword $request)
+    {
+        $oldPassword = null;
+        if ($request->getVerificationId()) {
+            $employee = $this->employeeService->matchVerificationAndCompany(
+                $request->getVerificationId(),
+                $request->getCompanyId()
+            );
+        } else {
+            $employee = App::make('AppUser');
+            $oldPassword = $request->getOldPassword();
+        }
+        $this->employeeService->changePassword(
+            $employee,
+            $request->getPassword(),
+            $oldPassword
+        );
+        $token = $this->identityService->login(
+            $employee->getContacts()->getEmail(),
+            $request->getPassword(),
+            $request->getCompanyId()
+        );
+        $data = (object) [
+            'token' => $token,
+            'employee' => $employee,
+        ];
+        return $this->response->item($data, LoginResponse::class);
+    }
+
+    /**
+     * @param MatchingCompanies $request
+     * @return Response
+     */
+    public function matchingCompanies(MatchingCompanies $request)
+    {
+        $companies = $this->employeeService->getMatchingCompanies([
+            'email' => $request->getEmail(),
+            'password' => $request->getPassword(),
+            'verificationId' => $request->getVerificationId(),
+        ]);
+        return $this->response->collection($companies, CompanyTransformer::class);
+    }
+
 
     /**
      * @param Me $request
