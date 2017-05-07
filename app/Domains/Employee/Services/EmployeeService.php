@@ -110,10 +110,18 @@ class EmployeeService
      */
     public function getColleagues(Employee $employee)
     {
-        $invitations = $this->verificationRepository->findBy([
-            'reason' => EmployeeVerification::REASON_INVITED_BY_EMPLOYEE,
-            'emailVerified' => false,
-        ]);
+        $invitations = [];
+        $invitationsCursor = $this->verificationRepository->createQueryBuilder()
+            ->field('reason')->equals(EmployeeVerification::REASON_INVITED_BY_EMPLOYEE)
+            ->field('emailVerified')->equals(false)
+            ->field('company')->references($employee->getCompany())->getQuery()->execute();
+        foreach ($invitationsCursor as $invite) {
+            $invitations[] = $invite;
+        }
+//        $invitations = $this->verificationRepository->findBy([
+//            'reason' => EmployeeVerification::REASON_INVITED_BY_EMPLOYEE,
+//            'emailVerified' => false,
+//        ]);
         $active = $employee->getCompany()
             ->getEmployees()
             ->filter(function (Employee $empl) use ($employee) {
