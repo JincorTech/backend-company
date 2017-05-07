@@ -32,6 +32,7 @@ class UpdateProfile extends BaseAPIRequest
             'legalName' => 'string',
             'profile' => 'array',
             'profile.brandName' => 'array',
+            'profile.description' => 'string|max:550',
             'profile.brandName.*' => 'string',
             'profile.links' => 'array',
             'profile.links.*' => 'url',
