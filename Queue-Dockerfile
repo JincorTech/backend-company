@@ -9,6 +9,8 @@ ENV SUPERVISOR_VERSION=3.3.1
 ENV QUEUE_CONNECTION=redis
 ENV QUEUE_NAME=default
 
+
+ADD . /var/www/laravel
 # Install pdo if you want to use database queue
 RUN docker-php-ext-install pdo
 
