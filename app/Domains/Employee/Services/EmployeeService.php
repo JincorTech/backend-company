@@ -172,9 +172,7 @@ class EmployeeService
     {
         /** @var Company $company */
         $company = $this->dm->getRepository(Company::class)->find($id);
-
         if (!$company) throw new CompanyNotFound("Company " . $id . " not found");
-
         return $company->getEmployees()->filter(function (Employee $employee) use($email) {
             return $employee->getContacts()->getEmail() === $email;
         })->first();
@@ -188,7 +186,6 @@ class EmployeeService
     public function findByEmailAndPassword(string $email, string $password) : Collection
     {
         $employees = $this->findByEmail($email);
-
         return $employees->filter(function (Employee $employee) use($password) {
             return $employee->checkPassword($password);
         });
@@ -250,7 +247,6 @@ class EmployeeService
      */
     public function matchVerificationAndCompany(string $verificationId, string $companyId) : Employee
     {
-
         /** @var Company|null $company */
         $company = $this->dm->getRepository(Company::class)->find($companyId);
         /** @var EmployeeVerification $verification */
