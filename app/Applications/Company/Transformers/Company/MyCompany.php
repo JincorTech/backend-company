@@ -53,7 +53,7 @@ class MyCompany extends TransformerAbstract
             'links' => $this->transformLinks($profile->getLinks()),
             'email' => $profile->getEmail(),
             'phone' => $profile->getPhone(),
-            'formattedAddress' => $this->transformAddress($profile->getAddress()),
+            'address' => $this->transformAddress($profile->getAddress()),
         ];
     }
 
