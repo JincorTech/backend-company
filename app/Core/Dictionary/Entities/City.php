@@ -27,7 +27,7 @@ use Ramsey\Uuid\Uuid;
  *     }
  * )
  */
-final class City
+class City
 {
 
     use HasTranslatableName;
