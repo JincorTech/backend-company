@@ -59,6 +59,8 @@ class SelfProfile extends TransformerAbstract
     {
         return [
             'name' => $employee->getProfile()->getName(),
+            'firstName' => $employee->getProfile()->getFirstName(),
+            'lastName' => $employee->getProfile()->getLastName(),
             'position' => $employee->getProfile()->getPosition(),
             'role' => $employee->isAdmin() ? EmployeeRole::ADMIN : EmployeeRole::EMPLOYEE,
             'avatar' => $employee->getProfile()->getAvatar(),
