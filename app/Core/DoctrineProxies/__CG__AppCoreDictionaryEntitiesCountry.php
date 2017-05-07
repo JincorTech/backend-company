@@ -187,6 +187,17 @@ class Country extends \App\Core\Dictionary\Entities\Country implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function getNames()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNames', []);
+
+        return parent::getNames();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCurrency(): \App\Core\Dictionary\Entities\Currency
     {
 
