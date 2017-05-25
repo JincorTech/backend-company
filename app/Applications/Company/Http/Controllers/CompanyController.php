@@ -23,8 +23,9 @@ use App\Applications\Company\Http\Requests\Company\RegisterCompany;
 use App\Applications\Company\Http\Requests\Company\UpdateProfile;
 use App\Applications\Company\Transformers\InviteToCompanyResult;
 use App\Applications\Company\Transformers\Company\MyCompany;
-use App\Domains\Company\Services\CompanyService;
+use App\Applications\Company\Http\Requests\Company\Search;
 use App\Domains\Employee\Services\EmployeeService;
+use App\Domains\Company\Services\CompanyService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
@@ -143,5 +144,17 @@ class CompanyController extends BaseController
             $responseTypes->push($type);
         }
         return $this->response->collection($responseTypes, EconomicalActivityTypeTransformer::class);
+    }
+
+    /**
+     * @param Search $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function search(Search $request)
+    {
+        $items = $this->companyService->search($request->getQuery(), $request->getCountryId(), $request->getActivityId());
+        $paginator = new App\Core\Pagination\Paginator($items, count($items), config('view.perPage'));
+        return $this->response->collection($paginator->getCollection(), CompanyTransformer::class)
+            ->meta('pagination', $paginator->toArray());
     }
 }

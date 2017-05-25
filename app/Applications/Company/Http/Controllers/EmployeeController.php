@@ -154,7 +154,11 @@ class EmployeeController extends BaseController
             return $this->response->collection($companies, CompanyTransformer::class);
         }
         if ($token !== false) {
-            $employee = $this->employeeService->findByCompanyIdAndEmail($request->getCompanyId(), $request->getEmail());
+            $company = $this->employeeService->getMatchingCompanies([
+                'email' => $request->getEmail(),
+                'password' => $request->getPassword()
+            ])->first();
+            $employee = $this->employeeService->findByCompanyIdAndEmail($company->getId(), $request->getEmail());
             $data = (object) [
                 'token' => $token,
                 'employee' => $employee,

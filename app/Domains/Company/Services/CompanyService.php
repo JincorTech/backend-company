@@ -9,10 +9,12 @@
 
 namespace App\Domains\Company\Services;
 
+use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Domains\Company\ValueObjects\CompanyExternalLink;
+use App\Domains\Company\Search\CompanyIndexContract;
 use App\Domains\Company\Events\CompanyUpdated;
 use App\Domains\Company\Events\CompanyAdded;
 use App\Domains\Company\Entities\CompanyType;
@@ -23,9 +25,10 @@ use App\Core\Dictionary\Entities\Country;
 use App\Core\Dictionary\Entities\City;
 use App\Core\Services\AddressService;
 use App\Core\ValueObjects\Address;
+use Elasticsearch;
 use App;
 
-class CompanyService
+class CompanyService implements CompanyIndexContract
 {
     /**
      * @var DocumentManager|mixed
@@ -47,12 +50,18 @@ class CompanyService
      */
     private $eActivityRepository;
 
+    /**
+     * @var int
+     */
+    private $searchSize;
+
     public function __construct()
     {
         $this->dm = App::make(DocumentManager::class);
         $this->repository = $this->dm->getRepository(Company::class);
         $this->typesRepository = $this->dm->getRepository(CompanyType::class);
         $this->eActivityRepository = $this->dm->getRepository(EconomicalActivityType::class);
+        $this->searchSize = config('elasticsearch.size') ?:  1000;
     }
 
     /**
@@ -209,6 +218,85 @@ class CompanyService
             array_push($types, $type);
         }
         $company->getProfile()->setEconomicalActivities($types);
+    }
+
+    /**
+     * @param null|string $query
+     * @param null|string $country
+     * @param null|string $activity
+     * @return Collection
+     */
+    public function search($query = null, $country = null, $activity = null)
+    {
+        $result = Elasticsearch::connection()->search(
+            $this->buildSearchRequest($query, $country, $activity)
+        );
+
+        if (!array_key_exists('hits', $result) || !array_key_exists('hits', $result['hits'])) {
+            return new Collection();
+        }
+        $ids = Collection::make($result['hits']['hits'])->map(function($item) {
+            return $item['_id'];
+        });
+
+        return Collection::make($this->repository->findBy([
+            '_id' => [
+                '$in' => $ids->toArray()
+            ]
+        ]));
+    }
+
+
+    /**
+     * @param null|string $query
+     * @param null|string $country
+     * @param null|string $activity
+     *
+     * @return array
+     */
+    private function buildSearchRequest($query = null, $country = null, $activity = null)
+    {
+        $request = [
+            'index' => '',
+            'type' => '',
+            '_source' => '_id',
+            'size' => $this->searchSize,
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'filter' => [
+                            'bool' => [
+                                'must' => []
+                            ]
+                        ]
+                    ],
+                ]
+            ]
+        ];
+
+        if ($query !== null && !empty($query)) {
+            $request['body']['query']['bool']['must'] = [
+                'multi_match' => [
+                    'query' => $query,
+                    'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
+                    'type' => 'cross_fields'
+                ]
+            ];
+        }
+
+        if ($country !== null) {
+            $request['body']['query']['bool']['filter']['bool']['must'][] = [
+                'term' => ['country' => $country],
+            ];
+        }
+
+        if ($activity !== null) {
+            $request['body']['query']['bool']['filter']['bool']['must'][] = [
+                'term' => ['eActivityIds' => $activity],
+            ];
+        }
+
+        return $request;
     }
 
 

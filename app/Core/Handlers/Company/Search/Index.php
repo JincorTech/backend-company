@@ -28,8 +28,12 @@ class Index implements CompanyIndexContract
                 $fields['companyType'.$loc] = $type;
             }
         }
+
+        $fields['eActivityIds'] = [];
         /** @var EconomicalActivityType $economicalActivity */
         foreach ($event->getCompany()->getProfile()->getEconomicalActivities() as $economicalActivity) {
+            $fields['eActivityIds'][] = $economicalActivity->getId();
+
             foreach ($economicalActivity->getNames()->getValues() as $l => $activity) {
                 if (!array_key_exists('economicalActivities'.$l, $fields)) {
                     $fields['economicalActivities'.$l] = $activity;

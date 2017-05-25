@@ -13,6 +13,8 @@ return [
 
     'defaultConnection' => 'default',
 
+    'size' => 1000,
+
     /**
      * These are the connection parameters used when building a client.
      */

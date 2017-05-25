@@ -48,29 +48,27 @@ class GetIndex extends Command implements CompanyIndexContract
         dd(Elasticsearch::connection()->search([
             'index' => $this->argument('collection'),
             'type' => $this->argument('type'),
-            'body' => [
-                'query' => [
-                    'bool' => [
+//            'body' => [
+//                'query' => [
+//                    'bool' => [
 //                        'must' => [
 //                            'multi_match' => [
-//                                'query' => 'Авто',
+//                                'query' => 'Урал',
 //                                'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
 //                                'type' => 'cross_fields'
 //                            ]
 //                        ],
-//                        'should' => [
-//                            'match' => [
-//                                'country' => '5a1f7bb6-3461-40f2-ab8b-110afe86980b'
+//                        'filter' => [
+//                            'bool' => [
+//                                'must' => [
+//                                    ['term' => ['country' => 'd169ea21-c226-4c85-847b-ef4031408541',]],
+//                                    ['term' => ['eActivityIds' => '283a21b9-efbc-4f13-a37c-2c28077690f9',]],
+//                                ]
 //                            ]
-//                        ],
-                        'filter' => [
-                            'term' => [
-                                'country' => '5a1f7bb6-3461-40f2-ab8b-110afe86980b'
-                            ]
-                        ]
-                    ],
-                ]
-            ]
+//                        ]
+//                    ],
+//                ]
+//            ]
         ]));
     }
 

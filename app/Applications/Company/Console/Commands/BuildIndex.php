@@ -35,55 +35,62 @@ class BuildIndex extends Command implements CompanyIndexContract
     {
         $params = [
             'index' => self::INDEX,
-//            'type' => self::TYPE,
             'body' => [
                 'settings' => [
                     'number_of_shards' => 5,
                     'number_of_replicas' => 2
-                ],
-                'mappings' => [
-                    self::TYPE => [
-                        '_source' => [
-                            'enabled' => true
-                        ],
-                        'dynamic_templates' => [
-                            ['en' => [
-                                'match' => '*en',
-                                'match_mapping_type' => 'string',
-                                'mapping' => [
-                                    'type' => 'string',
-                                    'analyzer' => 'english'
-                                ]
-                            ]],
-                            ['ru' => [
-                                'match' => '*ru',
-                                'match_mapping_type' => 'string',
-                                'mapping' => [
-                                    'type' => 'string',
-                                    'analyzer' => 'russian'
-                                ]
-                            ]],
-                        ],
-                        'properties' => [
-                            'legalName' => [
-                                'type' => 'string',
-                                'analyzer' => 'standard'
-                            ],
-                            'country' => [
-                                'type' => 'string',
-                                'index' => 'not_analyzed'
-                            ],
-                            'city' => [
-                                'type' => 'string',
-                                'index' => 'not_analyzed'
-                            ],
-                        ]
-                    ]
-                ],
+                ]
             ]
         ];
 
-//        dd(Elasticsearch::connection()->indices()->create($params));
-        dd(Elasticsearch::connection()->indices()->delete($params));
+        Elasticsearch::connection()->indices()->create($params);
+        $mappings = [
+            'index' => self::INDEX,
+            'type' => self::TYPE,
+            'body' => [
+                self::TYPE => [
+                    '_source' => [
+                        'enabled' => true
+                    ],
+                    'dynamic_templates' => [
+                        ['en' => [
+                            'match' => '*en',
+                            'match_mapping_type' => 'string',
+                            'mapping' => [
+                                'type' => 'string',
+                                'analyzer' => 'english'
+                            ]
+                        ]],
+                        ['ru' => [
+                            'match' => '*ru',
+                            'match_mapping_type' => 'string',
+                            'mapping' => [
+                                'type' => 'string',
+                                'analyzer' => 'russian'
+                            ]
+                        ]],
+                    ],
+                    'properties' => [
+                        'legalName' => [
+                            'type' => 'string',
+                            'analyzer' => 'standard'
+                        ],
+                        'country' => [
+                            'type' => 'string',
+                            'index' => 'not_analyzed'
+                        ],
+                        'eActivityIds' => [
+                            'type' => 'string',
+                            'index' => 'not_analyzed'
+                        ],
+                        'city' => [
+                            'type' => 'string',
+                            'index' => 'not_analyzed'
+                        ],
+                    ]
+                ]
+            ],
+        ];
+        Elasticsearch::connection()->indices()->putMapping($mappings);
     }
 }

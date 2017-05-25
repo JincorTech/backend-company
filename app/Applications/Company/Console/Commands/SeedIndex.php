@@ -82,7 +82,7 @@ class SeedIndex extends Command implements CompanyIndexContract
     public function handle()
     {
         $faker = Factory::create('ru_RU');
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             $name = $faker->company;
             if ($i % 2 === 0) {
                 $country = $this->countryRepository->findByAlpha2Code('RU');
