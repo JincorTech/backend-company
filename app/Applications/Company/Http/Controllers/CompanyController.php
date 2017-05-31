@@ -153,8 +153,9 @@ class CompanyController extends BaseController
     public function search(Search $request)
     {
         $items = $this->companyService->search($request->getQuery(), $request->getCountryId(), $request->getActivityId());
-        $paginator = new App\Core\Pagination\Paginator($items, count($items), config('view.perPage'));
-        return $this->response->collection($paginator->getCollection(), CompanyTransformer::class)
+        $perPage = $request->get('perPage', null) !== null ? (int) $request->get('perPage') : config('view.perPage');
+        $paginator = new App\Core\Pagination\Paginator($items, count($items), $perPage);
+        return $this->response->collection($paginator->getCollection()->forPage($request->get('page', 1), $perPage), CompanyTransformer::class)
             ->meta('pagination', $paginator->toArray());
     }
 }
