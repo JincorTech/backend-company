@@ -282,11 +282,12 @@ class EmployeeController extends BaseController
 
     /**
      * @param Colleagues $request
-     * @return Response
+     * @return JsonResponse
      */
     public function colleagues(Colleagues $request)
     {
         $response = Collection::make($this->employeeService->getColleagues($request->getUser()));
-        return $this->response->collection($response, ColleagueList::class);
+        return new JsonResponse((new ColleagueList())->transform($response));
+//        return $this->response->item($response, ColleagueList::class);
     }
 }

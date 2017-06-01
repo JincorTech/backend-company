@@ -125,14 +125,19 @@ class EmployeeService
         $active = $employee->getCompany()
             ->getEmployees()
             ->filter(function (Employee $empl) use ($employee) {
-                return /*$empl->getId() !== $employee->getId() && */$empl->isActive();
+                return $empl->getId() !== $employee->getId() && $empl->isActive();
             })->toArray();
         $deleted = $employee->getCompany()
             ->getEmployees()
             ->filter(function (Employee $empl) use ($employee) {
                 return $empl->getId() !== $employee->getId() && !$empl->isActive();
             })->toArray();
-        return array_merge([], $invitations, $active, $deleted);
+        return [
+            'self' => $employee,
+            'active' => $active,
+            'deleted' => $deleted,
+            'invitations' => $invitations,
+        ];
     }
 
     /**

@@ -25,13 +25,29 @@ use League\Fractal\TransformerAbstract;
 class ColleagueList extends TransformerAbstract
 {
 
-    public function transform(MetaEmployeeInterface $employee)
+    public function transform(Collection $colleaguesList)
     {
-        if ($employee instanceof Employee) {
-            return (new Colleague())->transform($employee);
-        } elseif ($employee instanceof EmployeeVerification) {
-            return (new InvitedColleague())->transform($employee);
+        $employeeTransformer = new Colleague();
+        $invitedTransformer = new InvitedColleague();
+        $activeArr = [];
+        $deletedArr = [];
+        $invitedArr = [];
+        foreach ($colleaguesList->get('active') as $active) {
+            array_push($activeArr, $employeeTransformer->transform($active));
         }
+        foreach ($colleaguesList->get('deleted') as $deleted) {
+            array_push($deletedArr, $employeeTransformer->transform($deleted));
+        }
+        foreach ($colleaguesList->get('invitations') as $invited) {
+            array_push($invitedArr, $invitedTransformer->transform($invited));
+        }
+
+        return [
+            'self' => $employeeTransformer->transform($colleaguesList->get('self')),
+            'active' => $activeArr,
+            'deleted' => $deletedArr,
+            'invited' => $invitedArr,
+        ];
 
     }
 

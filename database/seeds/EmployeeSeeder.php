@@ -25,6 +25,7 @@ class EmployeeSeeder extends DatabaseSeeder
         $company = $this->getDm()->getRepository(Company::class)->findOneBy([
             'profile.legalName' => env('TEST_COMPANY_NAME'),
         ]);
+        /** @var Company $company2 */
         $company2 = $this->getDm()->getRepository(Company::class)->findOneBy([
             'profile.legalName' => 'Jincor Limited',
         ]);
