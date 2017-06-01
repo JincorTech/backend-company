@@ -43,10 +43,12 @@ class ColleagueList extends TransformerAbstract
         }
 
         return [
-            'self' => $employeeTransformer->transform($colleaguesList->get('self')),
-            'active' => $activeArr,
-            'deleted' => $deletedArr,
-            'invited' => $invitedArr,
+            'data' => [
+                'self' => $employeeTransformer->transform($colleaguesList->get('self')),
+                'active' => $activeArr,
+                'deleted' => $deletedArr,
+                'invited' => $invitedArr,
+            ],
         ];
 
     }
