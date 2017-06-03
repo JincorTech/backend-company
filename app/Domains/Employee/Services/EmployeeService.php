@@ -349,7 +349,7 @@ class EmployeeService
         $employeeVerification->associateEmail($email);
         $employeeVerification->associateCompany($inviter->getCompany());
         $this->dm->persist($employeeVerification);
-        Mail::to($email)->queue(new InviteColleague($inviter->getProfile()->getName(), $email, $employeeVerification->getId(), $employeeVerification->getEmailCode()));
+        Mail::to($email)->queue(new InviteColleague($inviter->getProfile()->getName(), $email, $employeeVerification->getId(), $employeeVerification->getCompany()->getId(), $employeeVerification->getEmailCode()));
         return $employeeVerification;
     }
 

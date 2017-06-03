@@ -26,6 +26,16 @@ class VerificationEmailRequested
     private $code;
 
     /**
+     * @var string
+     */
+    private $verificationId;
+
+    /**
+     * @var string
+     */
+    private $companyId;
+
+    /**
      * VerificationEmailRequested constructor.
      * @param EmployeeVerification $verification
      */
@@ -33,6 +43,8 @@ class VerificationEmailRequested
     {
         $this->email = $verification->getEmail();
         $this->code = $verification->getEmailCode();
+        $this->verificationId = $verification->getId();
+        $this->companyId = $verification->getCompany()->getId();
     }
 
     /**
@@ -50,4 +62,22 @@ class VerificationEmailRequested
     {
         return $this->code;
     }
+
+    /**
+     * @return string
+     */
+    public function getVerificationId(): string
+    {
+        return $this->verificationId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompanyId(): string
+    {
+        return $this->companyId;
+    }
+
+
 }

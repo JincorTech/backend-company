@@ -23,12 +23,19 @@ class VerifyEmail extends Mailable
     public $pin;
 
     /**
+     * @var string
+     */
+    public $jwt;
+
+    /**
      * VerifyEmail constructor.
      * @param string $pin
+     * @param string $jwt
      */
-    public function __construct(string $pin)
+    public function __construct(string $pin, string $jwt)
     {
         $this->pin = $pin;
+        $this->jwt = $jwt;
     }
 
     /**
@@ -38,7 +45,8 @@ class VerifyEmail extends Mailable
     {
         return $this->from(config('mail.from.address'), config('mail.from.name'))
             ->view('emails.registration.verify-email')
-            ->with('pin', $this->pin);
+            ->with('pin', $this->pin)
+            ->with('jwt', $this->jwt);
     }
 
 }

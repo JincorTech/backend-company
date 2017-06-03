@@ -3,6 +3,7 @@
 namespace App\Core\Providers;
 
 use App\Core\Services\ImageService;
+use App\Core\Services\JWTService;
 use Illuminate\Support\ServiceProvider;
 use Storage;
 
@@ -28,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ImageService::class, function() {
             $storage = Storage::disk('s3');
             return new ImageService($storage);
+        });
+
+        $this->app->singleton(JWTService::class, function() {
+           return new JWTService(config('jwt.key'));
         });
     }
 }
