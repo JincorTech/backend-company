@@ -36,8 +36,8 @@ class JWTService
         $token = [
             'iss' => config('url'),
             'aud' => config('url'),
-            'iat' => Carbon::create(),
-            'exp' => Carbon::create()->addWeeks(2),
+            'iat' => Carbon::create()->getTimestamp(),
+            'exp' => Carbon::create()->addWeeks(2)->getTimestamp(),
             'email' => $email,
             'verificationId' => $verificationId,
             'companyId' => $companyId,
