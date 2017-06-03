@@ -16,7 +16,7 @@ return [
     ],
 
     'restore-password' => [
-        'notFound' => 'Employee with email :email were not found on JinCor'
+        'notFound' => 'Employee with email :email were not found on Jincor'
     ],
 
     'change-password' => [

@@ -57,7 +57,7 @@ return [
 
     'from' => [
         'address' => 'register@jincor.com',
-        'name' => 'JinCor Team',
+        'name' => 'Jincor Team',
     ],
 
     /*
