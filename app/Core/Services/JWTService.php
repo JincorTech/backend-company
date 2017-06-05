@@ -26,12 +26,12 @@ class JWTService
     /**
      * @param string $email
      * @param string $verificationId
-     * @param string $companyId
+     * @param string $companyName
      * @param string $pin
      *
      * @return string
      */
-    public function makeRegistrationToken(string $email, string $verificationId, string $companyId, string $pin)
+    public function makeRegistrationToken(string $email, string $verificationId, string $companyName, string $pin)
     {
         $token = [
             'iss' => config('url'),
@@ -40,7 +40,7 @@ class JWTService
             'exp' => Carbon::create()->addWeeks(2)->getTimestamp(),
             'email' => $email,
             'verificationId' => $verificationId,
-            'companyId' => $companyId,
+            'companyName' => $companyName,
             'pin' => $pin,
         ];
         return JWT::encode($token, $this->key);

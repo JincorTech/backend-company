@@ -51,15 +51,15 @@ class InviteColleague extends Mailable
      * @param string $email
      * @param string $verificationId
      * @param string $verificationCode
-     * @param string $companyId
+     * @param string $companyName
      */
-    public function __construct(string $employee, string $email, string $verificationId, string $companyId, string $verificationCode)
+    public function __construct(string $employee, string $email, string $verificationId, string $companyName, string $verificationCode)
     {
         $this->employee = $employee;
         $this->email = $email;
         /** @var JWTService $jwtService */
         $jwtService = App::make(JWTService::class);
-        $this->jwt = $jwtService->makeRegistrationToken($email, $verificationId, $companyId, $verificationCode);
+        $this->jwt = $jwtService->makeRegistrationToken($email, $verificationId, $companyName, $verificationCode);
     }
 
 

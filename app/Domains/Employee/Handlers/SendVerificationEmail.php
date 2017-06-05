@@ -24,7 +24,7 @@ class SendVerificationEmail
     {
         /** @var JWTService $jwtService */
         $jwtService = App::make(JWTService::class);
-        $jwt = $jwtService->makeRegistrationToken($event->getEmail(), $event->getVerificationId(), $event->getCompanyId(), $event->getCode());
+        $jwt = $jwtService->makeRegistrationToken($event->getEmail(), $event->getVerificationId(), $event->getCompanyName(), $event->getCode());
 
         Mail::to($event->getEmail())->queue(new VerifyEmail($event->getCode(), $jwt));
     }
