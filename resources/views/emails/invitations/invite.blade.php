@@ -16,7 +16,7 @@
                                         <tr>
                                             <td style="font-family:sans-serif;font-size:14px;vertical-align:top;background-color:#ffffff;border-radius:5px;text-align:center;background-color:#3498db;">
                                                 <a
-                                                        href="{{ env('FRONTEND_SCHEME').'://' . env('FRONTEND_HOST') .':' . env('FRONTEND_PORT') . '/auth/invite/' . $jwt }}"
+                                                        href="{{ env('FRONTEND_SCHEME').'://' . env('FRONTEND_HOST') .':' . env('FRONTEND_PORT') . '/auth/invite?token=' . $jwt }}"
                                                         target="_blank"
                                                         style="text-decoration:underline;background-color:#ffffff;border:solid 1px #3498db;border-radius:5px;box-sizing:border-box;color:#3498db;cursor:pointer;display:inline-block;font-size:14px;font-weight:bold;margin:0;padding:12px 25px;text-decoration:none;text-transform:capitalize;background-color:#3498db;border-color:#3498db;color:#ffffff;"
                                                 >
