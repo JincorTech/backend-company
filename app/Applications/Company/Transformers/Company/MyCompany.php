@@ -20,6 +20,7 @@ use App\Domains\Company\Entities\CompanyType;
 use App\Core\ValueObjects\TranslatableString;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Company\ValueObjects\CompanyProfile;
+use App\Domains\Employee\Entities\Employee;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\TransformerAbstract;
 
@@ -37,7 +38,10 @@ class MyCompany extends TransformerAbstract
                 $company->getProfile()->getEconomicalActivities()
             ),
             'companyType' => $this->transformCompanyType($company->getProfile()->getType()),
-            'employeesCount' => $company->getEmployees()->count()
+            'employeesCount' => count($company->getEmployees()->partition(function($key, $value) {
+                /** @var Employee $value */
+                return $value->isActive();
+            }))
         ];
     }
 
