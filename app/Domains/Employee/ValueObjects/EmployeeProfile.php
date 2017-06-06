@@ -126,12 +126,12 @@ class EmployeeProfile
 
     public function getFirstName()
     {
-        return ucfirst($this->lastName);
+        return ucfirst($this->firstName);
     }
 
     public function getLastName()
     {
-        return ucfirst($this->firstName);
+        return ucfirst($this->lastName);
     }
 
     public function getPosition() : string
