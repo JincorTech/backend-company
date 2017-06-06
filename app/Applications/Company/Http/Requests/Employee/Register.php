@@ -20,7 +20,7 @@ class Register extends BaseAPIRequest
             'firstName' => 'required|string|min:2',
             'lastName' => 'required|string|min:2',
             'password' => 'required|string|min:6',
-            'position' => 'required|string|min:2',
+            'position' => 'required|string|min:2|max:30',
             'verificationId' => 'required|string|size:36',
         ];
     }
