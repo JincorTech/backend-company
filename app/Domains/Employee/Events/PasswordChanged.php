@@ -31,7 +31,7 @@ class PasswordChanged
     private $old;
 
 
-    public function __construct(Employee $employee, string $old)
+    public function __construct(Employee $employee, $old)
     {
         $this->employee = $employee;
         $this->old = $old;

@@ -15,6 +15,7 @@ use App\Core\Services\IdentityService;
 use App\Domains\Employee\Services\EmployeeService;
 use App\Domains\Employee\Entities\Employee;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\JsonResponse;
 
 class GetEmployeeFromRequest
 {
@@ -34,6 +35,8 @@ class GetEmployeeFromRequest
      * @param  \Closure  $next
      * @param  string|null  $guard
      * @return mixed
+     *
+     * @throws AuthenticationException
      */
     public function handle($request, Closure $next, $guard = null)
     {
@@ -42,13 +45,22 @@ class GetEmployeeFromRequest
             return $next($request);
         }
         $data = $this->identityService->validateToken($header);
+        if ($data === false) {
+            throw new AuthenticationException("JWT is invalid");
+        }
 
         /** @var \App\Domains\Employee\Entities\Employee $employee */
         $employee = $this->employeeService->findByLogin($data['login']);
-        $employee->getProfile()->scope = $data['scope'];
         if (!$employee) {
-            throw new AuthenticationException('Cant find user by login');
+            return new JsonResponse([
+                'success' => false,
+                'errors' => [
+                    'token' => 'Authentication token is invalid',
+                ],
+                'message' => 'Cant find user by login. It means that your access token is invalid',
+            ], 401);
         }
+        $employee->getProfile()->scope = $data['scope'];
         $this->bindUser($employee);
 
         return $next($request);

@@ -80,6 +80,11 @@ class CompanyType
         return $this->names->getValue($locale);
     }
 
+    public function getNames()
+    {
+        return $this->names;
+    }
+
     /**
      * @param array $names
      */

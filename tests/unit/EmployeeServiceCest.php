@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 class EmployeeServiceCest
 {
     private $employeePassword = 'Test2Test2Test';
-    private $email = 'test@test.com';
+    private $email = 'test2@test.com';
 
     /**
      * @var \Doctrine\ODM\MongoDB\DocumentManager
@@ -128,12 +128,13 @@ class EmployeeServiceCest
     public function findByVerificationId(UnitTester $I)
     {
         $I->wantTo('Find existing employee by verification id');
-        $verification = $this->getVerifiedProcess($this->email);
+        $email = $this->faker->email;
+        $verification = $this->getVerifiedProcess($email);
         $this->dm->persist($verification);
         $this->dm->flush($verification);
         $employee = $this->registerEmployee($verification);
         $result = $this->employeeService->findByVerificationId($verification->getId());
-        $I->assertEquals($employee, $result->first());
+        $I->assertEquals($employee->getId(), $result->first()->getId());
         $I->wantToTest('Passing wrong id throws 404');
         $I->expectException(EmployeeVerificationNotFound::class , function () use ($verification) {
             $this->employeeService->findByVerificationId('z' . $verification->getId());
@@ -211,12 +212,14 @@ class EmployeeServiceCest
         $company = $this->getCompany();
         $this->dm->persist($company);
         $profile = EmployeeProfileFactory::make();
+        /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = RestorePasswordVerification::make($this->email);
         $verification->associateCompany($company);
         $verification->verifyEmail($verification->getEmailCode());
         $this->dm->persist($verification->getVerification());
         $this->dm->flush();
         $employee = $this->employeeService->register($verification->getId(), $profile, $this->employeePassword);
+        $this->dm->persist($employee);
         $match = $this->employeeService->matchVerificationAndCompany($verification->getId(), $company->getId());
         $I->assertEquals($employee, $match);
         $I->assertEquals($company, $match->getCompany());

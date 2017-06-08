@@ -40,7 +40,8 @@ class Department
      * @var ArrayCollection
      * @ODM\ReferenceMany(
      *     targetDocument="App\Domains\Employee\Entities\Employee",
-     *     mappedBy="department"
+     *     mappedBy="department",
+     *     cascade={"persist"}
      * )
      */
     protected $employees;

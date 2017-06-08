@@ -132,7 +132,7 @@ class CompanyCest
                 'economicalActivities' => [],
                 'links' => [
                     'name' => null,
-                    'value' => 'http://facebook.com/JinCor'
+                    'value' => 'http://facebook.com/Jincor'
                 ],
                 'email' => 'company@email.com',
                 'phone' => '+79506039921',

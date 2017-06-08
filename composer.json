@@ -21,7 +21,11 @@
         "jenssegers/mongodb": "^3.1",
         "maatwebsite/excel": "~2.1.0",
         "firebase/php-jwt": "^4.0",
-        "flow/jsonpath": "^0.3.4"
+        "flow/jsonpath": "^0.3.4",
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "friendsofphp/php-cs-fixer": "^2.2",
+        "predis/predis": "^1.1",
+        "cviebrock/laravel-elasticsearch": "^1.3"
     },
     "repositories": [
         {
@@ -66,12 +70,11 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
+            "php artisan clear-compiled"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+            "php artisan db:seed"
         ]
     },
     "config": {

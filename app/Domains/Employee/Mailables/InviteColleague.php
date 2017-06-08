@@ -9,8 +9,10 @@
 
 namespace App\Domains\Employee\Mailables;
 
+use App\Core\Services\JWTService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use App;
 
 
 class InviteColleague extends Mailable
@@ -39,18 +41,25 @@ class InviteColleague extends Mailable
     private $verificationCode;
 
     /**
+     * @var string
+     */
+    private $jwt;
+
+    /**
      * InviteColleague constructor.
      * @param string $employee
      * @param string $email
      * @param string $verificationId
      * @param string $verificationCode
+     * @param string $companyName
      */
-    public function __construct(string $employee, string $email, string $verificationId, string $verificationCode)
+    public function __construct(string $employee, string $email, string $verificationId, string $companyName, string $verificationCode)
     {
         $this->employee = $employee;
         $this->email = $email;
-        $this->verificationId = $verificationId;
-        $this->verificationCode = $verificationCode;
+        /** @var JWTService $jwtService */
+        $jwtService = App::make(JWTService::class);
+        $this->jwt = $jwtService->makeRegistrationToken($email, $verificationId, $companyName, $verificationCode);
     }
 
 
@@ -62,8 +71,7 @@ class InviteColleague extends Mailable
         return $this->view('emails.invitations.invite', [
             'email' => $this->email,
             'employee' => $this->employee,
-            'verificationId' => $this->verificationId,
-            'code' => $this->verificationCode,
+            'jwt' => $this->jwt,
         ]);
     }
 

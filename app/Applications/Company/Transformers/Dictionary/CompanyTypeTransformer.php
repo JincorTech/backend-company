@@ -7,28 +7,19 @@
  * Time: 7:10 PM
  */
 
-namespace App\Applications\Company\Transformers;
+namespace App\Applications\Company\Transformers\Dictionary;
 
 use App\Domains\Company\Entities\CompanyType;
 use League\Fractal\TransformerAbstract;
 
 class CompanyTypeTransformer extends TransformerAbstract
 {
-    /**
-     * @var string
-     */
-    private $locale;
-
-    public function __construct(string $locale)
-    {
-        $this->locale = $locale;
-    }
 
     public function transform(CompanyType $companyType) : array
     {
         return [
             'id' => $companyType->getId(),
-            'name' => $companyType->getName($this->locale),
+            'name' => $companyType->getName(),
             'code' => $companyType->getCode(),
         ];
     }

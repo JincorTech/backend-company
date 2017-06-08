@@ -66,6 +66,6 @@ class CurrencyEntityCest
     {
         $currency = new Currency($this->names, $this->isoCodes, '$');
         $I->assertEquals($this->names['en'], $currency->getName('en'));
-        $I->assertEquals($this->names['en'], $currency->getName('th'));
+        $I->assertEquals($this->names[App::getLocale()], $currency->getName('th'));
     }
 }

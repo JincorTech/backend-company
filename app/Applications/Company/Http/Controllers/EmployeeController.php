@@ -13,21 +13,34 @@ use App\Applications\Company\Http\Requests\Employee\SendRestorePasswordEmail;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
 use App\Applications\Company\Http\Requests\Employee\SendVerificationCode;
 use App\Applications\Company\Http\Requests\Employee\MatchingCompanies;
+use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Http\Requests\Employee\ChangePassword;
+use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
+use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
 use App\Applications\Company\Http\Requests\Employee\VerifyByCode;
+use App\Applications\Company\Transformers\Employee\ColleagueList;
+use App\Applications\Company\Transformers\Employee\LoginResponse;
+use App\Applications\Company\Transformers\Employee\SelfProfile;
+use App\Applications\Company\Http\Requests\Employee\Colleagues;
 use App\Applications\Company\Transformers\EmployeeTransformer;
-use App\Applications\Company\Http\Requests\Employee\Register;
-use App\Applications\Company\Transformers\CompanyTransformer;
-use App\Domains\Employee\Services\EmployeeRegistrationService;
 use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Applications\Company\Transformers\Employee\Colleague;
+use App\Domains\Employee\Exceptions\PermissionDenied;
+use App\Applications\Company\Http\Requests\Employee\MakeAdmin;
+use App\Applications\Company\Http\Requests\Employee\Register;
+use App\Applications\Company\Http\Requests\Employee\Delete;
 use App\Applications\Company\Http\Requests\Employee\Login;
+use App\Applications\Company\Http\Requests\Employee\Me;
 use App\Domains\Employee\Services\EmployeeService;
 use App\Core\Services\IdentityService;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
 use App;
+
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 class EmployeeController extends BaseController
 {
@@ -52,6 +65,7 @@ class EmployeeController extends BaseController
      *
      * @param EmployeeService $employeeService
      * @param IdentityService $identityService
+     * @param EmployeeVerificationService $verificationService
      */
     public function __construct(EmployeeService $employeeService, IdentityService $identityService, EmployeeVerificationService $verificationService)
     {
@@ -68,7 +82,7 @@ class EmployeeController extends BaseController
     public function sendEmailCode(SendVerificationCode $request)
     {
         $verification = $this->verificationService->sendEmailVerification($request->getVerificationId(), $request->getEmail());
-        return $this->response->item($verification, new EmployeeVerificationTransformer());
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
     /**
@@ -79,14 +93,14 @@ class EmployeeController extends BaseController
     public function verifyEmail(VerifyByCode $request)
     {
         $verification = $this->verificationService->verifyEmail($request->getVerificationId(), $request->getVerificationCode());
-        return $this->response->item($verification, new EmployeeVerificationTransformer());
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
 
     /**
      * @param Register $request
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function register(Register $request)
     {
@@ -100,14 +114,57 @@ class EmployeeController extends BaseController
             $request->getPassword(),
             $employee->getCompany()->getId()
         );
-        return $this->response->item(new Collection(['employee' => $employee, 'token' => $token]), EmployeeRegisterSuccess::class);
+        return new JsonResponse(
+            (new EmployeeRegisterSuccess())
+                ->transform(Collection::make([
+                    'employee' => $employee, 'token' => $token,
+                ]))
+        );
     }
 
 
+    /**
+     * @param SendRestorePasswordEmail $request
+     * @return Response
+     */
     public function sendRestorePasswordEmail(SendRestorePasswordEmail $request)
     {
         $verification = $this->verificationService->sendEmailRestorePassword($request->getEmail())->getVerification();
-        return $this->response->item($verification, new EmployeeVerificationTransformer());
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
+    }
+
+
+    /**
+     * @param Login $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function login(Login $request)
+    {
+        try {
+            $token = $this->identityService->login(
+                $request->getEmail(),
+                $request->getPassword(),
+                $request->getCompanyId()
+            );
+        } catch (MultipleCompanyLoginException $exception) {
+            $companies = $this->employeeService->getMatchingCompanies([
+                'email' => $request->getEmail(),
+                'password' => $request->getPassword()
+            ]);
+            return $this->response->collection($companies, CompanyTransformer::class);
+        }
+        if ($token !== false) {
+            $company = $this->employeeService->getMatchingCompanies([
+                'email' => $request->getEmail(),
+                'password' => $request->getPassword()
+            ])->first();
+            $employee = $this->employeeService->findByCompanyIdAndEmail($company->getId(), $request->getEmail());
+            $data = (object) [
+                'token' => $token,
+                'employee' => $employee,
+            ];
+            return $this->response->item($data, LoginResponse::class);
+        }
     }
 
 
@@ -126,15 +183,24 @@ class EmployeeController extends BaseController
                 $request->getCompanyId()
             );
         } else {
-                $employee = App::make('AppUser');
-                $oldPassword = $request->getOldPassword();
+            $employee = App::make('AppUser');
+            $oldPassword = $request->getOldPassword();
         }
         $this->employeeService->changePassword(
             $employee,
             $request->getPassword(),
             $oldPassword
         );
-        return $this->response->item($employee, new EmployeeTransformer());
+        $token = $this->identityService->login(
+            $employee->getContacts()->getEmail(),
+            $request->getPassword(),
+            $request->getCompanyId()
+        );
+        $data = (object) [
+            'token' => $token,
+            'employee' => $employee,
+        ];
+        return $this->response->item($data, LoginResponse::class);
     }
 
     /**
@@ -148,26 +214,80 @@ class EmployeeController extends BaseController
             'password' => $request->getPassword(),
             'verificationId' => $request->getVerificationId(),
         ]);
-        return $this->response->collection($companies, new CompanyTransformer());
+        return $this->response->collection($companies, CompanyTransformer::class);
     }
 
 
     /**
-     * @param Login $request
-     * @return JsonResponse
+     * @param Me $request
+     * @return Response
      */
-    public function login(Login $request)
+    public function me(Me $request)
     {
-        $result = $this->identityService->login(
-            $request->getEmail(),
-            $request->getPassword(),
-            $request->getCompanyId()
-        );
-        if ($result !== false) {
-            return new JsonResponse([
-                'data' => $result,
-            ]);
+        return $this->response->item($request->getUser(), SelfProfile::class);
+    }
+
+
+    /**
+     * @param MakeAdmin $request
+     * @return Response
+     */
+    public function makeAdmin(MakeAdmin $request)
+    {
+        try {
+            return $this->response->item(
+                $this->employeeService->makeAdmin(
+                    $request->getUser(),
+                    $request->get('id'),
+                    $request->get('value')), Colleague::class
+            );
+        } catch (PermissionDenied $exception) {
+            $this->response->error($exception->getMessage(), 403);
+        } catch (App\Domains\Employee\Exceptions\EmployeeNotFound $exception) {
+            $this->response->error($exception->getMessage(), 404);
         }
     }
 
+    /**
+     * @param Delete $request
+     * @param string $id
+     * @return Response
+     */
+    public function delete(Delete $request, string $id)
+    {
+        try {
+            return $this->response->item($this->employeeService->deactivate($request->getUser(), $id), Colleague::class);
+        } catch (PermissionDenied $exception) {
+            $this->response->error($exception->getMessage(), 403);
+        } catch (App\Domains\Employee\Exceptions\EmployeeNotFound $exception) {
+            $this->response->error($exception->getMessage(), 404);
+        }
+    }
+
+    /**
+     * @param UpdateRequest $request
+     * @return Response
+     */
+    public function update(UpdateRequest $request)
+    {
+        try {
+            return $this->response->item(
+                $this->employeeService->updateEmployee($request->getUser(),$request->all()),
+                SelfProfile::class
+            );
+        } catch (App\Core\Exceptions\InvalidImageException $exception) {
+            $this->response->error($exception->getMessage(), 422);
+        }
+    }
+
+    /**
+     * @param Colleagues $request
+     * @return JsonResponse
+     */
+    public function colleagues(Colleagues $request)
+    {
+        $response = Collection::make($this->employeeService->getColleagues($request->getUser()));
+        return new JsonResponse((new ColleagueList())->transform($response));
+//        return $this->response->item($response, ColleagueList::class);
+    }
 }

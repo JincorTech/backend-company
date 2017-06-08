@@ -10,13 +10,16 @@
 namespace App\Applications\Dictionary\Http\Controllers;
 
 use App\Applications\Dictionary\Transformers\Registration\CountryTransformer;
+use App\Applications\Dictionary\Transformers\CountryListSchemaTransformer;
 use App\Applications\Dictionary\CriteriaBuilders\CountryCriteriaBuilder;
 use App\Applications\Dictionary\Http\Requests\ListCountriesRequest;
-use App\Applications\Dictionary\Transformers\CountryListSchemaTransformer;
+use App\Applications\Dictionary\Http\Requests\ListCitiesRequest;
 use App\Core\Dictionary\Repositories\CountryRepository;
 use App\Core\Dictionary\Entities\Country;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Illuminate\Support\Collection;
+use App\Core\Dictionary\Entities\City;
+use App\Applications\Dictionary\Transformers\CityTransformer;
 use App;
 
 class DictionaryController extends BaseController
@@ -25,6 +28,11 @@ class DictionaryController extends BaseController
      * @var CountryRepository
      */
     private $countryRepository;
+
+    /**
+     * @var App\Core\Dictionary\Repositories\CityRepository
+     */
+    private $cityRepository;
 
     /**
      * @var DocumentManager
@@ -38,6 +46,8 @@ class DictionaryController extends BaseController
     {
         $this->dm = App::make(DocumentManager::class);
         $this->countryRepository = $this->dm->getRepository(Country::class);
+        $this->cityRepository = $this->dm->getRepository(City::class);
+
         parent::__construct();
     }
 
@@ -54,6 +64,26 @@ class DictionaryController extends BaseController
         );
 
         return $this->response->collection($countriesCollection, new CountryTransformer());
+    }
+
+
+    /**
+     * @param ListCitiesRequest $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function listCities(ListCitiesRequest $request)
+    {
+        $country = $this->countryRepository->find($request->getCountryId());
+
+        if (!$country) {
+            $this->response->errorNotFound(trans('exceptions.country.not_found'));
+        }
+
+        $citiesCollection = new Collection(
+            $this->cityRepository->findInCountry($country)
+        );
+
+        return $this->response->collection($citiesCollection, CityTransformer::class);
     }
 
     /**

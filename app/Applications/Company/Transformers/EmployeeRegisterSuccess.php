@@ -10,6 +10,7 @@
 namespace App\Applications\Company\Transformers;
 
 
+use App\Applications\Company\Transformers\Employee\SelfProfile;
 use App\Domains\Employee\Entities\Employee;
 use Illuminate\Support\Collection;
 use League\Fractal\TransformerAbstract;
@@ -23,19 +24,10 @@ class EmployeeRegisterSuccess extends TransformerAbstract
         /** @var Employee $employee */
         $employee = $data['employee'];
         return [
-            'id' => $employee->getId(),
-            'profile' => [
-                'name' => $employee->getProfile()->getName(),
+            'data' => [
+                'employee' => (new SelfProfile())->transform($employee),
+                'token' => $data['token']
             ],
-            'contacts' => [
-                'email' => $employee->getContacts()->getEmail(),
-                'phone' => $employee->getContacts()->getPhone(),
-            ],
-            'company' => [
-                'id' => $employee->getCompany()->getId(),
-                'name' => $employee->getCompany()->getProfile()->getName(),
-            ],
-            'token' => $data['token']
         ];
     }
 

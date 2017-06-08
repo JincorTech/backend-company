@@ -25,14 +25,16 @@ use App\Domains\Employee\Exceptions\CompanyNotFound;
 use App\Domains\Employee\Exceptions\EmployeeVerificationAlreadySent;
 use App\Domains\Employee\Mailables\InviteColleague;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use App\Domains\Employee\Exceptions\PermissionDenied;
 use App\Domains\Employee\Exceptions\InvitationLimitReached;
+use App\Domains\Employee\ValueObjects\EmployeeRole;
+use App\Core\Services\ImageService;
 use Validator;
 use App;
 use Mail;
 
 class EmployeeService
 {
-
     const VERIFICATION_ERR = 'error';
     const VERIFICATION_OK = 'ok';
 
@@ -101,6 +103,53 @@ class EmployeeService
     }
 
     /**
+     * Get colleagues of an employee specified
+     *
+     * @param Employee $employee
+     * @return array
+     */
+    public function getColleagues(Employee $employee)
+    {
+        $invitations = [];
+        $invitationsCursor = $this->verificationRepository->createQueryBuilder()
+            ->field('reason')->equals(EmployeeVerification::REASON_INVITED_BY_EMPLOYEE)
+            ->field('emailVerified')->equals(false)
+            ->field('company')->references($employee->getCompany())->getQuery()->execute();
+        foreach ($invitationsCursor as $invite) {
+            $invitations[] = $invite;
+        }
+//        $invitations = $this->verificationRepository->findBy([
+//            'reason' => EmployeeVerification::REASON_INVITED_BY_EMPLOYEE,
+//            'emailVerified' => false,
+//        ]);
+        $active = $employee->getCompany()
+            ->getEmployees()
+            ->filter(function (Employee $empl) use ($employee) {
+                return $empl->getId() !== $employee->getId() && $empl->isActive();
+            })->toArray();
+        $deleted = $employee->getCompany()
+            ->getEmployees()
+            ->filter(function (Employee $empl) use ($employee) {
+                return $empl->getId() !== $employee->getId() && !$empl->isActive();
+            })->toArray();
+        return [
+            'self' => $employee,
+            'active' => $active,
+            'deleted' => $deleted,
+            'invitations' => $invitations,
+        ];
+    }
+
+    /**
+     * @param string $id
+     * @return Employee
+     */
+    public function findById(string $id) : Employee
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
      * @param string $email
      * @return Collection
      */
@@ -136,9 +185,7 @@ class EmployeeService
     {
         /** @var Company $company */
         $company = $this->dm->getRepository(Company::class)->find($id);
-
         if (!$company) throw new CompanyNotFound("Company " . $id . " not found");
-
         return $company->getEmployees()->filter(function (Employee $employee) use($email) {
             return $employee->getContacts()->getEmail() === $email;
         })->first();
@@ -152,7 +199,6 @@ class EmployeeService
     public function findByEmailAndPassword(string $email, string $password) : Collection
     {
         $employees = $this->findByEmail($email);
-
         return $employees->filter(function (Employee $employee) use($password) {
             return $employee->checkPassword($password);
         });
@@ -204,7 +250,6 @@ class EmployeeService
         $employees->each(function (Employee $employee) use ($companies) {
             $companies->put($employee->getCompany()->getId(), $employee->getCompany());
         });
-
         return $companies;
     }
 
@@ -215,7 +260,6 @@ class EmployeeService
      */
     public function matchVerificationAndCompany(string $verificationId, string $companyId) : Employee
     {
-
         /** @var Company|null $company */
         $company = $this->dm->getRepository(Company::class)->find($companyId);
         /** @var EmployeeVerification $verification */
@@ -255,6 +299,29 @@ class EmployeeService
 
 
     /**
+     * @param Employee $admin
+     * @param string $id
+     * @return Employee
+     *
+     * @throws App\Domains\Employee\Exceptions\PermissionDenied
+     */
+    public function deactivate(Employee $admin, string $id)
+    {
+        /** @var Employee $employee */
+        $employee = $this->repository->find($id);
+        if (!$employee) {
+            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+        }
+        if ($employee->getCompany()->getId() !== $admin->getCompany()->getId()) {
+            throw new PermissionDenied(trans('exceptions.employee.access_denied'));
+        }
+        $employee->deactivate();
+        $this->dm->persist($employee);
+        $this->dm->flush();
+        return $employee;
+    }
+
+    /**
      * Send invitation to the company to an email and associate verification process with company and email
      * @param string $email
      * @param Employee $inviter
@@ -282,7 +349,14 @@ class EmployeeService
         $employeeVerification->associateEmail($email);
         $employeeVerification->associateCompany($inviter->getCompany());
         $this->dm->persist($employeeVerification);
-        Mail::to($email)->queue(new InviteColleague($inviter->getProfile()->getName(), $email, $employeeVerification->getId(), $employeeVerification->getEmailCode()));
+        Mail::to($email)->queue(
+            new InviteColleague(
+                $inviter->getProfile()->getName(),
+                $email, $employeeVerification->getId(),
+                $employeeVerification->getCompany()->getProfile()->getName(),
+                $employeeVerification->getEmailCode()
+            )
+        );
         return $employeeVerification;
     }
 
@@ -318,10 +392,85 @@ class EmployeeService
         ]);
     }
 
+    public function updateEmployee(Employee $employee, array $data)
+    {
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case 'avatar':
+                    $this->uploadAvatar($employee, $value);
+                    break;
+                case 'firstName':
+                    $employee->getProfile()->changeFirstName($value);
+                    break;
+                case 'lastName':
+                    $employee->getProfile()->changeLastName($value);
+                    break;
+                case 'position':
+                    $employee->getProfile()->changePosition($value);
+                    break;
+            }
+        }
+        $this->dm->persist($employee);
+        $this->dm->flush();
+        return $employee;
+    }
+
+
+    /**
+     * @param Employee $admin
+     * @param string $id
+     * @param bool $value
+     * @return Employee
+     * @throws App\Domains\Employee\Exceptions\EmployeeNotFound
+     * @throws PermissionDenied
+     */
+    public function makeAdmin(Employee $admin, string $id, bool $value)
+    {
+        /** @var Employee $employee */
+        $employee = $this->repository->find($id);
+        if (!$employee) {
+            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+        }
+        if ($employee->getCompany()->getId() !== $admin->getCompany()->getId()) {
+            throw new PermissionDenied(trans('exceptions.employee.access_denied'));
+        }
+        if (!$employee) {
+            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+        }
+        if ($value === true) {
+            $employee->setScope($employee->getCompany(), EmployeeRole::ADMIN);
+        } else {
+            $employee->setScope($employee->getCompany(), EmployeeRole::EMPLOYEE);
+        }
+        $this->dm->persist($employee);
+        $this->dm->flush();
+        return $employee;
+    }
+
+
+    /**
+     * TODO: async it! i.e raise event
+     *
+     * @param Employee $employee
+     * @param string $data
+     * @return string
+     */
+    private function uploadAvatar(Employee $employee, string $data)
+    {
+        $filepath = $employee->getCompany()->getId() . '/employees/avatars/' . uniqid('ava_') . '.png';
+        if (empty($data) || is_null($data)) {
+            $employee->getProfile()->unsetAvatar();
+        } else {
+            $employee->getProfile()->setAvatar(App::make(ImageService::class)->upload($filepath, $data));
+        }
+        $this->dm->persist($employee);
+        return $employee->getProfile()->getAvatar();
+    }
+
 
     /**
      * Check if invitation limit were reached
-     *
+     * TODO: move this counter to redis
      * @param Company $company
      * @param string $email
      * @return bool

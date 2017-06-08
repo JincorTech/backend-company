@@ -38,9 +38,7 @@ class Country
     /**
      * @var TranslatableString
      *
-     * @ODM\EmbedOne(
-     *     targetDocument="App\Core\ValueObjects\TranslatableString"
-     * )
+     * @ODM\Field(type="translatableString")
      */
     protected $names;
 
@@ -104,8 +102,21 @@ class Country
      */
     public function getName($locale = null) : string
     {
+        if (is_array($this->names)) {
+            $this->names = new TranslatableString($this->names);
+        }
         return $this->names->getValue($locale);
     }
+
+
+    public function getNames()
+    {
+        if (is_array($this->names)) {
+            $this->names = new TranslatableString($this->names);
+        }
+        return $this->names->getValues();
+    }
+
 
     /**
      * @return Currency

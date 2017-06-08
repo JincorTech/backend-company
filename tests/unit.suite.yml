@@ -7,13 +7,13 @@ modules:
     enabled:
         - Asserts
         - \Helper\Unit
-        - MongoDb:
-              dsn: 'mongodb://mongo:27017/ubn-test'
-              user: ''
-              password: ''
-              dump_type: 'mongodump'
-              dump: 'tests/_data/ubn-local'
-              cleanup: true
+#        - MongoDb:
+#              dsn: 'mongodb://mongo:27017/ubn-test'
+#              user: ''
+#              password: ''
+#              dump_type: 'mongodump'
+#              dump: 'tests/_data/ubn-local'
+#              cleanup: false
         #- Laravel5:
         #      environment_file: .env.testing
         #      cleanup: false

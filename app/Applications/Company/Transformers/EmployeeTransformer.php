@@ -20,6 +20,8 @@ class EmployeeTransformer extends TransformerAbstract
             'id' => $employee->getId(),
             'profile' => [
                 'name' => $employee->getProfile()->getName(),
+                'firstName' => $employee->getProfile()->getFirstName(),
+                'lastName' => $employee->getProfile()->getLastName(),
             ],
             'contacts' => [
                 'email' => $employee->getContacts()->getEmail(),

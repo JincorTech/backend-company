@@ -12,6 +12,8 @@ namespace App\Domains\Employee\Handlers;
 
 use App\Domains\Employee\Events\VerificationEmailRequested;
 use App\Domains\Employee\Mailables\VerifyEmail;
+use App\Core\Services\JWTService;
+use App;
 use Mail;
 
 class SendVerificationEmail
@@ -20,10 +22,11 @@ class SendVerificationEmail
 
     public function handle(VerificationEmailRequested $event)
     {
-        if (env('APP_ENV') === 'testing') {
-            return true;
-        }
-        Mail::to($event->getEmail())->queue(new VerifyEmail($event->getCode()));
+        /** @var JWTService $jwtService */
+        $jwtService = App::make(JWTService::class);
+        $jwt = $jwtService->makeRegistrationToken($event->getEmail(), $event->getVerificationId(), $event->getCompanyName(), $event->getCode());
+
+        Mail::to($event->getEmail())->queue(new VerifyEmail($event->getCode(), $jwt));
     }
 
 }

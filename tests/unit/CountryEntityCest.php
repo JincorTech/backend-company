@@ -105,8 +105,8 @@ class CountryEntityCest
     {
         $I->assertEquals($this->names['ru'], $this->object->getName('ru'));
         $I->assertEquals($this->names['en'], $this->object->getName('en'));
-        $I->assertEquals($this->names['en'], $this->object->getName('th'));
-        $I->assertEquals($this->names['en'], $this->object->getName());
+        $I->assertEquals($this->names[App::getLocale()], $this->object->getName('th'));
+        $I->assertEquals($this->names[App::getLocale()], $this->object->getName());
     }
 
     /**
@@ -115,12 +115,12 @@ class CountryEntityCest
     public function setCountryNamesTest(UnitTester $I)
     {
         $names = [
-            'ru' => 'Австралия',
+            'en' => 'Australia',
         ];
         $I->expectException(\InvalidArgumentException::class, function () use ($names) {
             new Country($names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
         });
-        $names['en'] = 'Australia';
+        $names['ru'] = 'Австралия';
         new Country($names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
     }
 

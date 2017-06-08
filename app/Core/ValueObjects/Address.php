@@ -37,10 +37,20 @@ class Address
      */
     protected $country;
 
-    public function __construct(string $address, Country $country)
+    /**
+     * @var App\Core\Dictionary\Entities\City
+     * @ODM\ReferenceOne(
+     *     targetDocument="App\Core\Dictionary\Entities\City",
+     *     cascade="{persist}"
+     * )
+     */
+    protected $city;
+
+    public function __construct(string $address, Country $country, $city = null)
     {
         $this->formattedAddress = $address;
         $this->country = $country;
+        $this->city = $city;
     }
 
     /**
@@ -59,11 +69,38 @@ class Address
         return [
             'formattedAddress' => $this->getFormattedAddress(),
             'country' => $this->country->getId(),
+            'city' => $this->city->getId(),
         ];
     }
 
-    public function getCountryId() : string
+    /**
+     * @return Country
+     */
+    public function getCountry() : Country
     {
-        return $this->country->getId();
+        return $this->country;
+    }
+
+    /**
+     * @return App\Core\Dictionary\Entities\City|null
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    public function getStringValues() : array
+    {
+        $values = [];
+        foreach ($this->country->getNames() as $locale => $name) {
+            $values[$locale]['country'] = $name;
+        }
+        if ($this->getCity()) {
+            foreach ($this->city->getNames() as $loc => $city) {
+                $values[$loc]['city'] = $city;
+            }
+        }
+
+        return $values;
     }
 }

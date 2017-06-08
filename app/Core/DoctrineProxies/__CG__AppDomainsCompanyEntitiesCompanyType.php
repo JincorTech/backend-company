@@ -210,4 +210,15 @@ class CompanyType extends \App\Domains\Company\Entities\CompanyType implements \
         return parent::getName($locale);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getNames()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNames', []);
+
+        return parent::getNames();
+    }
+
 }

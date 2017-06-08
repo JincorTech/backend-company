@@ -22,16 +22,18 @@ class DatabaseSeeder extends Seeder
         $this->getDm()->getDocumentDatabase(EconomicalActivityType::class)->drop();
         $this->call(CurrencySeeder::class);
         $this->call(CountrySeeder::class);
+        $this->call(CitySeeder::class);
         $this->call(CompanyTypeSeeder::class);
         $this->call(CompanyActivityTypes::class);
         $this->call(CompanySeeder::class);
+        $this->call(EmployeeSeeder::class);
         // $this->call(UsersTableSeeder::class);
     }
 
     /**
      * @return \Doctrine\ODM\MongoDB\DocumentManager
      */
-    private function getDm()
+    protected function getDm()
     {
         return $this->container->make(DocumentManager::class);
     }

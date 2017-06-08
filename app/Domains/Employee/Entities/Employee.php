@@ -9,7 +9,9 @@
 
 namespace App\Domains\Employee\Entities;
 
+use App\Domains\Employee\Events\EmployeeDeactivated;
 use App\Domains\Employee\Events\EmployeeRegistered;
+use App\Domains\Employee\Events\ScopeChanged;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Company\Entities\Department;
@@ -31,7 +33,7 @@ use Hash;
  *     repositoryClass="App\Domains\Employee\Repositories\EmployeeRepository"
  * )
  */
-class Employee
+class Employee implements MetaEmployeeInterface
 {
     /**
      * @var string
@@ -70,6 +72,18 @@ class Employee
      */
     protected $isActive;
 
+    /**
+ * @var \DateTime
+ * @ODM\Field(type="date")
+ */
+    protected $registeredAt;
+
+    /**
+     * @var \DateTime
+     * @ODM\Field(type="date")
+     */
+    protected $deletedAt;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4()->toString();
@@ -93,7 +107,8 @@ class Employee
         $employee->setScope($verification->getCompany());
 
         $employee->department = $verification->getCompany()->getRootDepartment();
-        $verification->getCompany()->getRootDepartment()->addEmployee($employee);
+        $employee->department->addEmployee($employee);
+        $employee->registeredAt = new \DateTime();
 
         event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
 
@@ -103,7 +118,7 @@ class Employee
     /**
      * @return string
      */
-    public function getId() : string
+    public function getId(): string
     {
         return $this->id;
     }
@@ -111,7 +126,7 @@ class Employee
     /**
      * @return EmployeeProfile
      */
-    public function getProfile() : EmployeeProfile
+    public function getProfile(): EmployeeProfile
     {
         return $this->profile;
     }
@@ -129,7 +144,7 @@ class Employee
      */
     public function getLogin(): string
     {
-        return $this->getCompany()->getId().':'.$this->getContacts()->getEmail();
+        return $this->getCompany()->getId() . ':' . $this->getContacts()->getEmail();
     }
 
     /**
@@ -143,7 +158,7 @@ class Employee
     /**
      * @return Company
      */
-    public function getCompany() : Company
+    public function getCompany(): Company
     {
         return $this->department->getCompany();
     }
@@ -152,7 +167,7 @@ class Employee
      * @param string $password
      * @return bool
      */
-    public function checkPassword(string $password) : bool
+    public function checkPassword(string $password): bool
     {
         return Hash::check($password, $this->password);
     }
@@ -162,6 +177,7 @@ class Employee
      */
     public function isAdmin()
     {
+//        dd($this->getProfile()->scope);
         return $this->getProfile()->scope === EmployeeRole::ADMIN;
     }
 
@@ -179,8 +195,22 @@ class Employee
      * Set the scope based on company Instance
      *
      * @param Company $company
+     * @param string|null $scope
      */
-    private function setScope(Company $company)
+    public function setScope(Company $company, $scope = null)
+    {
+        $oldValue = $this->profile->scope;
+        if ($scope === null) {
+            $this->setDefaultScope($company);
+            $this->scopeChangedEvent($oldValue);
+            return;
+        }
+        $this->profile->scope = $scope;
+        $this->scopeChangedEvent($oldValue);
+    }
+
+
+    private function setDefaultScope(Company $company)
     {
         if ($company->getEmployees()->count() === 0) {
             $this->profile->scope = EmployeeRole::ADMIN;
@@ -189,4 +219,42 @@ class Employee
         }
     }
 
+    public function deactivate()
+    {
+        $this->isActive = false;
+        $this->deletedAt = new \DateTime();
+        event(new EmployeeDeactivated($this->getLogin(), $this->getCompany()));
+    }
+
+    public function isActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getRegisteredAt(): \DateTime
+    {
+        return $this->registeredAt;
+    }
+
+    /**
+     * @return \DateTime|null
+     *
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param $oldValue
+     */
+    protected function scopeChangedEvent($oldValue)
+    {
+        if ($oldValue !== null) {
+            event(new ScopeChanged($this, $oldValue));
+        }
+    }
 }

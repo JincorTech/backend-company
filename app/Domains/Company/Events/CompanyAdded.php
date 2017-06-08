@@ -9,42 +9,12 @@
 
 namespace App\Domains\Company\Events;
 
-use DateTime;
-
 /**
  * Class CompanyAdded
  * @package App\Domains\Company\Events
  *
  * CompanyAdded event
  */
-class CompanyAdded
+class CompanyAdded extends BaseCompanyEvent
 {
-
-    /**
-     * @var string
-     */
-    private $companyId;
-
-    /**
-     * @var string
-     */
-    private $legalName;
-
-    /**
-     * @var DateTime
-     */
-    private $date;
-
-    /**
-     * CompanyAdded constructor.
-     * @param string $companyId
-     * @param string $legalName
-     */
-    public function __construct(string $companyId, string $legalName)
-    {
-        $this->date = new DateTime();
-        $this->companyId = $companyId;
-        $this->legalName = $legalName;
-    }
-
 }

@@ -9,6 +9,7 @@
 
 namespace App\Core\Dictionary\Entities;
 
+use App\Core\Dictionary\Traits\HasTranslatableName;
 use App\Core\ValueObjects\CurrencyISOCodes;
 use App\Core\ValueObjects\TranslatableString;
 use Ramsey\Uuid\Uuid;
@@ -21,6 +22,10 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  */
 class Currency
 {
+
+    use HasTranslatableName;
+
+
     /**
      * @var string
      * @ODM\Id(strategy="NONE", type="bin_uuid")
@@ -30,9 +35,7 @@ class Currency
     /**
      * @var TranslatableString
      *
-     * @ODM\EmbedOne(
-     *     targetDocument="App\Core\ValueObjects\TranslatableString"
-     * )
+     * @ODM\Field(type="translatableString")
      */
     protected $names;
 
@@ -60,15 +63,6 @@ class Currency
         $this->setNames($names);
         $this->setISOCodes($ISOCodes);
         $this->setSign($sign);
-    }
-
-    /**
-     * @param string $locale
-     * @return string
-     */
-    public function getName($locale = null) : string
-    {
-        return $this->names->getValue($locale);
     }
 
     /**
@@ -101,14 +95,6 @@ class Currency
     public function getId() : string
     {
         return $this->id;
-    }
-
-    /**
-     * @param array $names
-     */
-    public function setNames(array $names)
-    {
-        $this->names = new TranslatableString($names);
     }
 
     /**

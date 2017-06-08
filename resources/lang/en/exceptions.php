@@ -16,11 +16,35 @@ return [
     ],
 
     'restore-password' => [
-        'notFound' => 'Employee with email :email were not found on JinCor'
+        'notFound' => 'Employee with email :email were not found on Jincor'
     ],
 
     'change-password' => [
         'mismatch' => 'Old password don\'t match'
+    ],
+
+    'login' => [
+        'multiple-companies' => 'User credentials matches to many companies. Please specify company id in order to login.'
+    ],
+    'employee' => [
+        'not_found' => 'Employee :email not found',
+        'password_mismatch' => 'Login and password do not match',
+        'access_denied' => 'You don\'t have permissions permissions to perform this action',
+    ],
+    'company' => [
+        'not_found' => 'Company not found on the server',
+    ],
+    'country' => [
+        'not_found' => 'Country not found on the server',
+    ],
+    'city' => [
+        'not_found' => 'City not found on the server',
+    ],
+    'economical_activity_type' => [
+        'not_found' => 'Economical activity type not found on the server',
+    ],
+    'company_type' => [
+        'not_found' => 'Company type not found on the server',
     ]
 
 ];

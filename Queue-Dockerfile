@@ -1,0 +1,3 @@
+FROM nielsvdoorn/laravel-supervisor:latest
+
+COPY config/queue/worker.conf.tpl /etc/supervisor/conf.d/supervisord.conf

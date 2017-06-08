@@ -121,6 +121,7 @@ return [
     */
 
     'log' => env('APP_LOG', 'single'),
+    'search_distance' => env('SEARCH_DISTANCE', 10),
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
@@ -185,6 +186,7 @@ return [
 
         App\Applications\Company\Providers\RouteServiceProvider::class,
         App\Applications\Dictionary\Providers\RouteServiceProvider::class,
+        Cviebrock\LaravelElasticsearch\ServiceProvider::class,
     ],
 
     /*
@@ -231,13 +233,15 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Elasticsearch' => Cviebrock\LaravelElasticsearch\Facade::class,
 
     ],
 
 
     'entityPaths' => [
-        base_path('app/Core/Entities'),
-        base_path('app/Domains/Dictionary/Entities'),
+        base_path('app/Core/Dictionary/Entities'),
+        base_path('app/Domains/Company/Entities'),
+        base_path('app/Domains/Employee/Entities'),
     ],
 
 ];
