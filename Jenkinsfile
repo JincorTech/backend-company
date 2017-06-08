@@ -3,6 +3,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
+        sh 'docker stop $(docker ps -aq)'
         sh 'docker-compose -f docker-compose.test.yml build'
       }
     }
