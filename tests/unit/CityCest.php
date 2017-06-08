@@ -23,7 +23,6 @@ class CityCest
         ]);
         $I->assertInstanceOf(City::class, $city);
         $I->assertEquals($country, $city->getCountry());
-        $I->assertEquals($coordinates, $city->getCoordinates());
         $I->assertEquals($names->getValues(), $city->getNames());
         $I->assertNotEquals(\Ramsey\Uuid\Uuid::uuid4()->toString(), $city->getId());
 
