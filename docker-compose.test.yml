@@ -73,7 +73,7 @@ services:
     volumes_from:
       - src
     ports:
-     - 8080:80
+     - 8082:80
      - 443:443
     links:
       - companies
