@@ -5,7 +5,7 @@ namespace App\Core\Providers;
 use App\Core\Services\ImageService;
 use App\Core\Services\JWTService;
 use Illuminate\Support\ServiceProvider;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class AppServiceProvider extends ServiceProvider
 {

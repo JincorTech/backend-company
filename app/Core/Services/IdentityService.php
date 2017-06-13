@@ -9,6 +9,7 @@
 
 namespace App\Core\Services;
 
+use App\Core\Interfaces\IdentityInterface;
 use App\Domains\Employee\Exceptions\CompanyNotFound;
 use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
 use App\Domains\Employee\Exceptions\PasswordMismatchException;
@@ -17,7 +18,7 @@ use App\Domains\Employee\Services\EmployeeService;
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
 use Illuminate\Support\Collection;
 
-class IdentityService extends BaseRestService
+class IdentityService extends BaseRestService implements IdentityInterface
 {
     private $companyService;
     private $employeeService;

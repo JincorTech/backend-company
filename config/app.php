@@ -184,9 +184,11 @@ return [
         App\Core\Providers\AuthServiceProvider::class,
         App\Core\Providers\EventServiceProvider::class,
 
+        App\Applications\Company\Providers\ValidationServiceProvider::class,
         App\Applications\Company\Providers\RouteServiceProvider::class,
         App\Applications\Dictionary\Providers\RouteServiceProvider::class,
         Cviebrock\LaravelElasticsearch\ServiceProvider::class,
+        App\Core\Providers\IdentityServiceProvider::class,
     ],
 
     /*
