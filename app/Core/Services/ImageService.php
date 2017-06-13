@@ -36,9 +36,6 @@ class ImageService
      */
     public function upload(string $path, string $data) : string
     {
-        if (strpos($data, 'data:image/png') === false) {
-            throw new InvalidImageException(trans('validation.png_image'));
-        }
         $image = str_replace('data:image/png;base64,', '', $data);
         $this->fs->put($path, base64_decode($image), 'public');
         return $this->fs->url($path);

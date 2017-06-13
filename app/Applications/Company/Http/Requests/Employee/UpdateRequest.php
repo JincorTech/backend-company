@@ -21,9 +21,9 @@ class UpdateRequest extends BaseAPIRequest
     public function rules()
     {
         return [
-            'profile.firstName' => 'string|min:2|max:64',
-            'profile.lastName' => 'string|min:2|max:64',
-            'profile.position' => 'string|min:4|max:256',
+            'profile.firstName' => 'filled|string|min:2|max:64',
+            'profile.lastName' => 'filled|string|min:2|max:64',
+            'profile.position' => 'filled|string|min:2|max:60',
             'profile.avatar' => 'is_png',
         ];
     }
@@ -47,16 +47,4 @@ class UpdateRequest extends BaseAPIRequest
     {
         return $this->get('profile.avatar');
     }
-
-    public function all()
-    {
-        $final = [];
-        foreach ($this->get('profile') as $field => $value) {
-            if (!empty($value)) {
-                $final[$field] = $value;
-            }
-        }
-        return $final;
-    }
-
 }

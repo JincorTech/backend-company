@@ -11,6 +11,7 @@ namespace App\Domains\Employee\Entities;
 
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\Exceptions\EmployeeVerificationException;
+use App\Domains\Employee\Exceptions\EmailPinIncorrect;
 use App\Domains\Employee\ValueObjects\VerificationPin;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Ramsey\Uuid\Uuid;
@@ -139,6 +140,7 @@ class EmployeeVerification implements MetaEmployeeInterface
 
     /**
      * @param string $pin
+     * @throws EmailPinIncorrect
      */
     public function verifyEmail(string $pin)
     {
@@ -146,7 +148,7 @@ class EmployeeVerification implements MetaEmployeeInterface
             $this->emailVerified = true;
             $this->emailVerifiedAt = new DateTime();
         } else {
-            $this->emailVerified = false;
+            throw new EmailPinIncorrect();
         }
     }
 
