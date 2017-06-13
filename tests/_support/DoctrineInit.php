@@ -26,16 +26,21 @@ class DoctrineInit
         $config = new Configuration();
         $connection = new Connection(
             'mongodb://'
-            .config('database.connections.mongodb.host')
+            .'mongo'
             .':'
-            .config('database.connections.mongodb.port')
+            .'27017'
         );
-        $config->setProxyDir(app_path('Core/DoctrineProxies'));
-        $config->setHydratorDir(app_path('Core/DoctrineHydrators'));
+        $config->setProxyDir('/var/www/laravel/app/Core/DoctrineProxies/');
+        $config->setHydratorDir('/var/www/laravel/app/Core/DoctrineHydrators/');
         $config->setProxyNamespace('App\Core\DoctrineProxies');
         $config->setHydratorNamespace('App\Core\DoctrineHydrators');
-        $config->setDefaultDB('ubn-test');
-        $config->setMetadataDriverImpl(AnnotationDriver::create(config('app.entityPaths')));
+        $config->setDefaultDB('testing');
+        $config->setMetadataDriverImpl(AnnotationDriver::create([
+            '/var/www/laravel/app/Core/Dictionary/Entities/',
+            '/var/www/laravel/app/Domains/Company/Entities/',
+            '/var/www/laravel/app/Domains/Employee/Entities/',
+            ]
+        ));
         AnnotationDriver::registerAnnotationClasses();
 
         $subscribers = [
