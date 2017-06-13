@@ -11,7 +11,7 @@ namespace App\Applications\Company\Providers;
 
 use App\Applications\Company\Validators\EmployeeAvatar;
 use Illuminate\Support\ServiceProvider;
-use \Validator;
+use Illuminate\Support\Facades\Validator;
 
 class ValidationServiceProvider extends ServiceProvider
 {

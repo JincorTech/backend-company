@@ -57,13 +57,16 @@ class EmployeeVerificationService
      *
      * @param string $verificationId
      * @param string $email
-     *
+     * @throws EmployeeVerificationNotFound
      * @return \App\Domains\Employee\Entities\EmployeeVerification
      */
     public function sendEmailVerification(string $verificationId, string $email)
     {
         /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = $this->verificationRepository->find($verificationId);
+        if (!$verification) {
+            throw new EmployeeVerificationNotFound("Employee verification " . $verificationId . ' cannot be found on the server');
+        }
         $verification->associateEmail($email);
         event(new VerificationEmailRequested($verification));
         $this->dm->persist($verification);
@@ -76,7 +79,7 @@ class EmployeeVerificationService
     {
         /** @var Employee $existing */
         $existing = $this->dm->getRepository(Employee::class)->findBy(['contacts.email' => $email]);
-        if(!$existing) {
+        if (!$existing) {
             throw new EmployeeNotFound(trans('exceptions.restore-password.notFound', ['email' => $email]));
         }
         $verification = RestorePasswordVerification::make($email);
@@ -99,7 +102,7 @@ class EmployeeVerificationService
         /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = $this->verificationRepository->find($verificationId);
         if (!$verification) {
-            throw new EmployeeVerificationNotFound("Employee verification " . $verificationId . 'cannot be found on the server');
+            throw new EmployeeVerificationNotFound("Employee verification " . $verificationId . ' cannot be found on the server');
         }
         $verification->verifyEmail($pin);
         $this->dm->persist($verification);
