@@ -9,7 +9,7 @@
 
 namespace App\Domains\Employee\Handlers;
 
-use App\Core\Services\IdentityService;
+use App\Core\Interfaces\IdentityInterface;
 use App\Domains\Employee\Events\EmployeeRegistered as ERE;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Employee\Mailables\RegistrationSuccess;
@@ -18,10 +18,14 @@ use App;
 
 class EmployeeRegistered
 {
-    public function __construct()
+    /**
+     * EmployeeRegistered constructor.
+     * @param IdentityInterface $identityService
+     */
+    public function __construct(IdentityInterface $identityService)
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->identityService = new IdentityService();
+        $this->identityService = $identityService;
     }
 
     public function handle(ERE $event)

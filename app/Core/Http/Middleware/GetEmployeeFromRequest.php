@@ -11,18 +11,23 @@ namespace App\Core\Http\Middleware;
 
 use Closure;
 use App;
-use App\Core\Services\IdentityService;
 use App\Domains\Employee\Services\EmployeeService;
 use App\Domains\Employee\Entities\Employee;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
+use App\Core\Interfaces\IdentityInterface;
 
 class GetEmployeeFromRequest
 {
     protected $identityService;
     protected $employeeService;
 
-    public function __construct(IdentityService $identityService, EmployeeService $employeeService)
+    /**
+     * GetEmployeeFromRequest constructor.
+     * @param IdentityInterface $identityService
+     * @param EmployeeService $employeeService
+     */
+    public function __construct(IdentityInterface $identityService, EmployeeService $employeeService)
     {
         $this->identityService = $identityService;
         $this->employeeService = $employeeService;

@@ -16,6 +16,7 @@ use App\Applications\Company\Http\Requests\Employee\MatchingCompanies;
 use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Http\Requests\Employee\ChangePassword;
 use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
+use App\Domains\Employee\Exceptions\EmailPinIncorrect;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
 use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
 use App\Applications\Company\Http\Requests\Employee\VerifyByCode;
@@ -33,7 +34,7 @@ use App\Applications\Company\Http\Requests\Employee\Delete;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
 use App\Domains\Employee\Services\EmployeeService;
-use App\Core\Services\IdentityService;
+use App\Core\Interfaces\IdentityInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
@@ -46,7 +47,7 @@ class EmployeeController extends BaseController
 {
 
     /**
-     * @var IdentityService
+     * @var IdentityInterface
      */
     private $identityService;
 
@@ -64,10 +65,10 @@ class EmployeeController extends BaseController
      * EmployeeController constructor.
      *
      * @param EmployeeService $employeeService
-     * @param IdentityService $identityService
+     * @param IdentityInterface $identityService
      * @param EmployeeVerificationService $verificationService
      */
-    public function __construct(EmployeeService $employeeService, IdentityService $identityService, EmployeeVerificationService $verificationService)
+    public function __construct(EmployeeService $employeeService, IdentityInterface $identityService, EmployeeVerificationService $verificationService)
     {
         $this->employeeService = $employeeService;
         $this->identityService = $identityService;
@@ -88,12 +89,24 @@ class EmployeeController extends BaseController
     /**
      * @param VerifyByCode $request
      *
-     * @return Response
+     * @return Response|JsonResponse
      */
     public function verifyEmail(VerifyByCode $request)
     {
-        $verification = $this->verificationService->verifyEmail($request->getVerificationId(), $request->getVerificationCode());
-        return $this->response->item($verification, EmployeeVerificationTransformer::class);
+        try {
+            $verification = $this->verificationService->verifyEmail($request->getVerificationId(), $request->getVerificationCode());
+            return $this->response->item($verification, EmployeeVerificationTransformer::class);
+        } catch (EmailPinIncorrect $e) {
+            return new JsonResponse([
+                'success' => false,
+                'errors' => [
+                    'verificationCode' => [
+                        'Verification code is incorrect',
+                    ],
+                ],
+                'message' => 'Verification code is incorrect',
+            ], 401);
+        }
     }
 
 
@@ -272,7 +285,7 @@ class EmployeeController extends BaseController
     {
         try {
             return $this->response->item(
-                $this->employeeService->updateEmployee($request->getUser(),$request->all()),
+                $this->employeeService->updateEmployee($request->getUser(),$request->get('profile')),
                 SelfProfile::class
             );
         } catch (App\Core\Exceptions\InvalidImageException $exception) {

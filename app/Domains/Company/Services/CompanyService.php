@@ -228,7 +228,7 @@ class CompanyService implements CompanyIndexContract
      */
     public function search($query = null, $country = null, $activity = null)
     {
-        $result = Elasticsearch::connection()->search(
+        $result = Elasticsearch::search(
             $this->buildSearchRequest($query, $country, $activity)
         );
 
