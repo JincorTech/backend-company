@@ -27,9 +27,13 @@ return [
         'multiple-companies' => 'User credentials matches to many companies. Please specify company id in order to login.'
     ],
     'employee' => [
+        'already_exists' => 'Employee :email already exists in company :company',
         'not_found' => 'Employee :email not found',
         'password_mismatch' => 'Login and password do not match',
         'access_denied' => 'You don\'t have permissions permissions to perform this action',
+        'verification' => [
+            'not_found' => 'Employee verification :verification cannot be found on the server',
+        ]
     ],
     'company' => [
         'not_found' => 'Company not found on the server',
@@ -45,6 +49,14 @@ return [
     ],
     'company_type' => [
         'not_found' => 'Company type not found on the server',
+    ],
+    'contacts' => [
+        'not_verified' => 'You must verify email and phone before registration',
+    ],
+    'verification' => [
+        'code' => [
+            'incorrect' => 'Verification code is incorrect',
+        ],
+        'failed' => 'Verification failed',
     ]
-
 ];

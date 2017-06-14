@@ -22,7 +22,7 @@ class ChangePassword extends BaseAPIRequest
             'companyId' => 'required|string|size:36',
             'verificationId' => 'required_without:oldPassword|string|size:36',
             'oldPassword' => 'required_without:verificationId|string',
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/'
         ];
     }
 

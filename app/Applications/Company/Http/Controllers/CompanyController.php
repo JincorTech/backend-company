@@ -85,7 +85,11 @@ class CompanyController extends BaseController
 
     public function update(UpdateProfile $request)
     {
-        return $this->response->item($this->companyService->update($request->getUser()->getCompany(), $request->all()), MyCompany::class);
+        $data = $request->get('profile');
+        if ($request->get('legalName') !== null) {
+            $data['legalName'] = $request->get('legalName');
+        }
+        return $this->response->item($this->companyService->update($request->getUser()->getCompany(), $data), MyCompany::class);
     }
 
     /**

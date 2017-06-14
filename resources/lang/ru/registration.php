@@ -10,6 +10,6 @@
 
 return [
     'typeNotFound' => 'Тип компании :ct не найден',
-    'countryNotFound' => 'Страна :ct не найдена',
+    'countryNotFound' => 'Страна :country не найдена',
 
 ];

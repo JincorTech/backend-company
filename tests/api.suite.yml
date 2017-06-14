@@ -1,9 +1,20 @@
 class_name: ApiTester
 modules:
     enabled:
-        - \Helper\Api
         - REST:
-            url: http://nginx/api/v1/
-            depends: PhpBrowser
+            url: /api/v1/
+            depends: Laravel5
+        - \Helper\Api
         - DoctrineMongoOdm:
-                      connection_callback: ['DoctrineInit', 'createDocumentManager']
+            connection_callback: ['DoctrineInit', 'createDocumentManager']
+        - Laravel5:
+            environment_file: .env.test
+            cleanup: false
+        - MongoDb:
+            dsn: 'mongodb://mongo:27017/testing'
+            user: ''
+            password: ''
+            dump: tests/_data/apidump.tar.gz
+            dump_type: 'mongodump-tar-gz'
+            cleanup: true
+            populate: true

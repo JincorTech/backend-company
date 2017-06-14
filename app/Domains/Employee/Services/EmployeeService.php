@@ -86,12 +86,14 @@ class EmployeeService
         /** @var EmployeeVerification $verification */
         $verification = $this->verificationService->getRepository()->find($verificationId);
         if (!$verification) {
-            throw new ContactsNotVerified('You must verify email and phone before registration');
+            throw new ContactsNotVerified(trans('exceptions.contacts.not_verified'));
         }
         if ($this->findByCompanyIdAndEmail($verification->getCompany()->getId(), $verification->getEmail())) {
             throw new EmployeeAlreadyExists(
-                'Employee '.$verification->getEmail().' already exists in company '.
-                $verification->getCompany()->getProfile()->getName()
+                trans('exceptions.employee.already_exists', [
+                    'email' => $verification->getEmail(),
+                    'company' => $verification->getCompany()->getProfile()->getName(),
+                ])
             );
         }
         $employee = Employee::register($verification, $profile, $password);
@@ -264,14 +266,16 @@ class EmployeeService
         $company = $this->dm->getRepository(Company::class)->find($companyId);
         /** @var EmployeeVerification $verification */
         $verification = $this->dm->getRepository(EmployeeVerification::class)->find($verificationId);
-        if (!$verification) throw new HttpException(401, 'Verification failed');
+        if (!$verification) {
+            throw new HttpException(401, trans('exceptions.verification.failed'));
+        }
         $employee = $this->dm->getRepository(Employee::class)->createQueryBuilder()
             ->field('department')
             ->references($company->getRootDepartment())
             ->field('contacts.email')
             ->equals($verification->getEmail())->getQuery()->execute();
         if (!$employee) {
-            throw new HttpException(401, 'Verification failed');
+            throw new HttpException(401, trans('exceptions.verification.failed'));
         }
         return $employee->getNext();
     }
