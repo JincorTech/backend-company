@@ -44,9 +44,9 @@ class CompanyProfileCest
     {
         $profile = new CompanyProfile($this->faker->company, AddressFactory::make(), CompanyTypeFactory::make());
         $links = [
-            new CompanyExternalLink('Official website', 'http://test.com'),
-            new CompanyExternalLink('Facebook Page', 'http://facebook.com/TestCompany'),
-            new CompanyExternalLink('Twitter account', 'http://twitter.com'),
+            new CompanyExternalLink('http://test.com'),
+            new CompanyExternalLink('http://facebook.com/TestCompany'),
+            new CompanyExternalLink('http://twitter.com'),
         ];
         $profile->setLinks($links);
         $I->assertEquals($profile->getLinks()->get(0), $links[0]);
@@ -62,9 +62,9 @@ class CompanyProfileCest
     {
         $profile = new CompanyProfile($this->faker->company, AddressFactory::make(), CompanyTypeFactory::make());
         $links = [
-            new CompanyExternalLink('Official website', 'http://test.com'),
-            new CompanyExternalLink('Facebook Page', 'http://facebook.com/TestCompany'),
-            new CompanyExternalLink('Twitter account', 'http://twitter.com'),
+            new CompanyExternalLink('http://test.com'),
+            new CompanyExternalLink('http://facebook.com/TestCompany'),
+            new CompanyExternalLink('http://twitter.com'),
         ];
         $profile->setLinks($links);
         $I->assertEquals($profile->getLinks()->get(1), $links[1]);

@@ -45,7 +45,6 @@ class CityRepositoryCest
         $this->dm->flush();
         $found = $this->cityRepository->find($city->getId());
         $I->assertEquals($city->getId(), $found->getId());
-        $I->assertEquals($city->getCoordinates(), $found->getCoordinates());
     }
 
     public function testFindByCountry(UnitTester $I)

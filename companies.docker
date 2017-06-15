@@ -1,6 +1,6 @@
 FROM laradock/php-fpm:7.0--1.2
 
-MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
+MAINTAINER Andrey Degtyaruk <hlogeon1@gmail.com>
 
 USER root
 
@@ -10,7 +10,7 @@ RUN pecl install mongodb-1.1.9 && \
 #### SOCKET CONNECTION ####
 RUN docker-php-ext-install sockets
 
-USER laradock
+USER companies
 
 ADD ./config/php-fpm/laravel.ini /usr/local/etc/php/conf.d
 ADD ./config/php-fpm/laravel.pool.conf /usr/local/etc/php-fpm.d/
@@ -21,11 +21,11 @@ RUN rm -r /var/lib/apt/lists/*
 
 RUN usermod -u 1000 www-data
 
-VOLUME /var/www/laravel
+VOLUME /var/www/companies
 
-RUN chown -R www-data:www-data /var/www/laravel
+RUN chown -R www-data:www-data /var/www/companies
 
-WORKDIR /var/www/laravel
+WORKDIR /var/www/companies
 USER root
 CMD ["php-fpm"]
 

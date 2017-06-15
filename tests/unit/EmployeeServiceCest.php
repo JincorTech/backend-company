@@ -212,12 +212,14 @@ class EmployeeServiceCest
         $company = $this->getCompany();
         $this->dm->persist($company);
         $profile = EmployeeProfileFactory::make();
+        /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = RestorePasswordVerification::make($this->email);
         $verification->associateCompany($company);
         $verification->verifyEmail($verification->getEmailCode());
         $this->dm->persist($verification->getVerification());
         $this->dm->flush();
         $employee = $this->employeeService->register($verification->getId(), $profile, $this->employeePassword);
+        $this->dm->persist($employee);
         $match = $this->employeeService->matchVerificationAndCompany($verification->getId(), $company->getId());
         $I->assertEquals($employee, $match);
         $I->assertEquals($company, $match->getCompany());

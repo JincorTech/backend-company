@@ -13,7 +13,7 @@ class CompanyExternalLinkCest
     {
         $name = 'test';
         $link = 'https://facebook.com/test';
-        $url = new CompanyExternalLink($name, $link);
+        $url = new CompanyExternalLink($link);
         $I->assertEquals($name, $url->getName());
         $I->assertEquals($link, $url->getUrl());
     }
@@ -29,13 +29,13 @@ class CompanyExternalLinkCest
         $I->expectException(InvalidArgumentException::class, function(){
             $name = 'test';
             $link = 'htps://facebook.com/test';
-            new CompanyExternalLink($name, $link);
+            new CompanyExternalLink($link);
         });
 
         $I->expectException(InvalidArgumentException::class, function(){
             $name = 'test';
             $link = 'http://facebook';
-            new CompanyExternalLink($name, $link);
+            new CompanyExternalLink($link);
         });
     }
 }

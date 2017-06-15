@@ -1,0 +1,95 @@
+version: '2'
+services:
+
+  companies:
+    image: registry.jincor.com/backend/companies
+    build:
+      context: ./
+      dockerfile: companies.docker
+    ports:
+      - "9000:9000"
+    links:
+      - search
+      - auth
+      - mongo
+      - redis
+    environment:
+      # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
+      - PHP_IDE_CONFIG="serverName=company"
+    volumes_from:
+      - src
+
+  workspace:
+    image: registry.jincor.com/backend/companies-workspace
+    build:
+      context: ./
+      args:
+        - TZ=UTC
+        - INSTALL_XDEBUG=true
+      dockerfile: workspace.docker
+    tty: true
+    links:
+      - auth
+      - mongo
+      - redis
+      - search
+    volumes_from:
+      - src
+
+  auth:
+    image: registry.jincor.com/backend/auth:latest
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "3000:3000"
+    volumes:
+      - /usr/src/app
+    links:
+      - redis:redis
+
+
+  search:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.3.2
+    environment:
+      - cluster.name=jincor-companies
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 1g
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 9200:9200
+
+  nginx:
+    image: registry.jincor.com/backend/nginx:latest
+    volumes_from:
+      - src
+    ports:
+     - 8082:80
+     - 443:443
+    links:
+      - companies
+
+
+  redis:
+    image: registry.jincor.com/backend/redis:latest
+    ports:
+      - "6379:6379"
+
+  mongo:
+    image: registry.jincor.com/backend/mongodb:latest
+    ports:
+      - "27017:27017"
+
+  src:
+    image: tianon/true
+    volumes:
+      - ./:/var/www/companies
