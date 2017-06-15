@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: http://company/api/v1/
+HOST: http://jincor.com:8080/api/v1/
 
 # JinCorCompany
 
@@ -20,11 +20,11 @@ Currently supported locales
 We use JWT for authentication and authorization. Refer to JWT documentation in order to get more
 info about JWT itself. We support only `Bearer` tokens which must be sent in HTTP-headers.
 Most of API methods require authorization and not accessible without JWT. But most of dictionaries
-can be accessed by anuone.
+can be accessed by anyone.
 
 ## Company registration process
 
-Company registration process is built arond the concept of verification sessions.
+Company registration process is built around the concept of verification sessions.
 When someone registers a company, he or she forced to create the first account in
 this company. 
 
@@ -33,7 +33,7 @@ multiple accounts attached to one email. So, here everything is pretty like in
 classical multy-tenant saas application - unqie profile is not only it's own id but
 the tenant id as well. So in our case email + companyId.
 
-To make registration process more configurable we use Entity called `VerificatioProcess`
+To make registration process more configurable we use Entity called `VerificationProcess`
 which has unique key which you must provide to server when doing requests during verification process.
 Note that `VerificationProcess` also keeps all the data required to restore the session, think about it like about session key.
 
@@ -44,7 +44,7 @@ So, remember: The result of company registration is always `VerificationProcess`
 
 ## Login process
 
-At first time the whole login system can look too complicated thatswhy we added this section
+At first time the whole login system can look too complicated that's why we added this section
 to our docs to get you through the login process quickly.
 1 user(means 1 email address) can be associated to many companies. Because of some reasons
 like security and functionality we decided to keep such kind of accounts independently.
@@ -121,26 +121,14 @@ Get the list of the cities
                     {
                         "id": "f760fe12-4afe-4360-8eda-b1282864dd21",
                         "name": "Нижний Тагил",
-                        "country": {
-                            "id": "f760fe12-4afe-4360-8eda-b1282864dd34",
-                            "name": "Россия",
-                        }
                     },
                     {
                         "id": "f760fe12-4afe-4360-8eda-b1282864dd74",
                         "name": "Нижний Новгород",
-                        "country": {
-                            "id": "f760fe12-4afe-4360-8eda-b1282864dd85",
-                            "name": "Россия",
-                        }
                     }
                     {
                         "id": "f760fe12-3afe-4360-8eda-b1282864dd76",
                         "name": "Москва",
-                        "country": {
-                            "id": "f760fe12-4afe-4360-8eda-b1282864dd88",
-                            "name": "Россия",
-                        }
                     }
                 ]
             }
@@ -333,7 +321,12 @@ Use this process `id` to pass to verification requests.
     + Body
             
             {
-              "message": "CompanyType not found on the server",
+              "message": "422 Unprocessable Entity",
+              "errors": {
+                "companyType": [
+                  "Company type c699fc1a-ec7f-4021-9102-31ff03c5624a is not found on server"
+                ]
+              },
               "status_code": 422
             }
       
@@ -434,9 +427,10 @@ Internal login will be created.
                   "profile": {
                     "name": "Andrey Degtyaruk",
                     "position": "CTO",
-                    "role": "admin", //admin, employee
+                    "role": "company-admin", //company-admin, employee
                     "avatar": null
                   },
+                  "admin": true,
                   "contacts": {
                     "email": "hlogeon1@gmail.com",
                     "phone": null
@@ -458,7 +452,7 @@ Internal login will be created.
                       ],
                       "email": "admin@jincor.com",
                       "phone": "+7999229393",
-                      "formattedAddress": {
+                      "address": {
                         "country": {
                           "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
                           "name": "Russia"
@@ -483,7 +477,8 @@ Internal login will be created.
                       "id": "547e7d91-bc27-4407-a27a-429d2855652b",
                       "name": "Public Company",
                       "code": "BT2"
-                    }
+                    },
+                    "employeesCount": 2
                   }
                 },
                 "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYxYjhlMzdjLTMzNGYtNGVkYS04ZTIwLTJmMWIwNDE4YThjYSIsImxvZ2luIjoiYTNjYmUyMWMtYmFiNi00YzcyLTlkMmUtODkwN2Y5YTU2ODk4Omhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiZW1wbG95ZWUiLCJkZXZpY2VJZCI6IjEyMzQ1IiwianRpIjoiZjFiOGUzN2MtMzM0Zi00ZWRhLThlMjAtMmYxYjA0MThhOGNhMTIzNDUxNDkyMTQ1Mzk5MTY0IiwiaWF0IjoxNDkyMTQ1Mzk5MTY0LCJleHAiOjE0OTIxNDYwMDM5NjR9.fbTUkwKO-X_MoMDulV2YrgtX6xVfgxdYbWwaMdV-GWo"
@@ -528,9 +523,10 @@ and `token` in response(Look at the first 200 response example) instead of list 
                   "profile": {
                     "name": "John Doe",
                     "position": "Tester",
-                    "role": "admin", //admin, employee
+                    "role": "company-admin", //company-admin, employee
                     "avatar": null
                   },
+                  "admin": true,
                   "contacts": {
                     "email": "test@test.com",
                     "phone": null
@@ -552,7 +548,7 @@ and `token` in response(Look at the first 200 response example) instead of list 
                       ],
                       "email": "admin@jincor.com",
                       "phone": "+7999229393",
-                      "formattedAddress": {
+                      "address": {
                         "country": {
                           "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
                           "name": "Russia"
@@ -577,7 +573,8 @@ and `token` in response(Look at the first 200 response example) instead of list 
                       "id": "547e7d91-bc27-4407-a27a-429d2855652b",
                       "name": "Public Company",
                       "code": "BT2"
-                    }
+                    },
+                    "employeesCount": 2
                   }
                 },
                 "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4NDFiMTY5LTNhMTgtNDJhNy1hNDQ4LTRiNGZiODViZGM1OSIsImxvZ2luIjoiYTNjYmUyMWMtYmFiNi00YzcyLTlkMmUtODkwN2Y5YTU2ODk4OnRlc3RAdGVzdC5jb20iLCJzY29wZSI6ImNvbXBhbnktYWRtaW4iLCJkZXZpY2VJZCI6IjEyMzQ1IiwianRpIjoiMjg0MWIxNjktM2ExOC00MmE3LWE0NDgtNGI0ZmI4NWJkYzU5MTIzNDUxNDkyMTQ1MDMxMzcxIiwiaWF0IjoxNDkyMTQ1MDMxMzcxLCJleHAiOjE0OTIxNDU2MzYxNzF9.rf8fL7iirl8URhLQuZpPd7JAuPhvQWiyKZJE8guw_Zs"
@@ -601,7 +598,10 @@ and `token` in response(Look at the first 200 response example) instead of list 
                   "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
                   "legalName": "Test Company",
                   "profile": {
-                    "brandName": "My english brand name",
+                    "brandName": {
+                      "en": "My english brand name",
+                      "ru": "Русское название"
+                    },
                     "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
                     "links": [
                       {
@@ -611,7 +611,7 @@ and `token` in response(Look at the first 200 response example) instead of list 
                     ],
                     "email": "admin@jincor.com",
                     "phone": "+7999229393",
-                    "formattedAddress": {
+                    "address": {
                       "country": {
                         "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
                         "name": "Russia"
@@ -636,7 +636,8 @@ and `token` in response(Look at the first 200 response example) instead of list 
                     "id": "547e7d91-bc27-4407-a27a-429d2855652b",
                     "name": "Public Company",
                     "code": "BT2"
-                  }
+                  },
+                  "employeesCount": 2
                 },
                 {
                   "id": "dbc9ebdd-05bb-4da7-8215-592993c49328",
@@ -647,7 +648,7 @@ and `token` in response(Look at the first 200 response example) instead of list 
                     "links": [],
                     "email": null,
                     "phone": null,
-                    "formattedAddress": {
+                    "address": {
                       "country": {
                         "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
                         "name": "Russia"
@@ -661,7 +662,8 @@ and `token` in response(Look at the first 200 response example) instead of list 
                     "id": "a28accc3-7ed3-4c68-9745-e7908bb7d848",
                     "name": "Private Company",
                     "code": "BT1"
-                  }
+                  },
+                  "employeesCount": 2
                 }
               ]
             }
@@ -673,7 +675,7 @@ and `token` in response(Look at the first 200 response example) instead of list 
 
 ### Get my company [GET]
 
-Get details of my comopany
+Get details of my company
 
 + Response 200 (application/json)
 
@@ -722,7 +724,8 @@ Get details of my comopany
                       "id": "547e7d91-bc27-4407-a27a-429d2855652b",
                       "name": "Public Company",
                       "code": "BT2"
-                    }
+                    },
+                    "employeesCount": 2
                 }
             }
             
@@ -807,7 +810,8 @@ Update existing company by specifying it's attributes
                   "id": "547e7d91-bc27-4407-a27a-429d2855652b",
                   "name": "Public Company",
                   "code": "BT2"
-                }
+                },
+                "employeesCount": 2
               }
             }
             
@@ -816,8 +820,13 @@ Update existing company by specifying it's attributes
     + Body
             
             {
-              "message": "Email must be a valid email address",
-              "status_code": 422
+              "message": "422 Unprocessable Entity",
+              "errors": {
+                "profile.email": [
+                  "The email must be a valid email address."
+                ]
+              },
+              "status_code":422
             }
   
   
@@ -841,7 +850,10 @@ Update existing company by specifying it's attributes
                 "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
                 "legalName": "Test Company",
                 "profile": {
-                  "brandName": "My english brand name",
+                  "brandName": {
+                    "en": "My english brand name",
+                    "ru": "Русское название"
+                  },
                   "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
                   "links": [
                     {
@@ -851,7 +863,7 @@ Update existing company by specifying it's attributes
                   ],
                   "email": "admin@jincor.com",
                   "phone": "+7999229393",
-                  "formattedAddress": {
+                  "address": {
                     "country": {
                       "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
                       "name": "Russia"
@@ -876,7 +888,8 @@ Update existing company by specifying it's attributes
                   "id": "547e7d91-bc27-4407-a27a-429d2855652b",
                   "name": "Public Company",
                   "code": "BT2"
-                }
+                },
+                "employeesCount": 2
               }
 
 
@@ -901,100 +914,110 @@ Update existing company by specifying it's attributes
             {
               "data": [
                 {
-                "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
-                "legalName": "Test Company",
-                "profile": {
-                  "brandName": "My english brand name",
-                  "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
-                  "links": [
+                  "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
+                  "legalName": "Test Company",
+                  "profile": {
+                    "brandName":  {
+                      "en": "My english brand name",
+                      "ru": "Русское название"
+                    },
+                    "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
+                    "links": [
+                      {
+                        "name": "facebook",
+                        "value": "http://facebook.com"
+                      }
+                    ],
+                    "email": "admin@jincor.com",
+                    "phone": "+7999229393",
+                    "address": {
+                      "country": {
+                        "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
+                        "name": "Russia"
+                      },
+                      "city": null,
+                      "formattedAddress": "Пироговый переулок, 5, оф. 15"
+                    }
+                  },
+                  "economicalActivityTypes": [
                     {
-                      "name": "facebook",
-                      "value": "http://facebook.com"
+                      "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a6",
+                      "name": "Forestry & Logging",
+                      "code": "AD"
+                    },
+                    {
+                      "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
+                      "name": "Oil Refining & Natural Gas Processing",
+                      "code": "CG"
                     }
                   ],
-                  "email": "admin@jincor.com",
-                  "phone": "+7999229393",
-                  "formattedAddress": {
-                    "country": {
-                      "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
-                      "name": "Russia"
-                    },
-                    "city": null,
-                    "formattedAddress": "Пироговый переулок, 5, оф. 15"
-                  }
-                },
-                "economicalActivityTypes": [
-                  {
-                    "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a6",
-                    "name": "Forestry & Logging",
-                    "code": "AD"
+                  "companyType": {
+                    "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                    "name": "Public Company",
+                    "code": "BT2"
                   },
-                  {
-                    "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
-                    "name": "Oil Refining & Natural Gas Processing",
-                    "code": "CG"
-                  }
-                ],
-                "companyType": {
-                  "id": "547e7d91-bc27-4407-a27a-429d2855652b",
-                  "name": "Public Company",
-                  "code": "BT2"
+                  "employeesCount": 2
                 },
                 {
-                "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
-                "legalName": "Test Company",
-                "profile": {
-                  "brandName": "My english brand name",
-                  "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
-                  "links": [
+                  "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
+                  "legalName": "Test Company",
+                  "profile": {
+                    "brandName": {
+                      "en": "My english brand name",
+                      "ru": "Русское название"
+                    },
+                    "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
+                    "links": [
+                      {
+                        "name": "facebook",
+                        "value": "http://facebook.com"
+                      }
+                    ],
+                    "email": "admin@jincor.com",
+                    "phone": "+7999229393",
+                    "address": {
+                      "country": {
+                        "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
+                        "name": "Russia"
+                      },
+                      "city": null,
+                      "formattedAddress": "Пироговый переулок, 5, оф. 15"
+                    }
+                  },
+                  "economicalActivityTypes": [
                     {
-                      "name": "facebook",
-                      "value": "http://facebook.com"
+                      "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a6",
+                      "name": "Forestry & Logging",
+                      "code": "AD"
+                    },
+                    {
+                      "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
+                      "name": "Oil Refining & Natural Gas Processing",
+                      "code": "CG"
                     }
                   ],
-                  "email": "admin@jincor.com",
-                  "phone": "+7999229393",
-                  "formattedAddress": {
-                    "country": {
-                      "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
-                      "name": "Russia"
-                    },
-                    "city": null,
-                    "formattedAddress": "Пироговый переулок, 5, оф. 15"
-                  }
-                },
-                "economicalActivityTypes": [
-                  {
-                    "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a6",
-                    "name": "Forestry & Logging",
-                    "code": "AD"
+                  "companyType": {
+                    "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                    "name": "Public Company",
+                    "code": "BT2"
                   },
-                  {
-                    "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
-                    "name": "Oil Refining & Natural Gas Processing",
-                    "code": "CG"
-                  }
-                ],
-                "companyType": {
-                  "id": "547e7d91-bc27-4407-a27a-429d2855652b",
-                  "name": "Public Company",
-                  "code": "BT2"
+                  "employeesCount": 2
                 }
               ],
-               "meta": {
-                    "pagination": {
-                        "total": 96,
-                        "count": 20,
-                        "per_page": 20,
-                        "current_page": 1,
-                        "total_pages": 5,
-                        "links": [
-                            "previous": "http:/company/api/v1/company/search?country=id&query=hello&page=0",
-                            "next": "http:/company/api/v1/company/search?country=id&query=hello&page=2",
-                        ]
-                    }
+              "meta": {
+                "pagination": {
+                  "total": 96,
+                  "count": 20,
+                  "perPage": 20,
+                  "currentPage": 1,
+                  "lastPage": 5,
+                  "prevPageUrl": "http:/company/api/v1/company/search?country=id&query=hello&page=0",
+                  "nextPageUrl": "http:/company/api/v1/company/search?country=id&query=hello&page=2",
+                  "from": 21,
+                  "to": 40
                 }
               }
+            }
 
   
   
@@ -1013,7 +1036,7 @@ The `verificationId` request param is `verificationId` if the user who is trying
             {
                  "emails": [
                     "test@test.com",
-                    "test@test.com"
+                    "test2@test.com"
                 ]
             }
             
@@ -1040,8 +1063,8 @@ The `verificationId` request param is `verificationId` if the user who is trying
                 },
                 {
                     "status": "error",
-                    "email": "test@testuser.com",
-                    "message": "Oooh! Ahhh! Whoops! Sorry!",
+                    "email": "invalid email",
+                    "message": "The given data failed to pass validation."
                 }
               ]
             }
@@ -1060,34 +1083,48 @@ The result doesnt contains employee who performed request.
 + Response 200 (application/json)
 
             {
-              "data": [
-                {
-                  "contacts": {
-                    "email": "hlogeon1@gmail.com"
-                  },
-                  "meta": {
-                    "status": "invited",
-                    "invitedAt": "2017-04-14T01:23:24+0000"
+              "data": {
+                "self": {
+                    "id": "3e696895-ab1b-44ec-8646-86067877e38c",
+                    "profile": {
+                      "name": "Admin Company 2",
+                      "firstName": "Admin",
+                      "lastName": "Company 2",
+                      "position": "Admin",
+                      "role": "company-admin",
+                      "avatar": null
+                    },
+                    "contacts": {
+                      "email": "admin@company2.com",
+                      "phone": null
+                    },
+                    "meta": {
+                      "status": "active",
+                      "registeredAt": "2017-06-13T05:57:21+0000"
+                    }
                   }
                 },
-                {
-                  "id": "ed44f477-067b-4af7-ae35-05513e71b6eb",
-                  "profile": {
-                    "name": "David Totraev",
-                    "position": "Frontend wizard",
-                    "role": "admin", //admin, employee
-                    "avatar": null
-                  },
-                  "contacts": {
-                    "email": "degtyaruk.a@yandex.ru",
-                    "phone": null
-                  },
-                  "meta": {
-                    "status": "active",
-                    "registeredAt": "2017-04-14T01:34:28+0000"
+                "active": [
+                  {
+                    "id": "ed44f477-067b-4af7-ae35-05513e71b6eb",
+                    "profile": {
+                      "name": "David Totraev",
+                      "position": "Frontend wizard",
+                      "role": "admin", //admin, employee
+                      "avatar": null
+                    },
+                    "contacts": {
+                      "email": "degtyaruk.a@yandex.ru",
+                      "phone": null
+                    },
+                    "meta": {
+                      "status": "active",
+                      "registeredAt": "2017-04-14T01:34:28+0000"
+                    }
                   }
-                },
-                {
+                ],
+                "deleted": [  
+                  {
                     "id": "3d7563a2-cdc9-4877-a322-a3c3edd5ad24",
                     "profile": {
                       "name": "David Totraev",
@@ -1105,6 +1142,8 @@ The result doesnt contains employee who performed request.
                       "deletedAt": "2017-04-20T04:10:06+0000"
                     }
                   }
+                ],
+                "invited": []
               ]
             }
 
@@ -1127,21 +1166,56 @@ Get information about authenticated employee.
                     "role": "admin", //admin, employee
                     "avatar": "http://i.imgur.com/n613Ki4.jpg"
                   },
+                  "admin": true,
                   "contacts": {
                     "email": "john@doe.com",
                     "phone": null
                   },
                   "company": {
-                      "id": "978d90d4-7e7b-4dea-8ca0-b9669be3d8bc",
+                      "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
                       "legalName": "Test Company",
-                      "country": {
-                        "id": "a0c3c80b-27ab-4088-ba28-97b224e3e034",
-                        "name": "Россия"
+                      "profile": {
+                        "brandName": {
+                          "en": "My english brand name",
+                          "ru": "Русское название"
+                        },
+                        "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
+                        "links": [
+                          {
+                            "name": "facebook",
+                            "value": "http://facebook.com"
+                          }
+                        ],
+                        "email": "admin@jincor.com",
+                        "phone": "+7999229393",
+                        "address": {
+                          "country": {
+                            "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
+                            "name": "Russia"
+                          },
+                          "city": null,
+                          "formattedAddress": "Пироговый переулок, 5, оф. 15"
+                        }
                       },
-                      "formattedAddress": "Москва, ул. Алая, д. 15, оф. 89, 602030",
-                      "type": "Частная компания",
-                      "picture": "http://www.thewrap.com/wp-content/uploads/2013/11/RandomMedia.png"
-                    }
+                      "economicalActivityTypes": [
+                        {
+                          "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a6",
+                          "name": "Forestry & Logging",
+                          "code": "AD"
+                        },
+                        {
+                          "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
+                          "name": "Oil Refining & Natural Gas Processing",
+                          "code": "CG"
+                        }
+                      ],
+                      "companyType": {
+                        "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                        "name": "Public Company",
+                        "code": "BT2"
+                      },
+                      "employeesCount": 2
+                  }
                 }
             }
             
@@ -1170,63 +1244,62 @@ Get information about authenticated employee.
                         "name": "Test Tester",
                         "avatar": "https://s3.eu-west-2.amazonaws.com/jincor-test/avatars/empl_58eff45863866.png",
                         "position": "Code monkey",
-                        "role": "admin" //admin, employee
+                        "role": "company-admin" //company-admin, employee
                       },
+                      "admin": true,
                       "contacts": {
                         "email": "test@test.com",
                         "phone": null
                       },
                       "company": {
-                          "id": "978d90d4-7e7b-4dea-8ca0-b9669be3d8bc",
-                          "legalName": "Test Company",
-                          "country": {
-                            "id": "a0c3c80b-27ab-4088-ba28-97b224e3e034",
-                            "name": "Россия"
+                        "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
+                        "legalName": "Test Company",
+                        "profile": {
+                          "brandName":  {
+                            "en": "My english brand name",
+                            "ru": "Русское название"
                           },
-                          "formattedAddress": "Москва, ул. Алая, д. 15, оф. 89, 602030",
-                          "type": "Частная компания",
-                          "picture": "http://www.thewrap.com/wp-content/uploads/2013/11/RandomMedia.png"
-                        }
+                          "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
+                          "links": [
+                            {
+                              "name": "facebook",
+                              "value": "http://facebook.com"
+                            }
+                          ],
+                          "email": "admin@jincor.com",
+                          "phone": "+7999229393",
+                          "address": {
+                            "country": {
+                              "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
+                              "name": "Russia"
+                            },
+                            "city": null,
+                            "formattedAddress": "Пироговый переулок, 5, оф. 15"
+                          }
+                        },
+                        "economicalActivityTypes": [
+                          {
+                            "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a6",
+                            "name": "Forestry & Logging",
+                            "code": "AD"
+                          },
+                          {
+                            "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
+                            "name": "Oil Refining & Natural Gas Processing",
+                            "code": "CG"
+                          }
+                        ],
+                        "companyType": {
+                          "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                          "name": "Public Company",
+                          "code": "BT2"
+                        },
+                        "employeesCount": 2
+                      }
                     }
                 }
             }
 
-## Employee [/employee/{id}]
-
-### Employee info [GET]
-Get information about employee by its ID.
-
-+ Response 200 (application/json)
-
-
-            {
-                "data": {
-                    {
-                      "id": "11f43465-d042-4db0-8aa9-13bac482bb59",
-                      "profile": {
-                        "name": "John Doe",
-                        "avatar": "http://url_to_avatar.png",
-                        "position": "Милый Бухгалтер"
-                      },
-                      "contacts": {
-                        "email": "test@test.com",
-                        "phone": null
-                      },
-                      "company": {
-                      "id": "978d90d4-7e7b-4dea-8ca0-b9669be3d8bc",
-                      "legalName": "Test Company",
-                      "country": {
-                        "id": "a0c3c80b-27ab-4088-ba28-97b224e3e034",
-                        "name": "Россия"
-                      },
-                      "formattedAddress": "Москва, ул. Алая, д. 15, оф. 89, 602030",
-                      "type": "Частная компания",
-                      "picture": "http://www.thewrap.com/wp-content/uploads/2013/11/RandomMedia.png"
-                    }
-                    }
-                }
-            }
-            
 ### Deactivate employee [DELETE]
 Deactivate employee by its id
 
@@ -1344,21 +1417,95 @@ for the request parameters used on backend:
             {
               "data": [
                 {
-                  "id": "45f8c5eb-9dbc-402d-925d-796a84447bb4",
-                  "legalName": "MyCompany",
-                  "country": "Москва, ул. Алая, д. 15, оф. 89, 602030",
-                  "formattedAddress": "Москва, ул. Алая, д. 15, оф. 89, 602030",
-                  "type": "Private Company",
-                  "picture": "http://example.com/picture.png"
+                  "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
+                  "legalName": "Test Company",
+                  "profile": {
+                    "brandName":  {
+                      "en": "My english brand name",
+                      "ru": "Русское название"
+                    },
+                    "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_58f05129ba5cd.png",
+                    "links": [
+                      {
+                        "name": "facebook",
+                        "value": "http://facebook.com"
+                      }
+                    ],
+                    "email": "admin@jincor.com",
+                    "phone": "+7999229393",
+                    "address": {
+                      "country": {
+                        "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
+                        "name": "Russia"
+                      },
+                      "city": null,
+                      "formattedAddress": "Пироговый переулок, 5, оф. 15"
+                    }
+                  },
+                  "economicalActivityTypes": [
+                    {
+                      "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a6",
+                      "name": "Forestry & Logging",
+                      "code": "AD"
+                    },
+                    {
+                      "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
+                      "name": "Oil Refining & Natural Gas Processing",
+                      "code": "CG"
+                    }
+                  ],
+                  "companyType": {
+                    "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                    "name": "Public Company",
+                    "code": "BT2"
+                  },
+                  "employeesCount": 2
                 },
                 {
-                  "id": "8c624c77-12a5-47ec-87fd-fbf43d93a69f",
-                  "legalName": "Awesome test",
-                  "country": "103, 28, Малахова ул., Москва",
-                  "formattedAddress": "103, 28, Малахова ул., Москва",
-                  "type": "Private Company",
-                  "picture": "http://example.com/picture.png"
-                }
+                  "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56897",
+                  "legalName": "Test Company 2",
+                  "profile": {
+                    "brandName": {
+                      "en": "My english brand name",
+                      "ru": "Русское название"
+                    },
+                    "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_29f05129ba5cd.png",
+                    "links": [
+                      {
+                        "name": "facebook",
+                        "value": "http://facebook.com"
+                      }
+                    ],
+                    "email": "admin2@jincor.com",
+                    "phone": "+7999229394",
+                    "address": {
+                      "country": {
+                        "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
+                        "name": "Russia"
+                      },
+                      "city": null,
+                      "formattedAddress": "Пироговый переулок, 5, оф. 15"
+                    }
+                  },
+                  "economicalActivityTypes": [
+                    {
+                      "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a8",
+                      "name": "Forestry & Logging",
+                      "code": "AD"
+                    },
+                    {
+                      "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
+                      "name": "Oil Refining & Natural Gas Processing",
+                      "code": "CG"
+                    }
+                  ],
+                  "companyType": {
+                    "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                    "name": "Public Company",
+                    "code": "BT2"
+                  },
+                  "employeesCount": 6
+                },
               ]
             }
             
@@ -1391,8 +1538,8 @@ In order to verify input take a look at **Verify e-mail** method.
                     "id": "11f43465-d042-4db0-8aa9-13bac482bb59",
                     "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
                     "email": {
-                        "value": "test@test.com",
-                        "isVerified": true
+                        "value": "user@email.com",
+                        "isVerified": false
                     },
                     "phone": {
                         "value": null,
@@ -1442,23 +1589,58 @@ Note that there are two ways of user authentication in this method.
                   "profile": {
                     "name": "John Doe",
                     "position": "Tester",
-                    "role": "admin", //admin, employee
+                    "role": "company-admin", //company-admin, employee
                     "avatar": "http://i.imgur.com/n613Ki4.jpg"
                   },
+                  "admin": true,
                   "contacts": {
                     "email": "john@doe.com",
                     "phone": null
                   },
                   "company": {
-                      "id": "978d90d4-7e7b-4dea-8ca0-b9669be3d8bc",
-                      "legalName": "Test Company",
-                      "country": {
-                        "id": "a0c3c80b-27ab-4088-ba28-97b224e3e034",
-                        "name": "Россия"
+                    "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56897",
+                    "legalName": "Test Company 2",
+                    "profile": {
+                      "brandName": {
+                        "en": "My english brand name",
+                        "ru": "Русское название"
                       },
-                      "formattedAddress": "Москва, ул. Алая, д. 15, оф. 89, 602030",
-                      "type": "Частная компания",
-                      "picture": "http://www.thewrap.com/wp-content/uploads/2013/11/RandomMedia.png"
-                    }
+                      "picture": "https://s3.eu-west-2.amazonaws.com/jincor-test/a3cbe21c-bab6-4c72-9d2e-8907f9a56898/avatars/pic_29f05129ba5cd.png",
+                      "links": [
+                        {
+                          "name": "facebook",
+                          "value": "http://facebook.com"
+                        }
+                      ],
+                      "email": "admin2@jincor.com",
+                      "phone": "+7999229394",
+                      "address": {
+                        "country": {
+                          "id": "5ac1d660-2891-48cb-8527-8ef8813b37a9",
+                          "name": "Russia"
+                        },
+                        "city": null,
+                        "formattedAddress": "Пироговый переулок, 5, оф. 15"
+                      }
+                    },
+                    "economicalActivityTypes": [
+                      {
+                        "id": "72a0d7d3-afaf-4f0f-936c-ca4ffa55a7a8",
+                        "name": "Forestry & Logging",
+                        "code": "AD"
+                      },
+                      {
+                        "id": "0e5e6e6a-5a39-4803-9837-156113692c2d",
+                        "name": "Oil Refining & Natural Gas Processing",
+                        "code": "CG"
+                      }
+                    ],
+                    "companyType": {
+                      "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                      "name": "Public Company",
+                      "code": "BT2"
+                    },
+                    "employeesCount": 6
+                  }
                 }
             }
