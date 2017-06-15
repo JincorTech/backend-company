@@ -10,7 +10,6 @@
 namespace App\Domains\Company\Services;
 
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Domains\Company\ValueObjects\CompanyExternalLink;
@@ -27,6 +26,7 @@ use App\Core\Services\AddressService;
 use App\Core\ValueObjects\Address;
 use Elasticsearch;
 use App;
+use Dingo\Api\Exception\ValidationHttpException;
 
 class CompanyService implements CompanyIndexContract
 {
@@ -80,16 +80,26 @@ class CompanyService implements CompanyIndexContract
         try {
             $address = $this->address()->build($country);
         } catch (\InvalidArgumentException $e) {
-            throw new UnprocessableEntityHttpException(trans('registration.countryNotFound', [
+            $message = trans('registration.countryNotFound', [
                 'country' => $country,
-            ]));
+            ]);
+
+            throw new ValidationHttpException([
+                'country' => $message,
+            ]);
         }
+
         $ct = $this->dm->getRepository(CompanyType::class)->find($companyType);
         if (!$ct) {
-            throw new UnprocessableEntityHttpException(trans('registration.typeNotFound', [
+            $message = trans('registration.typeNotFound', [
                 'ct' => $companyType,
-            ]));
+            ]);
+
+            throw new ValidationHttpException([
+                'companyType' => $message,
+            ]);
         }
+
         $company = new Company($legalName, $address, $ct);
         $this->dm->persist($company);
         event(new CompanyAdded($company));

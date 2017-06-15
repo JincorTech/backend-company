@@ -50,7 +50,9 @@ class EmployeeVerifyEmailCest
         $I->canSeeResponseCodeIs(500);
         $I->canSeeResponseIsJson();
         $I->canSeeResponseContainsJson([
-            'message' => 'Employee verification 6b90fa0c-7912-452c-bddf-e2c718440252 cannot be found on the server',
+            'message' => trans('exceptions.employee.verification.not_found', [
+                'verification' => '6b90fa0c-7912-452c-bddf-e2c718440252',
+            ]),
             'status_code' => 500,
         ]);
     }
@@ -95,12 +97,7 @@ class EmployeeVerifyEmailCest
         $I->canSeeResponseCodeIs(401);
         $I->canSeeResponseContainsJson([
             'success' => false,
-            'errors' => [
-                'verificationCode' => [
-                    'Verification code is incorrect',
-                ],
-            ],
-            'message' => 'Verification code is incorrect',
+            'message' => trans('exceptions.verification.code.incorrect'),
         ]);
     }
 }

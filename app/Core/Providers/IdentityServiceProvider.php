@@ -9,11 +9,13 @@
 namespace App\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Core\Interfaces\IdentityInterface;
+use App\Core\Services\IdentityService;
 
 class IdentityServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind(\App\Core\Interfaces\IdentityInterface::class, \App\Core\Services\IdentityService::class);
+        $this->app->bind(IdentityInterface::class, IdentityService::class);
     }
 }

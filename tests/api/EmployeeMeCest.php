@@ -1,5 +1,6 @@
 <?php
 
+use Helper\Api;
 
 class EmployeeMeCest
 {
@@ -25,9 +26,16 @@ class EmployeeMeCest
             ],
         ]);
 
+        $attrName = trans('validation.attributes')['profile.position'];
+
+        $message = trans('validation.max.string', [
+            'attribute' => $attrName,
+            'max' => 60,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.position' => [
-                'The position may not be greater than 60 characters.',
+                $message,
             ],
         ]);
     }
@@ -43,9 +51,16 @@ class EmployeeMeCest
             ],
         ]);
 
+        $attrName = trans('validation.attributes')['profile.position'];
+
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 2,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.position' => [
-                'The position must be at least 2 characters.',
+                $message,
             ],
         ]);
     }
@@ -61,9 +76,16 @@ class EmployeeMeCest
             ],
         ]);
 
+        $attrName = trans('validation.attributes')['profile.firstName'];
+
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 2,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.firstName' => [
-                'The first name must be at least 2 characters.',
+                $message,
             ],
         ]);
     }
@@ -79,9 +101,16 @@ class EmployeeMeCest
             ],
         ]);
 
+        $attrName = trans('validation.attributes')['profile.lastName'];
+
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 2,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.lastName' => [
-                'The last name must be at least 2 characters.',
+                $message,
             ],
         ]);
     }
@@ -118,9 +147,14 @@ class EmployeeMeCest
             'profile' => $profileData,
         ]);
 
+        $attrName = trans('validation.attributes')['profile.firstName'];
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.firstName' => [
-                'The first name field is required.',
+                $message,
             ],
         ]);
     }
@@ -154,9 +188,14 @@ class EmployeeMeCest
             'profile' => $profileData,
         ]);
 
+        $attrName = trans('validation.attributes')['profile.lastName'];
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.lastName' => [
-                'The last name field is required.'
+                $message,
             ],
         ]);
     }
@@ -174,9 +213,14 @@ class EmployeeMeCest
             'profile' => $profileData,
         ]);
 
+        $attrName = trans('validation.attributes')['profile.position'];
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.position' => [
-                'The position field is required.'
+                $message,
             ],
         ]);
     }
@@ -187,7 +231,7 @@ class EmployeeMeCest
         $I->haveStorageMockForAvatarUpload($url);
 
         $profileData = [
-            'avatar' => \Helper\Api::base64Png(),
+            'avatar' => Api::base64Png(),
         ];
 
         $I->wantTo('Update my profile avatar with png image and receive 200 response code.');
@@ -206,7 +250,7 @@ class EmployeeMeCest
     public function avatarJpg(ApiTester $I)
     {
         $profileData = [
-            'avatar' => \Helper\Api::base64Jpg(),
+            'avatar' => Api::base64Jpg(),
         ];
 
         $I->wantTo('Update my profile avatar with jpg image and receive 422 response code.');
@@ -214,9 +258,11 @@ class EmployeeMeCest
             'profile' => $profileData,
         ]);
 
+        $message = trans('validation.custom')['profile.avatar']['is_png'];
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.avatar' => [
-                'The avatar is not correct png image.',
+                $message,
             ],
         ]);
     }

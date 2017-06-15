@@ -1,5 +1,5 @@
 <?php
-
+use Helper\Api;
 
 class EmployeeRegisterCest
 {
@@ -25,7 +25,7 @@ class EmployeeRegisterCest
         $I->canSeeResponseCodeIs(500);
         $I->canSeeResponseIsJson();
         $I->canSeeResponseContainsJson([
-            'message' => 'You must verify email and phone before registration',
+            'message' => trans('exceptions.contacts.not_verified'),
             'status_code' => 500,
         ]);
     }
@@ -44,7 +44,10 @@ class EmployeeRegisterCest
         $I->canSeeResponseCodeIs(500);
         $I->canSeeResponseIsJson();
         $I->canSeeResponseContainsJson([
-            'message' => 'Employee test2@test.com already exists in company Test Company',
+            'message' => trans('exceptions.employee.already_exists', [
+                'email' => 'test2@test.com',
+                'company' => 'Test Company',
+            ]),
             'status_code' => 500,
         ]);
     }
@@ -80,9 +83,15 @@ class EmployeeRegisterCest
             'position' => 'Wizard of Hogwarts School of Witchcraft and Wizardry'
         ]);
 
+        $attrName = trans('password');
+
+        $message = trans('validation.regex', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'password' => [
-                'The password format is invalid.',
+                $message,
             ],
         ]);
     }
@@ -98,9 +107,15 @@ class EmployeeRegisterCest
             'position' => 'Wizard of Hogwarts School of Witchcraft and Wizardry'
         ]);
 
+        $attrName = trans('password');
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 6,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'password' => [
-                'The password must be at least 6 characters.',
+                $message,
             ],
         ]);
     }
@@ -115,9 +130,14 @@ class EmployeeRegisterCest
             'position' => 'Wizard of Hogwarts School of Witchcraft and Wizardry'
         ]);
 
+        $attrName = trans('password');
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'password' => [
-                'The password field is required.',
+                $message,
             ],
         ]);
     }
@@ -130,12 +150,19 @@ class EmployeeRegisterCest
             'lastName' => 'Ivanov',
             'password' => 'Cm3jpmrt7c',
             'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
-            'position' => \Helper\Api::generateRandomString(61),
+            'position' => Api::generateRandomString(61),
+        ]);
+
+        $attrName = trans('position');
+
+        $message = trans('validation.max.string', [
+            'attribute' => $attrName,
+            'max' => 60,
         ]);
 
         $I->canSeeResponseContainsValidationErrors([
             'position' => [
-                'The position may not be greater than 60 characters.',
+                $message,
             ],
         ]);
     }
@@ -151,9 +178,16 @@ class EmployeeRegisterCest
             'position' => 'a',
         ]);
 
+        $attrName = trans('position');
+
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 2,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'position' => [
-                'The position must be at least 2 characters.',
+                $message,
             ],
         ]);
     }
@@ -168,9 +202,15 @@ class EmployeeRegisterCest
             'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
         ]);
 
+        $attrName = trans('position');
+
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'position' => [
-                'The position field is required.',
+                $message,
             ],
         ]);
     }
@@ -186,9 +226,16 @@ class EmployeeRegisterCest
             'position' => 'Wizard',
         ]);
 
+        $attrName = trans('first name');
+
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 2,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'firstName' => [
-                'The first name must be at least 2 characters.',
+                $message,
             ],
         ]);
     }
@@ -203,9 +250,15 @@ class EmployeeRegisterCest
             'position' => 'Wizard',
         ]);
 
+        $attrName = trans('first name');
+
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'firstName' => [
-                'The first name field is required.',
+                $message,
             ],
         ]);
     }
@@ -220,9 +273,15 @@ class EmployeeRegisterCest
             'position' => 'Wizard',
         ]);
 
+        $attrName = trans('last name');
+
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'lastName' => [
-                'The last name field is required.',
+                $message,
             ],
         ]);
     }
@@ -238,9 +297,16 @@ class EmployeeRegisterCest
             'position' => 'Wizard',
         ]);
 
+        $attrName = trans('last name');
+
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 2,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'lastName' => [
-                'The last name must be at least 2 characters.',
+                $message,
             ],
         ]);
     }

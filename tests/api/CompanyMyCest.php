@@ -116,10 +116,15 @@ class CompanyMyCest
             ],
         ]);
 
+        $attrName = trans('legal name');
+        $message = trans('validation.required', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
-           'legalName' => [
-               'The legal name field is required.',
-           ],
+            'legalName' => [
+                $message,
+            ],
         ]);
     }
 
@@ -153,9 +158,14 @@ class CompanyMyCest
             ],
         ]);
 
+        $attrName = trans('validation.attributes')['profile.email'];
+        $message = trans('validation.email', [
+            'attribute' => $attrName,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.email' => [
-                'The email must be a valid email address.',
+                $message,
             ],
         ]);
     }
@@ -168,9 +178,16 @@ class CompanyMyCest
             'legalName' => 'ab',
         ]);
 
+        $attrName = trans('legal name');
+
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 3,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'legalName' => [
-                'The legal name must be at least 3 characters.'
+                $message,
             ],
         ]);
     }
@@ -185,9 +202,16 @@ class CompanyMyCest
             ],
         ]);
 
+        $attrName = trans('validation.attributes')['profile.description'];
+
+        $message = trans('validation.max.string', [
+            'attribute' => $attrName,
+            'max' => 550,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'profile.description' => [
-                'The description may not be greater than 550 characters.'
+                $message,
             ],
         ]);
     }
@@ -207,8 +231,16 @@ class CompanyMyCest
             ],
         ]);
 
-        //TODO: Fix this, backend must return 422 code
-        $I->seeResponseCodeIs(500);
-        $I->canSeeResponseIsJson();
+        $attrName = trans('validation.attributes')['profile.links.*.value'];
+        $message = trans('validation.url', [
+            'attribute' => $attrName,
+        ]);
+
+        $I->seeResponseCodeIs(422);
+        $I->canSeeResponseContainsValidationErrors([
+            'profile.links.0.value' => [
+                $message,
+            ],
+        ]);
     }
 }

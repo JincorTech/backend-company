@@ -12,6 +12,7 @@ namespace App\Applications\Company\Http\Requests\Employee;
 use App\Applications\Company\Http\Requests\AdminUser;
 use App\Core\Http\Requests\BaseAPIRequest;
 use App\Domains\Employee\Entities\Employee;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class MakeAdmin extends BaseAPIRequest
 {
@@ -27,6 +28,11 @@ class MakeAdmin extends BaseAPIRequest
             'id' => 'string|size:36',
             'value' => 'boolean',
         ];
+    }
+
+    protected function failedAuthorization()
+    {
+        throw new HttpException(403, trans('exceptions.employee.access_denied'));
     }
 
 }

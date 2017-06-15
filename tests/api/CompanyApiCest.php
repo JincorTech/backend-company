@@ -50,8 +50,15 @@ class CompanyApiCest
             'companyType' => $companyType,
         ]);
 
-        //TODO: fix this message
-        $I->canSeeResponseContainsValidationMessage('Страна :ct не найдена');
+        $message = trans('registration.countryNotFound', [
+            'country' => $companyType,
+        ]);
+
+        $I->canSeeResponseContainsValidationErrors([
+            'country' => [
+                $message,
+            ],
+        ]);
     }
 
     public function registerIncorrectType(ApiTester $I)
@@ -66,7 +73,15 @@ class CompanyApiCest
             'companyType' => $countryId,
         ]);
 
-        $I->canSeeResponseContainsValidationMessage('Тип компании c699fc1a-ec7f-4021-9102-31ff03c5624a не найден');
+        $message = trans('registration.typeNotFound', [
+            'ct' => $countryId,
+        ]);
+
+        $I->canSeeResponseContainsValidationErrors([
+            'companyType' => [
+                $message,
+            ],
+        ]);
     }
 
     public function getCompanyTypes(ApiTester $I)

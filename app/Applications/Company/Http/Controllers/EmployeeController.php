@@ -99,12 +99,7 @@ class EmployeeController extends BaseController
         } catch (EmailPinIncorrect $e) {
             return new JsonResponse([
                 'success' => false,
-                'errors' => [
-                    'verificationCode' => [
-                        'Verification code is incorrect',
-                    ],
-                ],
-                'message' => 'Verification code is incorrect',
+                'message' => trans('exceptions.verification.code.incorrect'),
             ], 401);
         }
     }

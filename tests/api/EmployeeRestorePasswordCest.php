@@ -46,9 +46,10 @@ class EmployeeRestorePasswordCest
         $I->canSeeResponseCodeIs(404);
         $I->canSeeResponseIsJson();
 
-        //TODO: check why this response is in Russian by default
         $I->canSeeResponseContainsJson([
-            'message' => 'Сотрудник с e-mail адресом randomstuff@test.com ненайден на Jincor',
+            'message' => trans('exceptions.restore-password.notFound', [
+                'email' => 'randomstuff@test.com',
+            ]),
             'status_code' => 404,
         ]);
     }

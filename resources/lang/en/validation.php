@@ -121,6 +121,7 @@ return [
         'profile.avatar' => 'avatar',
         'profile.email' => 'email',
         'profile.description' => 'description',
+        'profile.links.*.value' => 'url',
     ],
 
 ];

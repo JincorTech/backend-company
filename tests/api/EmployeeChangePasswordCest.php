@@ -80,9 +80,14 @@ class EmployeeChangePasswordCest
             'password' => 'cm3jpmrt7c'
         ]);
 
+        $attr = trans('password');
+        $message = trans('validation.regex', [
+            'attribute' => $attr,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'password' => [
-                'The password format is invalid.',
+                $message,
             ],
         ]);
     }
@@ -96,9 +101,15 @@ class EmployeeChangePasswordCest
             'password' => 'Cm3jp'
         ]);
 
+        $attrName = trans('password');
+        $message = trans('validation.min.string', [
+            'attribute' => $attrName,
+            'min' => 6,
+        ]);
+
         $I->canSeeResponseContainsValidationErrors([
             'password' => [
-                'The password must be at least 6 characters.',
+                $message,
             ],
         ]);
     }
@@ -115,7 +126,7 @@ class EmployeeChangePasswordCest
         $I->canSeeResponseCodeIs(401);
         $I->canSeeResponseIsJson();
         $I->canSeeResponseContainsJson([
-            'message' => 'Verification failed',
+            'message' => trans('exceptions.verification.failed'),
         ]);
     }
 

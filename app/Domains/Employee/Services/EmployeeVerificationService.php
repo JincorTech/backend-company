@@ -65,7 +65,9 @@ class EmployeeVerificationService
         /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = $this->verificationRepository->find($verificationId);
         if (!$verification) {
-            throw new EmployeeVerificationNotFound("Employee verification " . $verificationId . ' cannot be found on the server');
+            throw new EmployeeVerificationNotFound(trans('exceptions.employee.verification.not_found', [
+                'verification' => $verificationId,
+            ]));
         }
         $verification->associateEmail($email);
         event(new VerificationEmailRequested($verification));
@@ -96,13 +98,16 @@ class EmployeeVerificationService
      * @param string $pin
      *
      * @return \App\Domains\Employee\Entities\EmployeeVerification
+     * @throws EmployeeVerificationNotFound
      */
     public function verifyEmail(string $verificationId, string $pin)
     {
         /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = $this->verificationRepository->find($verificationId);
         if (!$verification) {
-            throw new EmployeeVerificationNotFound("Employee verification " . $verificationId . ' cannot be found on the server');
+            throw new EmployeeVerificationNotFound(trans('exceptions.employee.verification.not_found', [
+                'verification' => $verificationId,
+            ]));
         }
         $verification->verifyEmail($pin);
         $this->dm->persist($verification);

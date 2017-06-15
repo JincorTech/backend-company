@@ -16,6 +16,9 @@
  *
  * @SuppressWarnings(PHPMD)
 */
+use App\Core\Interfaces\IdentityInterface;
+use Illuminate\Filesystem\FilesystemAdapter;
+
 class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
@@ -37,21 +40,9 @@ class ApiTester extends \Codeception\Actor
         ]);
     }
 
-    /**
-     * @param string $message
-     */
-    public function canSeeResponseContainsValidationMessage(string $message)
-    {
-        $this->canSeeResponseCodeIs(422);
-        $this->canSeeResponseIsJson();
-        $this->canSeeResponseContainsJson([
-            'message' => $message,
-        ]);
-    }
-
     public function amAuthorizedAsTestCompanyAdmin(string $token)
     {
-        $mock = Mockery::mock(\App\Core\Interfaces\IdentityInterface::class);
+        $mock = Mockery::mock(IdentityInterface::class);
 
         $mock->shouldReceive('validateToken')
             ->with($token)
@@ -69,13 +60,13 @@ class ApiTester extends \Codeception\Actor
 
         $mock->shouldReceive('login')->andReturn('randomtoken');
 
-        $this->haveInstance(\App\Core\Interfaces\IdentityInterface::class, $mock);
+        $this->haveInstance(IdentityInterface::class, $mock);
         $this->amBearerAuthenticated($token);
     }
 
     public function amAuthorizedAsJincorAdmin(string $token)
     {
-        $mock = Mockery::mock(\App\Core\Interfaces\IdentityInterface::class);
+        $mock = Mockery::mock(IdentityInterface::class);
 
         $mock->shouldReceive('validateToken')
             ->with($token)
@@ -93,13 +84,13 @@ class ApiTester extends \Codeception\Actor
 
         $mock->shouldReceive('login')->andReturn('randomtoken');
 
-        $this->haveInstance(\App\Core\Interfaces\IdentityInterface::class, $mock);
+        $this->haveInstance(IdentityInterface::class, $mock);
         $this->amBearerAuthenticated($token);
     }
 
     public function amAuthorizedAsJincorEmployee(string $token)
     {
-        $mock = Mockery::mock(\App\Core\Interfaces\IdentityInterface::class);
+        $mock = Mockery::mock(IdentityInterface::class);
 
         $mock->shouldReceive('validateToken')
             ->with($token)
@@ -117,13 +108,13 @@ class ApiTester extends \Codeception\Actor
 
         $mock->shouldReceive('login')->andReturn('randomtoken');
 
-        $this->haveInstance(\App\Core\Interfaces\IdentityInterface::class, $mock);
+        $this->haveInstance(IdentityInterface::class, $mock);
         $this->amBearerAuthenticated($token);
     }
 
     public function haveStorageMockForAvatarUpload(string $url)
     {
-        $mock = Mockery::mock(\Illuminate\Filesystem\FilesystemAdapter::class);
+        $mock = Mockery::mock(FilesystemAdapter::class);
 
         $mock->shouldReceive('put')->andReturnNull();
         $mock->shouldReceive('url')->andReturn($url);

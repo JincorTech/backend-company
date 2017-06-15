@@ -33,7 +33,7 @@ class EmployeeDeleteCest
 
         $I->canSeeResponseCodeIs(403);
         $I->canSeeResponseContainsJson([
-            'message' => 'Отказ в доступе. У Вас недостаточно прав для совершения этого действия',
+            'message' => trans('exceptions.employee.access_denied'),
             'status_code' => 403,
         ]);
     }
@@ -47,7 +47,7 @@ class EmployeeDeleteCest
 
         $I->canSeeResponseCodeIs(403);
         $I->canSeeResponseContainsJson([
-            'message' => 'Отказ в доступе. У Вас недостаточно прав для совершения этого действия',
+            'message' => trans('exceptions.employee.access_denied'),
             'status_code' => 403,
         ]);
     }
@@ -61,7 +61,7 @@ class EmployeeDeleteCest
 
         $I->canSeeResponseCodeIs(403);
         $I->canSeeResponseContainsJson([
-            'message' => '403 Forbidden',
+            'message' => trans('exceptions.employee.access_denied'),
             'status_code' => 403,
         ]);
     }
@@ -75,7 +75,7 @@ class EmployeeDeleteCest
 
         $I->canSeeResponseCodeIs(403);
         $I->canSeeResponseContainsJson([
-            'message' => '403 Forbidden',
+            'message' => trans('exceptions.employee.access_denied'),
             'status_code' => 403,
         ]);
     }
@@ -89,7 +89,7 @@ class EmployeeDeleteCest
 
         $I->canSeeResponseCodeIs(403);
         $I->canSeeResponseContainsJson([
-            'message' => '403 Forbidden',
+            'message' => trans('exceptions.employee.access_denied'),
             'status_code' => 403,
         ]);
     }
