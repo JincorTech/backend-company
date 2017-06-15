@@ -41,12 +41,11 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
-    ports:
-      - "3000:3000"
+      JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
     volumes:
       - /usr/src/app
     links:
-      - redis:redis
+      - redis
 
 
   search:
@@ -81,13 +80,13 @@ services:
 
   redis:
     image: registry.jincor.com/backend/redis:latest
-    ports:
-      - "6379:6379"
+    volumes:
+          - ./storage/redis:/data
 
   mongo:
     image: registry.jincor.com/backend/mongodb:latest
-    ports:
-      - "27017:27017"
+    volumes:
+          - ./storage/mongodb:/data/db
 
   src:
     image: tianon/true

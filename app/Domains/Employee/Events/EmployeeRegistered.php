@@ -33,6 +33,10 @@ class EmployeeRegistered
 
     protected $position;
 
+    protected $employeeId;
+
+    protected $sub;
+
     /**
      * EmployeeRegistered constructor.
      *
@@ -49,6 +53,8 @@ class EmployeeRegistered
         $this->scope = $scope;
         $this->name = $employee->getProfile()->getName();
         $this->position = $employee->getProfile()->getPosition();
+        $this->employeeId = $employee->getId();
+        $this->sub = $employee->getSubject();
     }
 
     /**
@@ -59,6 +65,7 @@ class EmployeeRegistered
     public function getData(): array
     {
         return [
+            'employeeId' => $this->employeeId,
             'email' => $this->email,
             'password' => $this->password,
             'company' => $this->companyId,
@@ -66,6 +73,7 @@ class EmployeeRegistered
             'name' => $this->name,
             'position' => $this->position,
             'scope' => $this->scope,
+            'sub' => $this->sub,
         ];
     }
 }

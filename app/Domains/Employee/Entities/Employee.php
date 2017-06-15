@@ -147,6 +147,13 @@ class Employee implements MetaEmployeeInterface
         return $this->getCompany()->getId() . ':' . $this->getContacts()->getEmail();
     }
 
+    public function getSubject() : string
+    {
+        return
+            '@' . $this->getCompany()->getId() . //company
+            '_' . str_replace('@', '_', $this->getContacts()->getEmail()); //matrix login
+    }
+
     /**
      * @return \App\Domains\Employee\ValueObjects\EmployeeContact
      */

@@ -1,13 +1,13 @@
-/docker/data
-/docker/logs
-/public/storage
-/vendor
-/.idea
+public/storage
+vendor
+.idea
 .env
 
-/app/Core/DoctrineProxies/*
-/app/Core/DoctrineHydrators/*
+app/Core/DoctrineProxies/*
+app/Core/DoctrineHydrators/*
 
 
 tests/_output/*
 storage/data
+storage/mongodb
+storage/redis

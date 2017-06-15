@@ -15,8 +15,9 @@ interface MessengerServiceInterface
     /**
      * Stores user auth data at auth service
      * @param array $data
+     * @param string $session
      * @return bool
      */
-    public function register(array $data);
+    public function register(array $data, string $session);
 
 }
