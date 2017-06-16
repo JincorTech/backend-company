@@ -11,10 +11,11 @@ modules:
             environment_file: .env.test
             cleanup: false
         - MongoDb:
-            dsn: 'mongodb://mongo:27017/testing'
+            dsn: 'mongodb://mongo:27017/test'
             user: ''
             password: ''
             dump: tests/_data/apidump.tar.gz
             dump_type: 'mongodump-tar-gz'
             cleanup: true
             populate: true
+            quiet: --quiet
