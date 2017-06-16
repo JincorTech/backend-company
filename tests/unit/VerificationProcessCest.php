@@ -5,6 +5,7 @@ use App\Domains\Employee\EntityDecorators\RegistrationVerification;
 use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
 use App\Domains\Employee\Entities\EmployeeVerification;
 use Faker\Factory;
+use App\Domains\Employee\Exceptions\EmailPinIncorrect;
 
 class VerificationProcessCest
 {
@@ -108,7 +109,9 @@ class VerificationProcessCest
     private function codeVerification(UnitTester $I, EmployeeVerification $verification)
     {
         $I->assertFalse($verification->isEmailVerified());
-        $verification->verifyEmail('123456');
+        $I->expectException(EmailPinIncorrect::class, function () use ($verification) {
+            $verification->verifyEmail('123456');
+        });
         $I->assertFalse($verification->isEmailVerified());
         $verification->verifyEmail($verification->getEmailCode());
         $I->assertTrue($verification->isEmailVerified());
