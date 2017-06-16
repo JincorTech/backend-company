@@ -35,13 +35,14 @@ class UpdateProfile extends BaseAPIRequest
             'profile.links.*.name' => 'string',
             'profile.links.*.value' => 'url',
             'profile.address.country' => 'string|size:36',
-            'profile.address.formattedAddress' => 'string',
+            'profile.address.formattedAddress' => 'nullable|string',
             'profile.address.city' => 'string|size:36',
-            'profile.email' => 'email',
-            'profile.phone' => 'string',
+            'profile.email' => 'nullable|email',
+            'profile.phone' => 'nullable|string',
             'profile.economicalActivityTypes' => 'array',
             'profile.economicalActivityTypes.*' => 'string|size:36',
             'profile.companyType' => 'string|size:36',
+            'profile.picture' => 'nullable|is_png'
         ];
     }
 }

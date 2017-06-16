@@ -24,7 +24,7 @@ class UpdateRequest extends BaseAPIRequest
             'profile.firstName' => 'filled|string|min:2|max:64',
             'profile.lastName' => 'filled|string|min:2|max:64',
             'profile.position' => 'filled|string|min:2|max:60',
-            'profile.avatar' => 'is_png',
+            'profile.avatar' => 'nullable|is_png',
         ];
     }
 
