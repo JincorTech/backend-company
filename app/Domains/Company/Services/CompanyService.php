@@ -167,7 +167,7 @@ class CompanyService implements CompanyIndexContract
 
     }
 
-    public function uploadImage(Company $company, string $data)
+    public function uploadImage(Company $company, $data)
     {
         $filepath = $company->getId() . '/avatars/' . uniqid('pic_') . '.png';
         if (empty($data) || is_null($data)) {
