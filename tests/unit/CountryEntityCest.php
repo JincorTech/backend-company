@@ -39,13 +39,12 @@ class CountryEntityCest
             'en' => 'Australia',
             'ru' => 'Австралия',
         ];
-        $this->bounds = new MultiPolygon($I->getBoundsOfRussia());
         $currencyCodes = new \App\Core\ValueObjects\CurrencyISOCodes('AUD', 36);
         $this->currency = new Currency([
             'en' => 'Australian dollar',
             'ru' => 'Австралийский доллар',
         ], $currencyCodes, '$');
-        $this->object = new Country($this->names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
+        $this->object = new Country($this->names, '+61', $this->countryISO, $this->currency);
     }
 
     public function _after(UnitTester $I)
@@ -92,15 +91,6 @@ class CountryEntityCest
     /**
      * @param UnitTester $I
      */
-    public function countryBoundsTest(UnitTester $I)
-    {
-        $I->assertInstanceOf(MultiPolygon::class, $this->object->getBounds());
-        $I->assertEquals($this->bounds, $this->object->getBounds());
-    }
-
-    /**
-     * @param UnitTester $I
-     */
     public function getCountryNameTest(UnitTester $I)
     {
         $I->assertEquals($this->names['ru'], $this->object->getName('ru'));
@@ -121,7 +111,7 @@ class CountryEntityCest
             new Country($names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
         });
         $names['ru'] = 'Австралия';
-        new Country($names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
+        new Country($names, '+61', $this->countryISO, $this->currency);
     }
 
     /**
@@ -130,25 +120,14 @@ class CountryEntityCest
     public function setCountryPhoneCodeTest(UnitTester $I)
     {
         $I->expectException(\InvalidArgumentException::class, function () {
-            new Country($this->names, '', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
+            new Country($this->names, '', $this->countryISO, $this->currency);
         });
         $I->expectException(\InvalidArgumentException::class, function () {
-            new Country($this->names, '61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
+            new Country($this->names, '61', $this->countryISO, $this->currency);
         });
         $I->expectException(\InvalidArgumentException::class, function () {
-            new Country($this->names, '+', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
+            new Country($this->names, '+', $this->countryISO, $this->currency);
         });
-        new Country($this->names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
-    }
-
-    /**
-     * @param UnitTester $I
-     */
-    public function setCountryFlagUrlTest(UnitTester $I)
-    {
-        $I->expectException(\InvalidArgumentException::class, function () {
-            new Country($this->names, '+61', $this->countryISO, $this->currency, '', $this->bounds);
-        });
-        new Country($this->names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
+        new Country($this->names, '+61', $this->countryISO, $this->currency);
     }
 }

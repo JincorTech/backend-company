@@ -1,5 +1,7 @@
 <?php
 use Helper\Api;
+use App\Core\Interfaces\MessengerServiceInterface;
+use App\Core\Interfaces\IdentityInterface;
 
 class EmployeeRegisterCest
 {
@@ -54,7 +56,17 @@ class EmployeeRegisterCest
 
     public function success(ApiTester $I)
     {
-        $I->wantTo('Register new employee with existing email and receive 500 error code');
+        $I->wantTo('Register new employee with correct data and receive success response');
+
+        $messengerMock = Mockery::mock(MessengerServiceInterface::class);
+        $messengerMock->shouldReceive('register')->once()->andReturn(true);
+        $I->haveInstance(MessengerServiceInterface::class, $messengerMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        $identityMock->shouldReceive('login')->once()->andReturn('123');
+        $I->haveInstance(IdentityInterface::class, $identityMock);
+
         $I->sendPOST('employee/register', [
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',

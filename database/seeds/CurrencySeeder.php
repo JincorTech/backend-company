@@ -17,20 +17,21 @@ class CurrencySeeder extends Seeder
     public function run()
     {
         $dm = $this->getDm();
-        $rubleISO = new CurrencyISOCodes('RUB', 643);
-        $rubleNames = [
-            'en' => 'Russian ruble',
-            'ru' => 'Российский рубль',
-        ];
-        $ruble = new Currency($rubleNames, $rubleISO, '₽');
-        $dollarISO = new CurrencyISOCodes('USD', 840);
-        $dollarNames = [
-            'en' => 'US dollar',
-            'ru' => 'Доллар США',
-        ];
-        $dollar = new Currency($dollarNames, $dollarISO, '$');
-        $dm->persist($ruble);
-        $dm->persist($dollar);
+        $file = fopen('database/datasets/Currencies.csv', 'r');
+
+        while (($line = fgetcsv($file)) !== false) {
+            $names = [
+                'ru' => $line[0],
+                'en' => $line[1],
+            ];
+            $numericId = (int)$line[2];
+            $alpha3 = $line[3];
+            $unicodeSign = $line[4];
+            $iso = new CurrencyISOCodes($alpha3, $numericId);
+            $currency = new Currency($names, $iso, $unicodeSign);
+            $dm->persist($currency);
+        }
+
         $dm->flush();
     }
 
