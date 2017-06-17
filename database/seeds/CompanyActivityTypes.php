@@ -17,7 +17,7 @@ class CompanyActivityTypes extends Seeder
      */
     public function run()
     {
-        $file = fopen('database/datasets/activities.csv', 'r');
+        $file = fopen('database/datasets/Activities.csv', 'r');
         while (($line = fgetcsv($file)) !== false) {
             if (strlen($line[0]) === 1) {
                 $this->makeParent($line);

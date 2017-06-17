@@ -9,6 +9,8 @@ use App\Domains\Employee\Exceptions\CompanyNotFound;
 use App\Domains\Employee\Services\EmployeeService;
 use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Core\Interfaces\MessengerServiceInterface;
+use App\Core\Interfaces\IdentityInterface;
 use Faker\Factory;
 use Illuminate\Support\Collection;
 
@@ -49,6 +51,16 @@ class EmployeeServiceCest
         $this->faker = Factory::create();
     }
 
+    public function _before(UnitTester $I)
+    {
+        $messengerMock = Mockery::mock(MessengerServiceInterface::class);
+        $messengerMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(MessengerServiceInterface::class, $messengerMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(IdentityInterface::class, $identityMock);
+    }
 
     /**
      * @param UnitTester $I

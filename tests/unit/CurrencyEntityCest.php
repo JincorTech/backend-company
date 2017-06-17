@@ -38,30 +38,6 @@ class CurrencyEntityCest
         $I->assertEquals('$', $currency->getSign());
     }
 
-    public function testSetSign(UnitTester $I)
-    {
-        $I->expectException(\InvalidArgumentException::class, function () {
-            new Currency($this->names, $this->isoCodes, '');
-        });
-        new Currency($this->names, $this->isoCodes, '$');
-    }
-
-    public function testSetNames(UnitTester $I)
-    {
-        $names = [
-            'ru' => 'Австралийский доллар',
-            'fr' => 'Australian dollar',
-        ];
-        $I->expectException(\InvalidArgumentException::class, function () use ($names) {
-            new Currency($names, $this->isoCodes, '');
-        });
-        $names = [
-            'ru' => 'Австралийский доллар',
-            'en' => 'Australian dollar',
-        ];
-        new Currency($names, $this->isoCodes, '$');
-    }
-
     public function testGetName(UnitTester $I)
     {
         $currency = new Currency($this->names, $this->isoCodes, '$');

@@ -17,22 +17,32 @@ class CitySeeder extends DatabaseSeeder
 
     public function run()
     {
-        $en = Factory::create('en_US');
-        $ru = Factory::create('ru_RU');
-        $countries = $this->getDm()->getRepository(Country::class)->findAll();
-        /** @var Country $country */
-        foreach ($countries as $country) {
-            $cities = [];
-            while (count($cities) < 5) {
-                $city = new City([
-                    'en' => $en->city,
-                    'ru' => $ru->city,
-                ], $country);
-                $this->getDm()->persist($city);
-                $cities[] = $city;
-            }
+        $cities = json_decode(file_get_contents('database/datasets/Cities.json'), true);
+        foreach ($cities as $city) {
+            $names = [
+                'en' => $city['names']['values']['en'],
+                'ru' => $city['names']['values']['ru'],
+            ];
+
+            $countryIso = $city['country'];
+
+            /** @var Country $country */
+            $country = $this->getCountryRepository()->findOneBy([
+                'ISOCodes.alpha3Code' => $countryIso,
+            ]);
+
+            $cityToStore = new City($names, $country);
+            $this->getDm()->persist($cityToStore);
         }
+
         $this->getDm()->flush();
     }
 
+    /**
+     * @return \Doctrine\ODM\MongoDB\DocumentRepository
+     */
+    public function getCountryRepository()
+    {
+        return $this->getDm()->getRepository(Country::class);
+    }
 }
