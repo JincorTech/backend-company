@@ -19,7 +19,6 @@ use Ramsey\Uuid\Uuid;
  *
  * @ODM\Document(
  *     collection="departments",
- *     repositoryClass="App\Domains\Company\Repositories\DepartmentRepository"
  * )
  */
 class Department

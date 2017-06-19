@@ -10,19 +10,20 @@
 namespace App\Domains\Employee\Services;
 
 use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
-use App\Domains\Employee\Repositories\EmployeeVerificationRepository;
+use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
 use App\Domains\Employee\EntityDecorators\RegistrationVerification;
 use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Events\VerificationEmailRequested;
 use App\Domains\Employee\Events\RestorePasswordRequested;
-use App\Domains\Employee\Entities\EmployeeVerification;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
 use App\Domains\Company\Entities\Company;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Employee\Entities\Employee;
 use App\Domains\Employee\Exceptions\EmployeeNotFound;
 use App;
+use Doctrine\ODM\MongoDB\DocumentRepository;
 
-class EmployeeVerificationService
+class EmployeeVerificationService implements EmployeeVerificationServiceInterface
 {
     /**
      * @var DocumentManager
@@ -30,14 +31,14 @@ class EmployeeVerificationService
     private $dm;
 
     /**
-     * @var EmployeeVerificationRepository
+     * @var EmployeeVerificationRepositoryInterface | DocumentRepository
      */
     private $verificationRepository;
 
-    public function __construct()
+    public function __construct(EmployeeVerificationRepositoryInterface $verificationRepository)
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->verificationRepository = $this->dm->getRepository(EmployeeVerification::class);
+        $this->verificationRepository = $verificationRepository;
     }
 
     /**

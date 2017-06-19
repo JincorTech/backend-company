@@ -22,7 +22,7 @@ use Ramsey\Uuid\UuidInterface;
  *
  * @ODM\Document(
  *     collection="economicalActivityTypes",
- *     repositoryClass="App\Domains\Company\Repositories\EconomicalActivityRepository"
+ *     repositoryClass="App\Core\Repositories\EconomicalActivityRepository"
  * )
  * @Gedmo\Tree(type="materializedPath", activateLocking=true)
  */

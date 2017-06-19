@@ -7,7 +7,7 @@
  * Time: 12:19 AM
  */
 
-namespace App\Domains\Company\Repositories;
+namespace App\Core\Repositories;
 
 use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
 

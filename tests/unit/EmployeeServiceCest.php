@@ -6,7 +6,8 @@ use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Exceptions\PasswordMismatchException;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Employee\Exceptions\CompanyNotFound;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Interfaces\MessengerServiceInterface;
@@ -46,8 +47,8 @@ class EmployeeServiceCest
     public function __construct()
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->verificationService = new EmployeeVerificationService();
-        $this->employeeService = new EmployeeService();
+        $this->verificationService = App::make(EmployeeVerificationServiceInterface::class);
+        $this->employeeService = App::make(EmployeeServiceInterface::class);
         $this->faker = Factory::create();
     }
 
