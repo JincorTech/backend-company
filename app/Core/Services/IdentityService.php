@@ -14,20 +14,31 @@ use App\Domains\Employee\Exceptions\CompanyNotFound;
 use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
 use App\Domains\Employee\Exceptions\PasswordMismatchException;
 use App\Domains\Company\Services\CompanyService;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Domains\Company\Interfaces\CompanyServiceInterface;
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
 use Illuminate\Support\Collection;
+use App;
 
 class IdentityService extends BaseRestService implements IdentityInterface
 {
     private $companyService;
     private $employeeService;
 
-    public function __construct()
+    /**
+     * IdentityService constructor.
+     * @param EmployeeServiceInterface $employeeService
+     * @param CompanyServiceInterface $companyService
+     */
+    public function __construct(
+        EmployeeServiceInterface $employeeService,
+        CompanyServiceInterface $companyService
+    )
     {
         parent::__construct(config('services.identity.uri'));
-        $this->companyService = new CompanyService();
-        $this->employeeService = new EmployeeService();
+        $this->companyService = $companyService;
+        $this->employeeService = $employeeService;
     }
 
     public function register(array $data)

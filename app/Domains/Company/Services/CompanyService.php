@@ -9,15 +9,15 @@
 
 namespace App\Domains\Company\Services;
 
+use App\Domains\Company\Interfaces\CompanyServiceInterface;
 use Illuminate\Support\Collection;
-use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Domains\Company\ValueObjects\CompanyExternalLink;
 use App\Domains\Company\Search\CompanyIndexContract;
 use App\Domains\Company\Events\CompanyUpdated;
 use App\Domains\Company\Events\CompanyAdded;
 use App\Domains\Company\Entities\CompanyType;
-use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Company\Entities\Company;
 use App\Core\Dictionary\Entities\Country;
@@ -28,7 +28,7 @@ use Elasticsearch;
 use App;
 use Dingo\Api\Exception\ValidationHttpException;
 
-class CompanyService implements CompanyIndexContract
+class CompanyService implements CompanyIndexContract, CompanyServiceInterface
 {
     /**
      * @var DocumentManager|mixed
@@ -46,22 +46,34 @@ class CompanyService implements CompanyIndexContract
     private $typesRepository;
 
     /**
-     * @var App\Domains\Company\Repositories\EconomicalActivityRepository
+     * @var App\Core\Repositories\EconomicalActivityRepository
      */
     private $eActivityRepository;
+
+    /**
+     * @var App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface
+     */
+    private $verificationService;
 
     /**
      * @var int
      */
     private $searchSize;
 
-    public function __construct()
+    /**
+     * CompanyService constructor.
+     * @param EmployeeVerificationServiceInterface $verificationService
+     */
+    public function __construct(
+        EmployeeVerificationServiceInterface $verificationService
+    )
     {
         $this->dm = App::make(DocumentManager::class);
         $this->repository = $this->dm->getRepository(Company::class);
         $this->typesRepository = $this->dm->getRepository(CompanyType::class);
         $this->eActivityRepository = $this->dm->getRepository(EconomicalActivityType::class);
         $this->searchSize = config('elasticsearch.size') ?:  1000;
+        $this->verificationService = $verificationService;
     }
 
     /**
@@ -89,7 +101,7 @@ class CompanyService implements CompanyIndexContract
             ]);
         }
 
-        $ct = $this->dm->getRepository(CompanyType::class)->find($companyType);
+        $ct = $this->typesRepository->find($companyType);
         if (!$ct) {
             $message = trans('registration.typeNotFound', [
                 'ct' => $companyType,
@@ -103,7 +115,7 @@ class CompanyService implements CompanyIndexContract
         $company = new Company($legalName, $address, $ct);
         $this->dm->persist($company);
         event(new CompanyAdded($company));
-        return $this->verification()->beginVerificationProcess($company);
+        return $this->verificationService->beginVerificationProcess($company);
     }
 
     /**
@@ -140,9 +152,15 @@ class CompanyService implements CompanyIndexContract
                         break;
 
                     case 'companyType':
+                        /**
+                         * @var $type CompanyType
+                         */
                         $type = $this->typesRepository->find($value);
-                        if (!$type)
-                            throw new UnprocessableEntityHttpException(trans('exceptions.company_type.not_found'));
+                        if (!$type) {
+                            throw new ValidationHttpException([
+                                'profile.companyType' => trans('exceptions.company_type.not_found'),
+                            ]);
+                        }
                         $company->getProfile()->setCompanyType($type);
                         break;
 
@@ -187,7 +205,9 @@ class CompanyService implements CompanyIndexContract
         if (array_key_exists('country', $value) && !empty($value['country'])) {
             $country = $this->dm->getRepository(Country::class)->find($value['country']);
             if (!$country) {
-                throw new UnprocessableEntityHttpException(trans('exceptions.country.not_found'));
+                throw new ValidationHttpException([
+                    'profile.address.country' => trans('exceptions.country.not_found'),
+                ]);
             }
         } else {
             $country = $company->getProfile()->getAddress()->getCountry();
@@ -195,7 +215,9 @@ class CompanyService implements CompanyIndexContract
         if (array_key_exists('city', $value) && !empty($value['city'])) {
             $city = $this->dm->getRepository(City::class)->find($value['city']);
             if (!$city) {
-                throw new UnprocessableEntityHttpException(trans('exceptions.city.not_found'));
+                throw new ValidationHttpException([
+                    'profile.address.city' => trans('exceptions.city.not_found'),
+                ]);
             }
         } else {
             $city = $company->getProfile()->getAddress()->getCity();
@@ -223,8 +245,11 @@ class CompanyService implements CompanyIndexContract
         $types = [];
         foreach ($value as $eaKey => $ea) {
             $type = $this->eActivityRepository->find($ea);
-            if (!$type)
-                throw new UnprocessableEntityHttpException(trans('exceptions.economical_activity_type.not_found'));
+            if (!$type) {
+                throw new ValidationHttpException([
+                    'profile.economicalActivityTypes' => trans('exceptions.economical_activity_type.not_found'),
+                ]);
+            }
             array_push($types, $type);
         }
         $company->getProfile()->setEconomicalActivities($types);
@@ -351,15 +376,6 @@ class CompanyService implements CompanyIndexContract
     private function address()
     {
         return new AddressService();
-    }
-
-    /**
-     * @TODO: replace with DI
-     * @return EmployeeVerificationService
-     */
-    private function verification()
-    {
-        return new EmployeeVerificationService();
     }
 
 }

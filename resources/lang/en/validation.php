@@ -122,6 +122,7 @@ return [
         'profile.email' => 'email',
         'profile.description' => 'description',
         'profile.links.*.value' => 'url',
+        'profile.companyType' => 'company type',
     ],
 
 ];

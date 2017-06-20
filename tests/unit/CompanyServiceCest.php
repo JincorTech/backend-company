@@ -2,6 +2,7 @@
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Company\Services\CompanyService;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
 
 class CompanyServiceCest
 {
@@ -22,7 +23,7 @@ class CompanyServiceCest
     public function __construct()
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->companyService = new CompanyService();
+        $this->companyService = new CompanyService(App::make(EmployeeVerificationServiceInterface::class));
     }
 
     public function getCompany(UnitTester $I)

@@ -243,4 +243,90 @@ class CompanyMyCest
             ],
         ]);
     }
+
+    public function companyTypeNotFound(ApiTester $I)
+    {
+        $I->wantTo('Update my company with not existing company type and receive validation error');
+
+        $I->sendPUT('company/my', [
+            'profile' => [
+                'companyType' => '4f021f7f-23bd-4317-a40b-086bf8e6a98y',
+            ],
+        ]);
+
+        $message = trans('exceptions.company_type.not_found');
+
+        $I->seeResponseCodeIs(422);
+        $I->canSeeResponseContainsValidationErrors([
+            'profile.companyType' => [
+                $message,
+            ],
+        ]);
+    }
+
+    public function activityTypeNotFound(ApiTester $I)
+    {
+        $I->wantTo('Update my company with not existing activity type and receive validation error');
+
+        $I->sendPUT('company/my', [
+            'profile' => [
+                'economicalActivityTypes' => [
+                    '4f021f7f-23bd-4317-a40b-086bf8e6a98y',
+                ],
+            ],
+        ]);
+
+        $message = trans('exceptions.economical_activity_type.not_found');
+
+        $I->seeResponseCodeIs(422);
+        $I->canSeeResponseContainsValidationErrors([
+            'profile.economicalActivityTypes' => [
+                $message,
+            ],
+        ]);
+    }
+
+    public function countryNotFound(ApiTester $I)
+    {
+        $I->wantTo('Update my company with not existing country and receive validation error');
+
+        $I->sendPUT('company/my', [
+            'profile' => [
+                'address' => [
+                    'country' => '4f021f7f-23bd-4317-a40b-086bf8e6a98y',
+                ],
+            ],
+        ]);
+
+        $message = trans('exceptions.country.not_found');
+
+        $I->seeResponseCodeIs(422);
+        $I->canSeeResponseContainsValidationErrors([
+            'profile.address.country' => [
+                $message,
+            ],
+        ]);
+    }
+
+    public function cityNotFound(ApiTester $I)
+    {
+        $I->wantTo('Update my company with not existing city and receive validation error');
+
+        $I->sendPUT('company/my', [
+            'profile' => [
+                'address' => [
+                    'city' => '4f021f7f-23bd-4317-a40b-086bf8e6a98y',
+                ],
+            ],
+        ]);
+
+        $message = trans('exceptions.city.not_found');
+
+        $I->seeResponseCodeIs(422);
+        $I->canSeeResponseContainsValidationErrors([
+            'profile.address.city' => [
+                $message,
+            ],
+        ]);
+    }
 }

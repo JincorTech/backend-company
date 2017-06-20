@@ -22,7 +22,7 @@ use DateTime;
  *
  * @ODM\Document(
  *     collection="employeeVerifications",
- *     repositoryClass="App\Domains\Employee\Repositories\EmployeeVerificationRepository"
+ *     repositoryClass="App\Core\Repositories\EmployeeVerificationRepository"
  * )
  */
 class EmployeeVerification implements MetaEmployeeInterface
