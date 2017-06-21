@@ -3,13 +3,13 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker stop $(docker ps -aq)'
         sh 'docker-compose -f docker-compose.test.yml build'
       }
     }
     stage('Test') {
       steps {
-        sh 'docker-compose -f docker-compose.test.yml run --rm workspace /var/www/companies/test.init.sh'
+        sh 'docker-compose -f docker-compose.test.yml run --rm workspace /var/www/companies/test.unit.sh'
+        sh 'docker-compose -f docker-compose.test.yml run --rm workspace /var/www/companies/test.api.sh'
       }
     }
     stage('Deploy') {

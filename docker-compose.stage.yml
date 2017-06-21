@@ -3,9 +3,6 @@ services:
 
   companies:
     image: registry.jincor.com/backend/companies:latest
-    build:
-      context: ./
-      dockerfile: companies.docker
     ports:
       - 9000
     links:
@@ -20,12 +17,12 @@ services:
       - src
 
   workspace:
-    image: registry.jincor.com/backend/companies-workspace:latest-test
+    image: registry.jincor.com/backend/companies-workspace:latest-stage
     build:
       context: ./
       args:
         - TZ=UTC
-        - INSTALL_XDEBUG=true
+        - INSTALL_XDEBUG=false
       dockerfile: workspace.docker
     tty: true
     links:
@@ -36,6 +33,18 @@ services:
     volumes_from:
       - src
 
+  worker:
+    image: nielsvdoorn/laravel-supervisor:latest
+    links:
+      - auth
+      - mongo
+      - redis
+      - search
+    environment:
+      - QUEUE=default
+      - CONNECTION=redis
+    volumes:
+      - ./:/var/www/laravel
 
   auth:
     image: registry.jincor.com/backend/auth:latest
@@ -67,6 +76,8 @@ services:
       - IPC_LOCK
     ports:
       - 9200
+    volumes:
+      - ./storage/elastic/data:/usr/share/elasticsearch/data
 
   nginx:
     image: registry.jincor.com/backend/nginx:latest

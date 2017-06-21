@@ -21,19 +21,43 @@ Built on [hlogeon/LaravelBoilerplate](https://github.com/hlogeon/LaravelBoilerpl
 
 [layers](http://image.prntscr.com/image/f65fc6d827a24b849f6a13e87b687227.jpg "Layers")
 
-## Common workflow
+## Project setup
 
-1. Think about the bounded context. Carefully define context borders
-1. Design API, add endpoints to the application routes, create Controller classes and Actions stubs
-2. Add dummy test cases for your API(should fail)
-3. Design Domain model(without adding real code to it)
-3. Write Unit Tests for Domain Model
-3. Implement business logic
-3. Design Data Model
-8. Refactor
-8. Make sure all Unit Test are passing
-5. Add DTO objects to your Application layer
-6. Replace dummy API test with real ones
-7. Make your application API pass all the tests
-8. Refactor
-9. Repeat
+To set up and run the project you will need docker engine,
+docker-compose. Also you must be logged in to
+`registry.jincor.com`. You can find your credentials in LastPass.
+
+To login to registry type `docker login registry.jincor.com -u %user_name% -p%password%`
+
+### Local development setup
+1. Clone the repo
+2. `cd /path/to/repo` - go to the projects folder
+3. `docker-compose build` - build development containers
+4. Wait for a while
+5. `docker-compose up -d` - run services
+6. `docker-compose exec workspace ./init.sh` - installs composer dependencies, set up environment variables and runs `php artisan db:seed`
+
+Your changes will be automatically synchronized with local machine, there is no need to rebuild or restart containers after source code changes.
+
+*Exception* - you changed something related to docker(dockerfiles, docker-compose, etc)
+
+*Note that you don't need to do step 5 except the very first time. Otherwise it will erase all your saved data!*
+
+
+
+#### Local testing
+
+To run *unit* tests just type `docker-compose exec workspace ./vendor/bin/codecept run unit`
+You can add --coverage option to get the code-coverage report on Unit Tests
+
+To run *API* tests just type `docker-compose exec workspace ./vendor/bin/codecept run api`
+
+
+## Service Development Workflow
+
+1. Create branch
+2. Do your changes
+3. Run tests
+4. Create Pull Request
+5. Wait for approve
+6. Merge
