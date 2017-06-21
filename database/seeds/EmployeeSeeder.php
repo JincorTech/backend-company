@@ -4,7 +4,8 @@
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
 use App\Domains\Company\Entities\Company;
 
 /**
@@ -45,19 +46,19 @@ class EmployeeSeeder extends DatabaseSeeder
     }
 
     /**
-     * @return EmployeeVerificationService
+     * @return EmployeeVerificationServiceInterface
      */
-    private function getEmployeeVerificationService() : EmployeeVerificationService
+    private function getEmployeeVerificationService() : EmployeeVerificationServiceInterface
     {
-        return new EmployeeVerificationService();
+        return $this->container->make(EmployeeVerificationServiceInterface::class);
     }
 
     /**
-     * @return EmployeeService
+     * @return EmployeeServiceInterface
      */
-    private function getEmployeeService() : EmployeeService
+    private function getEmployeeService() : EmployeeServiceInterface
     {
-        return new EmployeeService();
+        return $this->container->make(EmployeeServiceInterface::class);
     }
 
 
