@@ -6,9 +6,12 @@ use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Exceptions\PasswordMismatchException;
 use App\Domains\Employee\Services\EmployeeVerificationService;
 use App\Domains\Employee\Exceptions\CompanyNotFound;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Core\Interfaces\MessengerServiceInterface;
+use App\Core\Interfaces\IdentityInterface;
 use Faker\Factory;
 use Illuminate\Support\Collection;
 
@@ -44,11 +47,21 @@ class EmployeeServiceCest
     public function __construct()
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->verificationService = new EmployeeVerificationService();
-        $this->employeeService = new EmployeeService();
+        $this->verificationService = App::make(EmployeeVerificationServiceInterface::class);
+        $this->employeeService = App::make(EmployeeServiceInterface::class);
         $this->faker = Factory::create();
     }
 
+    public function _before(UnitTester $I)
+    {
+        $messengerMock = Mockery::mock(MessengerServiceInterface::class);
+        $messengerMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(MessengerServiceInterface::class, $messengerMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(IdentityInterface::class, $identityMock);
+    }
 
     /**
      * @param UnitTester $I

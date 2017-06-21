@@ -11,6 +11,7 @@ namespace App\Applications\Company\Http\Requests\Employee;
 
 use App\Applications\Company\Http\Requests\AdminUser;
 use App\Core\Http\Requests\GetAPIRequest;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Delete extends GetAPIRequest
 {
@@ -20,5 +21,10 @@ class Delete extends GetAPIRequest
     public function rules() : array
     {
         return [];
+    }
+
+    protected function failedAuthorization()
+    {
+        throw new HttpException(403, trans('exceptions.employee.access_denied'));
     }
 }

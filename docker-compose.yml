@@ -1,6 +1,53 @@
 version: '2'
 services:
 
+  companies:
+    image: registry.jincor.com/backend/companies:latest
+    build:
+      context: ./
+      dockerfile: companies.docker
+    ports:
+      - 9000
+    links:
+      - search
+      - auth
+      - mongo
+      - redis
+    environment:
+      # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
+      - PHP_IDE_CONFIG="serverName=companies"
+    volumes_from:
+      - src
+
+  workspace:
+    image: registry.jincor.com/backend/companies-workspace:latest-test
+    build:
+      context: ./
+      args:
+        - TZ=UTC
+        - INSTALL_XDEBUG=true
+      dockerfile: workspace.docker
+    tty: true
+    links:
+      - auth
+      - mongo
+      - redis
+      - search
+    volumes_from:
+      - src
+
+
+  auth:
+    image: registry.jincor.com/backend/auth:latest
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
+    volumes:
+      - /usr/src/app
+    links:
+      - redis
+
 
   search:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.3.2
@@ -19,98 +66,30 @@ services:
     cap_add:
       - IPC_LOCK
     ports:
-      - 9200:9200
-
-  companies:
-    build:
-      context: ./
-      dockerfile: companies.docker
-    ports:
-      - "9000:9000"
-    volumes:
-      - "./:/var/www/laravel"
-    links:
-      - search
-#      - auth
-      - mongo
-      - redis
-    extra_hosts:
-      # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-      - "dockerhost:10.0.75.1"
-    environment:
-      # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
-      - PHP_IDE_CONFIG="serverName=company"
-
-  workspace:
-    build:
-      context: ./
-      args:
-        - TZ=UTC
-        - INSTALL_XDEBUG=true
-      dockerfile: Workspace-Dockerfile
-    extra_hosts:
-      # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-      - "dockerhost:10.0.75.1"
-    ports:
-      - "3001:22"
-    tty: true
-    links:
-      - auth
-      - mongo
-      - nginx
-      - redis
-      - search
-    volumes:
-      - "./companies:/var/www/laravel"
-
-  company-worker:
-    build:
-      context: ./companies
-      dockerfile: Queue-Dockerfile
-    volumes:
-      - "./companies:/var/www/laravel"
-    links:
-      - redis
-      - mongo
-      - search
-      - auth
-    environment:
-      - QUEUE=default     # Defaults to 'default'
-      - CONNECTION=redis       # Defaults to 'default'
-
+      - 9200
 
   nginx:
-    build:
-      context: ./companies
-      dockerfile: Nginx-Dockerfile
-      args:
-        - PHP_UPSTREAM=company
+    image: registry.jincor.com/backend/nginx:latest
+    volumes_from:
+      - src
     ports:
-      - "8080:80"
-      - "443:443"
-    volumes:
-      - "./companies:/var/www/laravel"
+     - 8080:80
+     - 443:443
     links:
-      - company
+      - companies
+
 
   redis:
-    build:
-      context: ./companies
-      dockerfile: Redis-Dockerfile
-    ports:
-      - "6379:6379"
+    image: registry.jincor.com/backend/redis:latest
+    volumes:
+          - ./storage/redis:/data
 
   mongo:
-    build:
-      context: ./companies
-      dockerfile: Mongo-Dockerfile
-    ports:
-      - "27017:27017"
+    image: registry.jincor.com/backend/mongodb:latest
+    volumes:
+          - ./storage/mongodb:/data/db
 
-
-  frontend_server:
-    build:
-      context: ./frontend/nginx
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
+  src:
+    image: tianon/true
+    volumes:
+      - ./:/var/www/companies

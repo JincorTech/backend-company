@@ -25,57 +25,19 @@ class CompanyTypeSeeder extends Seeder
 
     private function getData()
     {
-        return [
-            [
-                'code' => 'BT1',
+        $data = [];
+        $file = fopen('database/datasets/BusinessTypes.csv', 'r');
+        while (($line = fgetcsv($file)) !== false) {
+            $type = [
+                'code' => $line[0],
                 'name' => [
-                    'en' => 'Private Company',
-                    'ru' => 'Частная компания',
+                    'en' => $line[1],
+                    'ru' => $line[2],
                 ],
-            ],
-            [
-                'code' => 'BT2',
-                'name' => [
-                    'en' => 'Public Company',
-                    'ru' => 'Публичная компания',
-                ],
-            ],
-            [
-                'code' => 'BT3',
-                'name' => [
-                    'en' => 'Sole Proprietorship',
-                    'ru' => 'Индивидуальный предприниматель',
-                ],
-            ],
-            [
-                'code' => 'BT4',
-                'name' => [
-                    'en' => 'Nonprofit organization',
-                    'ru' => 'Некоммерческая организация',
-                ],
-            ],
-            [
-                'code' => 'BT5',
-                'name' => [
-                    'en' => 'Goverment Organization',
-                    'ru' => 'Государственное предприятие',
-                ],
-            ],
-            [
-                'code' => 'BT6',
-                'name' => [
-                    'en' => 'State-owned enterprise',
-                    'ru' => 'Государственное предприятие',
-                ],
-            ],
-            [
-                'code' => 'BT7',
-                'name' => [
-                    'en' => 'International organization',
-                    'ru' => 'Международная организация',
-                ],
-            ],
-        ];
+            ];
+            $data[] = $type;
+        }
+        return $data;
     }
 
     /**
@@ -86,11 +48,4 @@ class CompanyTypeSeeder extends Seeder
         return $this->container->make(DocumentManager::class);
     }
 
-    /**
-     * @return \Doctrine\ODM\MongoDB\DocumentRepository
-     */
-    private function getCurrencyRepository()
-    {
-        return $this->getDm()->getRepository(CompanyType::class);
-    }
 }

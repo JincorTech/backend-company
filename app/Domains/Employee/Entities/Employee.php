@@ -21,6 +21,7 @@ use App\Domains\Employee\Events\PasswordChanged;
 use App\Domains\Employee\Exceptions\EmployeeVerificationException;
 use App\Domains\Employee\ValueObjects\EmployeeContact;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
+use App\Core\Repositories\EmployeeRepository;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Ramsey\Uuid\Uuid;
 use Hash;
@@ -30,7 +31,7 @@ use Hash;
  *
  * @ODM\Document(
  *     collection="employees",
- *     repositoryClass="App\Domains\Employee\Repositories\EmployeeRepository"
+ *     repositoryClass="App\Core\Repositories\EmployeeRepository"
  * )
  */
 class Employee implements MetaEmployeeInterface
@@ -145,6 +146,13 @@ class Employee implements MetaEmployeeInterface
     public function getLogin(): string
     {
         return $this->getCompany()->getId() . ':' . $this->getContacts()->getEmail();
+    }
+
+    public function getSubject() : string
+    {
+        return
+            '@' . $this->getCompany()->getId() . //company
+            '_' . str_replace('@', '_', $this->getContacts()->getEmail()); //matrix login
     }
 
     /**

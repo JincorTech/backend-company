@@ -39,4 +39,8 @@ return [
         'uri' => env('IDENTITY_SCHEME') . '://' . env('IDENTITY_HOST') . ':' . env('IDENTITY_PORT'),
     ],
 
+    'messenger' => [
+        'uri' => env('MESSENGER_SCHEME') . '://' . env('MESSENGER_HOST') . ':' . env('MESSENGER_PORT'),
+    ],
+
 ];

@@ -110,9 +110,6 @@ class Currency
      */
     public function setSign(string $sign)
     {
-        if (empty($sign)) {
-            throw new \InvalidArgumentException('Sign of the currency cannot be empty');
-        }
         $this->sign = $sign;
     }
 

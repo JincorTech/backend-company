@@ -19,8 +19,7 @@ use Ramsey\Uuid\Uuid;
  * Class Company.
  *
  * @ODM\Document(
- *     collection="companies",
- *     repositoryClass="App\Domains\Company\Repositories\CompanyRepository"
+ *     collection="companies"
  * )
  */
 class   Company

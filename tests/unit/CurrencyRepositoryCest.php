@@ -74,17 +74,22 @@ class CurrencyRepositoryCest
     public function findByNameTest(UnitTester $I)
     {
         $dollar = $this->repository->findBy([
-            'names.en' => 'US dollar',
+            'names.en' => $this->firstCurrency()->getName('en'),
         ]);
         $this->currencyExists($I, $dollar);
         $russianName = $this->repository->findBy([
-            'names.ru' => 'Доллар США',
+            'names.ru' => $this->firstCurrency()->getName('ru'),
         ]);
         $this->currencyExists($I, $russianName);
         $notExistingCurrency = $this->repository->findBy([
             'names.en' => 'US dolla',
         ]);
         $I->assertEmpty($notExistingCurrency);
+    }
+
+    public function firstCurrency() : Currency
+    {
+        return $this->repository->findAll()[0];
     }
 
     /**

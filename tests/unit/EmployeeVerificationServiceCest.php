@@ -1,7 +1,7 @@
 <?php
 
-use App\Domains\Employee\Repositories\EmployeeVerificationRepository;
-use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Core\Repositories\EmployeeVerificationRepository;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Exceptions\EmployeeNotFound;
 use App\Domains\Employee\Entities\EmployeeVerification;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -27,7 +27,7 @@ class EmployeeVerificationServiceCest
 
     public function __construct()
     {
-        $this->verificationService = new EmployeeVerificationService();
+        $this->verificationService = App::make(EmployeeVerificationServiceInterface::class);
         $this->faker = Factory::create();
         $this->dm = App::make(DocumentManager::class);
     }

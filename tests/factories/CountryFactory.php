@@ -29,6 +29,6 @@ class CountryFactory implements FactoryInterface
         ];
         $countryCodes = new CountryISOCodes('RUS:123456043', '203', 'RU', 'RUS');
         $bounds = new MultiPolygon([]);
-        return new Country($names, '+31', $countryCodes, $currency, 'http://some-flag.com', $bounds);
+        return new Country($names, '+31', $countryCodes, $currency);
     }
 }

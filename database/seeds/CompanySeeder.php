@@ -31,6 +31,9 @@ class CompanySeeder extends Seeder
      */
     private $ers;
 
+    const COMPANY_1_NAME = "Jincor 1 ltd";
+    const COMPANY_2_NAME = "Jincor Limited";
+
 
     public function run()
     {
@@ -44,8 +47,8 @@ class CompanySeeder extends Seeder
         $companyType = $this->getDm()->getRepository(CompanyType::class)->findOneBy([
             'code' => 'BT1',
         ]);
-        $company = new Company(env('TEST_COMPANY_NAME'), $address, $companyType);
-        $company2 = new Company("Jincor Limited", $address, $companyType);
+        $company = new Company(self::COMPANY_1_NAME, $address, $companyType);
+        $company2 = new Company(self::COMPANY_2_NAME, $address, $companyType);
         $this->getDm()->persist($company);
         $this->getDm()->persist($company2);
         $this->getDm()->flush();

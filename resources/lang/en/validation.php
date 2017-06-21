@@ -98,6 +98,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'profile.avatar' => [
+            'is_png' => 'The avatar is not correct png image.',
+        ],
     ],
 
     /*
@@ -111,6 +114,15 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'profile.position' => 'position',
+        'profile.firstName' => 'first name',
+        'profile.lastName' => 'last name',
+        'profile.avatar' => 'avatar',
+        'profile.email' => 'email',
+        'profile.description' => 'description',
+        'profile.links.*.value' => 'url',
+        'profile.companyType' => 'company type',
+    ],
 
 ];

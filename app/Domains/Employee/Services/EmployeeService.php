@@ -9,6 +9,7 @@
 
 namespace App\Domains\Employee\Services;
 
+use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
 use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Exceptions\EmployeeVerificationException;
 use App\Domains\Employee\Exceptions\EmployeeAlreadyExists;
@@ -19,6 +20,10 @@ use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Domains\Employee\Interfaces\EmployeeRepositoryInterface;
+use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use Doctrine\ODM\MongoDB\DocumentRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\Collection;
 use App\Domains\Employee\Exceptions\CompanyNotFound;
@@ -33,7 +38,7 @@ use Validator;
 use App;
 use Mail;
 
-class EmployeeService
+class EmployeeService implements EmployeeServiceInterface
 {
     const VERIFICATION_ERR = 'error';
     const VERIFICATION_OK = 'ok';
@@ -44,12 +49,12 @@ class EmployeeService
     private $dm;
 
     /**
-     * @var \App\Domains\Employee\Repositories\EmployeeRepository
+     * @var \App\Domains\Employee\Interfaces\EmployeeRepositoryInterface | DocumentRepository
      */
     private $repository;
 
     /**
-     * @var App\Domains\Employee\Repositories\EmployeeVerificationRepository
+     * @var EmployeeVerificationRepositoryInterface | DocumentRepository
      */
     private $verificationRepository;
 
@@ -58,13 +63,22 @@ class EmployeeService
      */
     private $verificationService;
 
-
-    public function __construct()
+    /**
+     * EmployeeService constructor.
+     * @param EmployeeRepositoryInterface $employeeRepository
+     * @param EmployeeVerificationRepositoryInterface $verificationRepository
+     * @param EmployeeVerificationServiceInterface $verificationService
+     */
+    public function __construct(
+        EmployeeRepositoryInterface $employeeRepository,
+        EmployeeVerificationRepositoryInterface $verificationRepository,
+        EmployeeVerificationServiceInterface $verificationService
+    )
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->repository = $this->dm->getRepository(Employee::class);
-        $this->verificationRepository = $this->dm->getRepository(EmployeeVerification::class);
-        $this->verificationService = new EmployeeVerificationService();
+        $this->repository = $employeeRepository;
+        $this->verificationRepository = $verificationRepository;
+        $this->verificationService = $verificationService;
     }
 
     /**
@@ -86,12 +100,14 @@ class EmployeeService
         /** @var EmployeeVerification $verification */
         $verification = $this->verificationService->getRepository()->find($verificationId);
         if (!$verification) {
-            throw new ContactsNotVerified('You must verify email and phone before registration');
+            throw new ContactsNotVerified(trans('exceptions.contacts.not_verified'));
         }
         if ($this->findByCompanyIdAndEmail($verification->getCompany()->getId(), $verification->getEmail())) {
             throw new EmployeeAlreadyExists(
-                'Employee '.$verification->getEmail().' already exists in company '.
-                $verification->getCompany()->getProfile()->getName()
+                trans('exceptions.employee.already_exists', [
+                    'email' => $verification->getEmail(),
+                    'company' => $verification->getCompany()->getProfile()->getName(),
+                ])
             );
         }
         $employee = Employee::register($verification, $profile, $password);
@@ -111,10 +127,7 @@ class EmployeeService
     public function getColleagues(Employee $employee)
     {
         $invitations = [];
-        $invitationsCursor = $this->verificationRepository->createQueryBuilder()
-            ->field('reason')->equals(EmployeeVerification::REASON_INVITED_BY_EMPLOYEE)
-            ->field('emailVerified')->equals(false)
-            ->field('company')->references($employee->getCompany())->getQuery()->execute();
+        $invitationsCursor = $this->verificationRepository->getVerificationsByEmployee($employee);
         foreach ($invitationsCursor as $invite) {
             $invitations[] = $invite;
         }
@@ -219,7 +232,7 @@ class EmployeeService
     public function findByVerificationId(string $verificationId) : Collection
     {
         /** @var EmployeeVerification $verificationProcess */
-        $verificationProcess = $this->dm->getRepository(EmployeeVerification::class)->find($verificationId);
+        $verificationProcess = $this->verificationRepository->find($verificationId);
         if (!$verificationProcess instanceof EmployeeVerification) {
             throw new EmployeeVerificationNotFound('Employee Verification Entity id: ' . $verificationId . ' Not found');
         }
@@ -264,14 +277,13 @@ class EmployeeService
         $company = $this->dm->getRepository(Company::class)->find($companyId);
         /** @var EmployeeVerification $verification */
         $verification = $this->dm->getRepository(EmployeeVerification::class)->find($verificationId);
-        if (!$verification) throw new HttpException(401, 'Verification failed');
-        $employee = $this->dm->getRepository(Employee::class)->createQueryBuilder()
-            ->field('department')
-            ->references($company->getRootDepartment())
-            ->field('contacts.email')
-            ->equals($verification->getEmail())->getQuery()->execute();
+        if (!$verification) {
+            throw new HttpException(401, trans('exceptions.verification.failed'));
+        }
+
+        $employee = $this->repository->findByDepartmentAndEmail($company->getRootDepartment(), $verification->getEmail());
         if (!$employee) {
-            throw new HttpException(401, 'Verification failed');
+            throw new HttpException(401, trans('exceptions.verification.failed'));
         }
         return $employee->getNext();
     }
@@ -352,7 +364,8 @@ class EmployeeService
         Mail::to($email)->queue(
             new InviteColleague(
                 $inviter->getProfile()->getName(),
-                $email, $employeeVerification->getId(),
+                $email,
+                $employeeVerification->getId(),
                 $employeeVerification->getCompany()->getProfile()->getName(),
                 $employeeVerification->getEmailCode()
             )
@@ -374,7 +387,7 @@ class EmployeeService
     {
         $verifications = new Collection();
         $errors = new Collection();
-        $invitees->each(function(string $email) use($inviter, $errors, $verifications) {
+        $invitees->each(function(string $email) use ($inviter, $errors, $verifications) {
             try {
                 $verifications->push($this->invite($email, $inviter));
             } catch (\Exception $exception) {
@@ -477,14 +490,9 @@ class EmployeeService
      */
     private function invitationLimitReached(Company $company, string $email)
     {
-        $openVerifications = $this->verificationRepository->createQueryBuilder()
-            ->field('company')
-            ->references($company)
-            ->field('email')->equals($email)
-            ->field('emailVerified')->equals(false)
-            ->field('reason')->equals(EmployeeVerification::REASON_INVITED_BY_EMPLOYEE)
-            ->count();
-        return $openVerifications->getQuery()->execute() >= config('mail.invitations.max_company_user');
+        $openVerificationsCount = $this->verificationRepository->getOpenVerificationsCountByCompanyAndEmail($company, $email);
+
+        return $openVerificationsCount >= config('mail.invitations.max_company_user');
     }
 
 
@@ -500,7 +508,7 @@ class EmployeeService
             App::make('AppUser');
             return Collection::make([App::make('AppUser')]);
         } catch (\Exception $exception) {}
-        if(array_key_exists('verificationId', $options) && $options['verificationId']) {
+        if (array_key_exists('verificationId', $options) && $options['verificationId']) {
             return $this->findByVerificationId($options['verificationId']);
         }
         if (!array_key_exists('password', $options) || !$options['password']) {

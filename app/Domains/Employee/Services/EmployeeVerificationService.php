@@ -10,19 +10,20 @@
 namespace App\Domains\Employee\Services;
 
 use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
-use App\Domains\Employee\Repositories\EmployeeVerificationRepository;
+use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
 use App\Domains\Employee\EntityDecorators\RegistrationVerification;
 use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Events\VerificationEmailRequested;
 use App\Domains\Employee\Events\RestorePasswordRequested;
-use App\Domains\Employee\Entities\EmployeeVerification;
+use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
 use App\Domains\Company\Entities\Company;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Employee\Entities\Employee;
 use App\Domains\Employee\Exceptions\EmployeeNotFound;
 use App;
+use Doctrine\ODM\MongoDB\DocumentRepository;
 
-class EmployeeVerificationService
+class EmployeeVerificationService implements EmployeeVerificationServiceInterface
 {
     /**
      * @var DocumentManager
@@ -30,14 +31,14 @@ class EmployeeVerificationService
     private $dm;
 
     /**
-     * @var EmployeeVerificationRepository
+     * @var EmployeeVerificationRepositoryInterface | DocumentRepository
      */
     private $verificationRepository;
 
-    public function __construct()
+    public function __construct(EmployeeVerificationRepositoryInterface $verificationRepository)
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->verificationRepository = $this->dm->getRepository(EmployeeVerification::class);
+        $this->verificationRepository = $verificationRepository;
     }
 
     /**
@@ -57,13 +58,18 @@ class EmployeeVerificationService
      *
      * @param string $verificationId
      * @param string $email
-     *
+     * @throws EmployeeVerificationNotFound
      * @return \App\Domains\Employee\Entities\EmployeeVerification
      */
     public function sendEmailVerification(string $verificationId, string $email)
     {
         /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = $this->verificationRepository->find($verificationId);
+        if (!$verification) {
+            throw new EmployeeVerificationNotFound(trans('exceptions.employee.verification.not_found', [
+                'verification' => $verificationId,
+            ]));
+        }
         $verification->associateEmail($email);
         event(new VerificationEmailRequested($verification));
         $this->dm->persist($verification);
@@ -76,7 +82,7 @@ class EmployeeVerificationService
     {
         /** @var Employee $existing */
         $existing = $this->dm->getRepository(Employee::class)->findBy(['contacts.email' => $email]);
-        if(!$existing) {
+        if (!$existing) {
             throw new EmployeeNotFound(trans('exceptions.restore-password.notFound', ['email' => $email]));
         }
         $verification = RestorePasswordVerification::make($email);
@@ -93,13 +99,16 @@ class EmployeeVerificationService
      * @param string $pin
      *
      * @return \App\Domains\Employee\Entities\EmployeeVerification
+     * @throws EmployeeVerificationNotFound
      */
     public function verifyEmail(string $verificationId, string $pin)
     {
         /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
         $verification = $this->verificationRepository->find($verificationId);
         if (!$verification) {
-            throw new EmployeeVerificationNotFound("Employee verification " . $verificationId . 'cannot be found on the server');
+            throw new EmployeeVerificationNotFound(trans('exceptions.employee.verification.not_found', [
+                'verification' => $verificationId,
+            ]));
         }
         $verification->verifyEmail($pin);
         $this->dm->persist($verification);

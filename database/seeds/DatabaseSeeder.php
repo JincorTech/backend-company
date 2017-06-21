@@ -17,9 +17,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->getDm()->getDocumentDatabase(Currency::class)->drop();
-        $this->getDm()->getDocumentDatabase(Country::class)->drop();
-        $this->getDm()->getDocumentDatabase(CompanyType::class)->drop();
-        $this->getDm()->getDocumentDatabase(EconomicalActivityType::class)->drop();
         $this->call(CurrencySeeder::class);
         $this->call(CountrySeeder::class);
         $this->call(CitySeeder::class);

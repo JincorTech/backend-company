@@ -11,10 +11,9 @@ class CompanyExternalLinkCest
      */
     public function allowsCreateCorrect(UnitTester $I)
     {
-        $name = 'test';
         $link = 'https://facebook.com/test';
         $url = new CompanyExternalLink($link);
-        $I->assertEquals($name, $url->getName());
+        $I->assertEquals('facebook.com', $url->getName());
         $I->assertEquals($link, $url->getUrl());
     }
 

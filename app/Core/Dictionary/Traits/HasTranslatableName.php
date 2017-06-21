@@ -25,7 +25,8 @@ trait HasTranslatableName
      */
     public function getName($locale = null) : string
     {
-        return $this->names->getValue($locale);
+
+        return $this->names[$locale];
     }
 
     /**
@@ -33,6 +34,9 @@ trait HasTranslatableName
      */
     public function getNames() : array
     {
+        if (is_array($this->names)) {
+            return $this->names;
+        }
         return $this->names->getValues();
     }
 

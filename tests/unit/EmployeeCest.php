@@ -4,9 +4,22 @@ use App\Domains\Employee\Entities\Employee;
 use App\Domains\Employee\Exceptions\EmployeeVerificationException;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
+use App\Core\Interfaces\MessengerServiceInterface;
+use App\Core\Interfaces\IdentityInterface;
 
 class EmployeeCest
 {
+
+    public function _before(UnitTester $I)
+    {
+        $messengerMock = Mockery::mock(MessengerServiceInterface::class);
+        $messengerMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(MessengerServiceInterface::class, $messengerMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(IdentityInterface::class, $identityMock);
+    }
 
     /**
      * Check if we can register employee

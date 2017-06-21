@@ -82,18 +82,14 @@ class Country
      * @param string $code
      * @param \App\Core\ValueObjects\CountryISOCodes $ISOCodes
      * @param Currency $currency
-     * @param string $flag
-     * @param MultiPolygon $bounds
      */
-    public function __construct(array $names, string $code, CountryISOCodes $ISOCodes, Currency $currency, string $flag, MultiPolygon $bounds)
+    public function __construct(array $names, string $code, CountryISOCodes $ISOCodes, Currency $currency)
     {
         $this->id = Uuid::uuid4();
         $this->setNames($names);
         $this->setPhoneCode($code);
         $this->setISOCodes($ISOCodes);
         $this->setCurrency($currency);
-        $this->setFlagUrl($flag);
-        $this->setBounds($bounds);
     }
 
     /**
@@ -127,27 +123,11 @@ class Country
     }
 
     /**
-     * @return MultiPolygon
-     */
-    public function getBounds() : MultiPolygon
-    {
-        return new MultiPolygon($this->bounds['coordinates']);
-    }
-
-    /**
      * @return string
      */
     public function getPhoneCode() : string
     {
         return $this->phoneCode;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFlagUrl() : string
-    {
-        return $this->flagUrl;
     }
 
     /**
@@ -210,14 +190,6 @@ class Country
     }
 
     /**
-     * @param MultiPolygon $bounds
-     */
-    public function setBounds(MultiPolygon $bounds)
-    {
-        $this->bounds = $bounds->jsonSerialize();
-    }
-
-    /**
      * @param string $code
      */
     public function setPhoneCode(string $code)
@@ -232,17 +204,6 @@ class Country
             throw new InvalidArgumentException('Phone code cant be less then 2 symbols length');
         }
         $this->phoneCode = $code;
-    }
-
-    /**
-     * @param string $flagUrl
-     */
-    public function setFlagUrl(string $flagUrl)
-    {
-        if (empty($flagUrl)) {
-            throw new InvalidArgumentException('Flag URL can not be empty!');
-        }
-        $this->flagUrl = $flagUrl;
     }
 
     /**

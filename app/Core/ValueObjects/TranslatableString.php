@@ -12,6 +12,7 @@ namespace App\Core\ValueObjects;
 use App\Core\Interfaces\TranslatableContentInterface;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use InvalidArgumentException;
+use ArrayAccess;
 
 /**
  * Class TranslatableString
@@ -19,7 +20,7 @@ use InvalidArgumentException;
  *
  * @ODM\EmbeddedDocument
  */
-class TranslatableString implements TranslatableContentInterface
+class TranslatableString implements TranslatableContentInterface, ArrayAccess
 {
 
     /**
@@ -77,5 +78,28 @@ class TranslatableString implements TranslatableContentInterface
     {
         $this->values[$key] = $value;
     }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->values[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->getValue($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->setValue($offset, $value);
+    }
+
+    public function offsetUnset($offset)
+    {
+        if ($this->offsetExists($offset)) {
+            unset($this->values[$offset]);
+        }
+    }
+
 
 }
