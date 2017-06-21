@@ -41,7 +41,7 @@ Your changes will be automatically synchronized with local machine, there is no 
 
 *Exception* - you changed something related to docker(dockerfiles, docker-compose, etc)
 
-*Note that you don't need to do step 5 except the very first time. Otherwise it will erase all your saved data!*
+*Note that you don't need to do step 6 except the very first time. Otherwise it will erase all your saved data!*
 
 
 
