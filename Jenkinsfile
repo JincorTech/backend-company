@@ -8,12 +8,12 @@ pipeline {
     }
     stage('Test API') {
       steps {
-        sh 'docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept run api'
+        sh 'docker-compose -f docker-compose.test.yml exec workspace /var/www/companies/test.api.sh'
       }
     }
     stage('Deploy') {
       steps {
-        sh 'docker-compose -f docker-compose.test.yml push registry.jincor.com'
+        sh 'docker-compose -f docker-compose.test.yml push'
       }
     }
   }
