@@ -16,6 +16,7 @@ class EmployeeContactList extends TransformerAbstract
     {
         return [
             'id' => $employee->getId(),
+            'email' => $employee->getContacts()->getEmail(),
             'name' => $employee->getProfile()->getName(),
             'firstName' => $employee->getProfile()->getFirstName(),
             'lastName' => $employee->getProfile()->getLastName(),

@@ -22,6 +22,7 @@ class EmployeeContactsCest
             'data' => [
                 [
                     'id' => '9617881b-3ae9-4a7f-82b9-e2f46568f0ca',
+                    'email' => 'employee@company2.com',
                     'name' => 'Employee Company 2',
                     'firstName' => 'Employee',
                     'lastName' => 'Company 2',
@@ -61,6 +62,7 @@ class EmployeeContactsCest
             'data' => [
                 [
                     'id' => '9617881b-3ae9-4a7f-82b9-e2f46568f0ca',
+                    'email' => 'employee@company2.com',
                     'name' => 'Employee Company 2',
                     'firstName' => 'Employee',
                     'lastName' => 'Company 2',
@@ -72,6 +74,7 @@ class EmployeeContactsCest
                 ],
                 [
                     'id' => '63e88d9d-a79e-4705-9c8f-8712b71b53f8',
+                    'email' => 'test2@test.com',
                     'name' => 'John Doe',
                     'firstName' => 'John',
                     'lastName' => 'Doe',
@@ -221,6 +224,7 @@ class EmployeeContactsCest
             'data' => [
                 [
                     'id' => '63e88d9d-a79e-4705-9c8f-8712b71b53f8',
+                    'email' => 'test2@test.com',
                     'name' => 'John Doe',
                     'firstName' => 'John',
                     'lastName' => 'Doe',
