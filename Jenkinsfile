@@ -8,7 +8,7 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh 'docker exec companies_workspace_1 bash ls -la
+        sh 'docker exec companies_workspace_1 bash ls
         sh 'docker-compose -f docker-compose.test.yml down'
       }
     }
