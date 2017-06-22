@@ -9,15 +9,15 @@
 namespace App\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
+use App\Applications\Company\Services\Employee\EmployeeService;
 use App\Domains\Employee\Interfaces\EmployeeRepositoryInterface;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Employee\Entities\Employee;
 use App\Domains\Employee\Entities\EmployeeVerification;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
-use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Applications\Company\Services\Employee\EmployeeVerificationService;
 
 class EmployeeServiceProvider extends ServiceProvider
 {

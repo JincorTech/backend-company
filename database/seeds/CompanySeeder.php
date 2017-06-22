@@ -10,9 +10,8 @@
 use Illuminate\Database\Seeder;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Dictionary\Entities\Country;
-use App\Domains\Employee\ValueObjects\EmployeeProfile;
-use App\Domains\Employee\Services\EmployeeVerificationService;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Applications\Company\Services\Employee\EmployeeVerificationService;
+use App\Applications\Company\Services\Employee\EmployeeService;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use GeoJson\Geometry\Point;
 use App\Domains\Company\Entities\Company;

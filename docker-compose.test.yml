@@ -9,7 +9,6 @@ services:
     ports:
       - 9000
     links:
-      - search
       - auth
       - mongo
       - redis

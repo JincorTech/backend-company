@@ -6,7 +6,7 @@
  * Time: 14:47
  */
 
-namespace App\Domains\Employee\Interfaces;
+namespace App\Applications\Company\Interfaces\Employee;
 
 use App\Domains\Employee\Entities\Employee;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
@@ -53,4 +53,7 @@ interface EmployeeServiceInterface
 
     public function makeAdmin(Employee $admin, string $id, bool $value);
 
+    public function addContact($email, $companyId);
+
+    public function deleteContact(string $id);
 }

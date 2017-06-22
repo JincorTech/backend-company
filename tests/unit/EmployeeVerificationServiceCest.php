@@ -1,7 +1,7 @@
 <?php
 
 use App\Core\Repositories\EmployeeVerificationRepository;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Exceptions\EmployeeNotFound;
 use App\Domains\Employee\Entities\EmployeeVerification;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -11,7 +11,7 @@ class EmployeeVerificationServiceCest
 {
 
     /**
-     * @var \App\Domains\Employee\Services\EmployeeVerificationService
+     * @var \App\Applications\Company\Services\Employee\EmployeeVerificationService
      */
     private $verificationService;
 

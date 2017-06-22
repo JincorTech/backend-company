@@ -7,7 +7,7 @@
  * Time: 6:39 PM
  */
 
-namespace App\Domains\Employee\Services;
+namespace App\Applications\Company\Services\Employee;
 
 use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
 use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
@@ -15,7 +15,7 @@ use App\Domains\Employee\EntityDecorators\RegistrationVerification;
 use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Events\VerificationEmailRequested;
 use App\Domains\Employee\Events\RestorePasswordRequested;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Company\Entities\Company;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Employee\Entities\Employee;
@@ -120,4 +120,5 @@ class EmployeeVerificationService implements EmployeeVerificationServiceInterfac
     {
         return $this->verificationRepository;
     }
+
 }

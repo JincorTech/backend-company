@@ -6,7 +6,7 @@
  * Time: 18:09
  */
 
-namespace App\Domains\Company\Interfaces;
+namespace App\Applications\Company\Interfaces\Company;
 use App\Domains\Company\Entities\Company;
 
 interface CompanyServiceInterface

@@ -7,7 +7,7 @@
  * Time: 11:34 PM
  */
 
-namespace App\Domains\Company\Services;
+namespace App\Applications\Company\Services\Company;
 
 use App\Core\Dictionary\Entities\Country;
 use App\Core\Services\INNInfo\DadataService;

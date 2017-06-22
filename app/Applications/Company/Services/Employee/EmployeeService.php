@@ -7,9 +7,9 @@
  * Time: 1:46 PM
  */
 
-namespace App\Domains\Employee\Services;
+namespace App\Applications\Company\Services\Employee;
 
-use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Exceptions\EmployeeVerificationException;
 use App\Domains\Employee\Exceptions\EmployeeAlreadyExists;
@@ -19,10 +19,11 @@ use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Domains\Employee\Entities\Employee;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Domains\Employee\Interfaces\EmployeeRepositoryInterface;
 use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\Collection;
@@ -34,6 +35,7 @@ use App\Domains\Employee\Exceptions\PermissionDenied;
 use App\Domains\Employee\Exceptions\InvitationLimitReached;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
 use App\Core\Services\ImageService;
+use App\Domains\Employee\Exceptions\EmployeeNotFound;
 use Validator;
 use App;
 use Mail;
@@ -59,7 +61,7 @@ class EmployeeService implements EmployeeServiceInterface
     private $verificationRepository;
 
     /**
-     * @var EmployeeVerificationService
+     * @var EmployeeVerificationServiceInterface
      */
     private $verificationService;
 
@@ -198,7 +200,10 @@ class EmployeeService implements EmployeeServiceInterface
     {
         /** @var Company $company */
         $company = $this->dm->getRepository(Company::class)->find($id);
-        if (!$company) throw new CompanyNotFound("Company " . $id . " not found");
+        if (!$company) {
+            throw new CompanyNotFound(trans('exceptions.company.not_found'));
+        }
+
         return $company->getEmployees()->filter(function (Employee $employee) use($email) {
             return $employee->getContacts()->getEmail() === $email;
         })->first();
@@ -460,6 +465,65 @@ class EmployeeService implements EmployeeServiceInterface
         return $employee;
     }
 
+    /**
+     * @param $email
+     * @param $companyId
+     * @throws EmployeeNotFound
+     */
+    public function addContact($email, $companyId)
+    {
+        $contact = $this->findByCompanyIdAndEmail($companyId, $email);
+        if (!$contact) {
+            throw new EmployeeNotFound(trans('exceptions.employee.not_found', [
+                'email' => $email,
+            ]));
+        }
+
+        /**
+         * @var $employee Employee
+         */
+        $employee = App::make('AppUser');
+        $employee->addContact($contact);
+        $this->dm->persist($employee);
+        $this->dm->flush();
+    }
+
+    /**
+     * @param string $id
+     * @throws EmployeeNotFound
+     */
+    public function deleteContact(string $id)
+    {
+        /**
+         * @var $contact Employee
+         */
+        $contact = $this->repository->find($id);
+        if (!$contact) {
+            throw new EmployeeNotFound(trans('exceptions.employee.not_found_id', [
+                'id' => $id,
+            ]));
+        }
+
+        /**
+         * @var $employee Employee
+         */
+        $employee = App::make('AppUser');
+        $employee->deleteContact($contact);
+        $this->dm->persist($employee);
+        $this->dm->flush();
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getContactList()
+    {
+        /**
+         * @var $employee Employee
+         */
+        $employee = App::make('AppUser');
+        return $employee->getContactList();
+    }
 
     /**
      * TODO: async it! i.e raise event

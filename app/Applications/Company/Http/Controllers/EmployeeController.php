@@ -24,8 +24,9 @@ use App\Applications\Company\Transformers\Employee\ColleagueList;
 use App\Applications\Company\Transformers\Employee\LoginResponse;
 use App\Applications\Company\Transformers\Employee\SelfProfile;
 use App\Applications\Company\Http\Requests\Employee\Colleagues;
-use App\Applications\Company\Transformers\EmployeeTransformer;
-use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Applications\Company\Transformers\Employee\ContactList;
+use App\Applications\Company\Transformers\Employee\EmployeeContactList;
+use App\Applications\Company\Services\Employee\EmployeeVerificationService;
 use App\Applications\Company\Transformers\Employee\Colleague;
 use App\Domains\Employee\Exceptions\PermissionDenied;
 use App\Applications\Company\Http\Requests\Employee\MakeAdmin;
@@ -33,18 +34,22 @@ use App\Applications\Company\Http\Requests\Employee\Register;
 use App\Applications\Company\Http\Requests\Employee\Delete;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Applications\Company\Services\Employee\EmployeeService;
 use App\Core\Interfaces\IdentityInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
 use App;
-
-use Illuminate\Http\Request;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use App\Applications\Company\Http\Requests\Employee\AddContact;
+use App\Applications\Company\Http\Requests\Employee\DeleteContact;
+use App\Applications\Company\Http\Requests\Employee\GetContactList;
+use App\Applications\Company\Http\Requests\Employee\SearchContacts;
+use App\Applications\Company\Http\Controllers\Traits\PaginatedResponse;
 
 class EmployeeController extends BaseController
 {
+    use PaginatedResponse;
 
     /**
      * @var IdentityInterface
@@ -298,4 +303,39 @@ class EmployeeController extends BaseController
         return new JsonResponse((new ColleagueList())->transform($response));
 //        return $this->response->item($response, ColleagueList::class);
     }
+
+    public function getContactList(GetContactList $request)
+    {
+        $contacts = $this->employeeService->getContactList();
+        return $this->paginatedResponse($request, $contacts, ContactList::class);
+    }
+
+    public function addContact(AddContact $request)
+    {
+        $this->employeeService->addContact(
+            $request->get('email'),
+            $request->get('companyId')
+        );
+
+        $contacts = $this->employeeService->getContactList();
+        return $this->paginatedResponse($request, $contacts, ContactList::class);
+    }
+
+    public function deleteContact(DeleteContact $request, string $id)
+    {
+        $this->employeeService->deleteContact($id);
+        $contacts = $this->employeeService->getContactList();
+        return $this->paginatedResponse($request, $contacts, ContactList::class);
+    }
+
+    public function searchContacts(SearchContacts $request)
+    {
+        $email = $request->get('email');
+        /**
+         * @var $foundEmployees ArrayCollection
+         */
+        $foundEmployees = $this->employeeService->findByEmail($email);
+        return $this->paginatedResponse($request, $foundEmployees, EmployeeContactList::class);
+    }
+
 }

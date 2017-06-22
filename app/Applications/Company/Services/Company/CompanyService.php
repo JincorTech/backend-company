@@ -7,11 +7,11 @@
  * Time: 8:36 PM
  */
 
-namespace App\Domains\Company\Services;
+namespace App\Applications\Company\Services\Company;
 
-use App\Domains\Company\Interfaces\CompanyServiceInterface;
+use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
 use Illuminate\Support\Collection;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Domains\Company\ValueObjects\CompanyExternalLink;
 use App\Domains\Company\Search\CompanyIndexContract;
@@ -51,7 +51,7 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
     private $eActivityRepository;
 
     /**
-     * @var App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface
+     * @var App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface
      */
     private $verificationService;
 

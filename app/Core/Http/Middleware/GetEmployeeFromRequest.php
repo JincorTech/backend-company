@@ -11,7 +11,7 @@ namespace App\Core\Http\Middleware;
 
 use Closure;
 use App;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Applications\Company\Services\Employee\EmployeeService;
 use App\Domains\Employee\Entities\Employee;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;

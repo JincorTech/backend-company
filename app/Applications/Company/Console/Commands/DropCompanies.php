@@ -8,7 +8,6 @@
 
 namespace App\Applications\Company\Console\Commands;
 
-use App\Domains\Company\Services\CompanyService;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Illuminate\Console\Command;
 use Artisan;

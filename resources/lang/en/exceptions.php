@@ -29,6 +29,7 @@ return [
     'employee' => [
         'already_exists' => 'Employee :email already exists in company :company',
         'not_found' => 'Employee :email not found',
+        'not_found_id' => 'Employee :id not found',
         'password_mismatch' => 'Login and password do not match',
         'access_denied' => 'You don\'t have permissions permissions to perform this action',
         'verification' => [

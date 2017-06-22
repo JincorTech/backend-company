@@ -6,7 +6,8 @@
  * Time: 17:09
  */
 
-namespace App\Domains\Employee\Interfaces;
+namespace App\Applications\Company\Interfaces\Employee;
+
 use App\Domains\Company\Entities\Company;
 
 interface EmployeeVerificationServiceInterface

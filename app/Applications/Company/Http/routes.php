@@ -78,7 +78,12 @@ $api->version('v1', function ($api) {
             $api->post('/register', ['as' => 'employee.register', 'uses' => $namespace.'EmployeeController@register']);
             $api->post('/login', ['as' => 'employee.login', 'uses' => $namespace.'EmployeeController@login']);
             $api->get('/companies', ['uses' => $namespace.'EmployeeController@matchingCompanies']);
+            $api->get('/contacts/search', ['as' => 'employee.contacts.search', 'uses' => $namespace.'EmployeeController@searchContacts']);
+            $api->get('/contacts', ['as' => 'employee.contacts.getList', 'uses' => $namespace.'EmployeeController@getContactList']);
+            $api->post('/contacts', ['as' => 'employee.contacts.add', 'uses' => $namespace.'EmployeeController@addContact']);
+            $api->delete('/contacts/{id}', ['as' => 'employee.contacts.delete', 'uses' => $namespace.'EmployeeController@deleteContact']);
             $api->get('/{employeeId}', ['as' => 'employee.info', 'uses' => $namespace.'EmployeeController@info']);
+
         });
     });
 });

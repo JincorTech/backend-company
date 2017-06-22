@@ -22,7 +22,7 @@ use Ramsey\Uuid\Uuid;
  *     collection="companies"
  * )
  */
-class   Company
+class Company
 {
     /**
      * @var string

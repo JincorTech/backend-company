@@ -10,13 +10,10 @@
 namespace App\Core\Services;
 
 use App\Core\Interfaces\IdentityInterface;
-use App\Domains\Employee\Exceptions\CompanyNotFound;
 use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
 use App\Domains\Employee\Exceptions\PasswordMismatchException;
-use App\Domains\Company\Services\CompanyService;
-use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
-use App\Domains\Company\Interfaces\CompanyServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
+use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
 use Illuminate\Support\Collection;
 use App;
