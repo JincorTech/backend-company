@@ -8,7 +8,7 @@ pipeline {
     }
     stage('Test API') {
       steps {
-        sh 'docker-compose run --rm workspace ./test.api.sh'
+        sh 'docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept run api'
       }
     }
     stage('Deploy') {
