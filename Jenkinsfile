@@ -6,9 +6,8 @@ pipeline {
         sh 'docker-compose -f docker-compose.test.yml build'
       }
     }
-    stage('Test') {
+    stage('Test API') {
       steps {
-        sh 'docker-compose -f docker-compose.test.yml run --rm workspace /var/www/companies/test.unit.sh'
         sh 'docker-compose -f docker-compose.test.yml run --rm workspace /var/www/companies/test.api.sh'
       }
     }
