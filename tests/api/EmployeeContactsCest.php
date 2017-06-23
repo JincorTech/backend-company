@@ -48,6 +48,45 @@ class EmployeeContactsCest
         ]);
     }
 
+    public function getContactsPerPage0(ApiTester $I)
+    {
+        $I->amAuthorizedAsJincorAdmin('123');
+        $I->wantTo('Get my contact list with perPage = 0 and get all available contacts');
+        $I->sendGET('employee/contacts', [
+            'perPage' => 0,
+        ]);
+
+        $I->canSeeResponseCodeIs(200);
+        $I->canSeeResponseContainsJson([
+            'data' => [
+                [
+                    'id' => '9617881b-3ae9-4a7f-82b9-e2f46568f0ca',
+                    'email' => 'employee@company2.com',
+                    'name' => 'Employee Company 2',
+                    'firstName' => 'Employee',
+                    'lastName' => 'Company 2',
+                    'avatar' => null,
+                    'position' => 'Employee',
+                    'companyId' => '8d80a3e9-515d-4974-927d-4b097d1eb9fe',
+                    'companyName' => 'Jincor',
+                    'companyLogo' => null,
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total' => 1,
+                    'perPage' => 1,
+                    'currentPage' => 1,
+                    'lastPage' => 1,
+                    'nextPageUrl' => null,
+                    'prevPageUrl' => null,
+                    'from' => 1,
+                    'to' => 1,
+                ],
+            ],
+        ]);
+    }
+
     public function addContactSuccess(ApiTester $I)
     {
         $I->amAuthorizedAsJincorAdmin('123');
@@ -211,10 +250,10 @@ class EmployeeContactsCest
         ]);
     }
 
-    public function searchEmployee(ApiTester $I)
+    public function searchNotAddedEmployee(ApiTester $I)
     {
         $I->amAuthorizedAsJincorAdmin('123');
-        $I->wantTo('Search for new contacts by email and find existing employee');
+        $I->wantTo('Search for new contacts by email and find existing employee which is not added to my contact list');
         $I->sendGET('employee/contacts/search', [
             'email' => 'test2@test.com',
         ]);
@@ -233,6 +272,47 @@ class EmployeeContactsCest
                     'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
                     'companyName' => 'Test Company',
                     'companyLogo' => null,
+                    'added' => false,
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total' => 1,
+                    'perPage' => 10,
+                    'currentPage' => 1,
+                    'lastPage' => 1,
+                    'nextPageUrl' => null,
+                    'prevPageUrl' => null,
+                    'from' => 1,
+                    'to' => 1,
+                ],
+            ],
+        ]);
+    }
+
+    public function searchAddedEmployee(ApiTester $I)
+    {
+        $I->amAuthorizedAsJincorAdmin('123');
+        $I->wantTo('Search for new contacts by email and find existing employee which is added to my contact list');
+        $I->sendGET('employee/contacts/search', [
+            'email' => 'employee@company2.com',
+        ]);
+
+        $I->canSeeResponseCodeIs(200);
+        $I->canSeeResponseContainsJson([
+            'data' => [
+                [
+                    'id' => '9617881b-3ae9-4a7f-82b9-e2f46568f0ca',
+                    'email' => 'employee@company2.com',
+                    'name' => 'Employee Company 2',
+                    'firstName' => 'Employee',
+                    'lastName' => 'Company 2',
+                    'avatar' => null,
+                    'position' => 'Employee',
+                    'companyId' => '8d80a3e9-515d-4974-927d-4b097d1eb9fe',
+                    'companyName' => 'Jincor',
+                    'companyLogo' => null,
+                    'added' => true,
                 ],
             ],
             'meta' => [

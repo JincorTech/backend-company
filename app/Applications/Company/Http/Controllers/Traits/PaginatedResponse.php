@@ -24,6 +24,11 @@ trait PaginatedResponse
     protected function paginatedResponse($request, $collection, $transformer)
     {
         $perPage = $request->getPerPage();
+
+        if ($perPage === 0) {
+            $perPage = $collection->count();
+        }
+
         $paginator = new Paginator($collection, count($collection), $perPage);
         return $this->response->collection(
                                     $paginator->getCollection()->forPage(

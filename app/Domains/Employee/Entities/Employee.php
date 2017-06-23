@@ -344,4 +344,9 @@ class Employee implements MetaEmployeeInterface
 
         return $this->contactList;
     }
+
+    public function isAddedToContactList(Employee $contact)
+    {
+        return $this->searchContactInList($contact) !== false;
+    }
 }
