@@ -44,29 +44,37 @@ class EmployeeColleaguesCest
                 'active' => [
                     [
                         'id' => '9617881b-3ae9-4a7f-82b9-e2f46568f0ca',
-                        'profile' =>
-                            [
-                                'name' => 'Employee Company 2',
-                                'firstName' => 'Employee',
-                                'lastName' => 'Company 2',
-                                'position' => 'Employee',
-                                'role' => 'employee',
-                                'avatar' => null,
-                            ],
-                        'contacts' =>
-                            [
-                                'email' => 'employee@company2.com',
-                                'phone' => null,
-                            ],
-                        'meta' =>
-                            [
-                                'status' => 'active',
-                                'registeredAt' => '2017-06-13T06:02:36+0000',
-                            ],
+                        'profile' => [
+                            'name' => 'Employee Company 2',
+                            'firstName' => 'Employee',
+                            'lastName' => 'Company 2',
+                            'position' => 'Employee',
+                            'role' => 'employee',
+                            'avatar' => null,
+                        ],
+                        'contacts' => [
+                            'email' => 'employee@company2.com',
+                            'phone' => null,
+                        ],
+                        'meta' => [
+                            'status' => 'active',
+                            'registeredAt' => '2017-06-13T06:02:36+0000',
+                        ],
                     ],
                 ],
                 'deleted' => [],
-                'invited' => [],
+                'invited' => [
+                    [
+                        'id' => '7bc366f8-f405-4d23-9c9c-7fff4c68e18:',
+                        'contacts' => [
+                            'email' => 'invited@company2.com',
+                        ],
+                        'meta' => [
+                            'status' => 'invited',
+                            'invitedAt' => '2017-06-13T05:58:12+0000',
+                        ],
+                    ],
+                ],
             ],
         ]);
     }

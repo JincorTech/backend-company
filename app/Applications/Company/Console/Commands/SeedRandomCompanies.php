@@ -9,7 +9,7 @@
 namespace App\Applications\Company\Console\Commands;
 
 use App\Domains\Company\Entities\EconomicalActivityType;
-use App\Domains\Company\Services\CompanyService;
+use App\Applications\Company\Services\Company\CompanyService;
 use App\Domains\Company\Entities\CompanyType;
 use App\Core\Dictionary\Entities\Country;
 use Doctrine\ODM\MongoDB\DocumentManager;

@@ -12,6 +12,8 @@ namespace App\Domains\Employee\Entities;
 use App\Domains\Employee\Events\EmployeeDeactivated;
 use App\Domains\Employee\Events\EmployeeRegistered;
 use App\Domains\Employee\Events\ScopeChanged;
+use App\Domains\Employee\Exceptions\ContactAlreadyAdded;
+use App\Domains\Employee\Exceptions\ContactNotFound;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Company\Entities\Department;
@@ -22,6 +24,9 @@ use App\Domains\Employee\Exceptions\EmployeeVerificationException;
 use App\Domains\Employee\ValueObjects\EmployeeContact;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Core\Repositories\EmployeeRepository;
+use Doctrine\ODM\MongoDB\PersistentCollection;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Domains\Employee\ValueObjects\EmployeeContactListItem;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Ramsey\Uuid\Uuid;
 use Hash;
@@ -41,6 +46,12 @@ class Employee implements MetaEmployeeInterface
      * @ODM\Id(strategy="NONE", type="bin_uuid")
      */
     protected $id;
+
+    /**
+     * @var string
+     * @ODM\Field(type="string")
+     */
+    protected $matrixId;
 
     /**
      * @var Department
@@ -68,15 +79,21 @@ class Employee implements MetaEmployeeInterface
     protected $contacts;
 
     /**
+     * @var ArrayCollection | PersistentCollection
+     * @ODM\EmbedMany(targetDocument="App\Domains\Employee\ValueObjects\EmployeeContactListItem")
+     */
+    protected $contactList;
+
+    /**
      * @var bool
      * @ODM\Field(type="bool")
      */
     protected $isActive;
 
     /**
- * @var \DateTime
- * @ODM\Field(type="date")
- */
+     * @var \DateTime
+     * @ODM\Field(type="date")
+     */
     protected $registeredAt;
 
     /**
@@ -88,6 +105,7 @@ class Employee implements MetaEmployeeInterface
     public function __construct()
     {
         $this->id = Uuid::uuid4()->toString();
+        $this->contactList = new ArrayCollection();
     }
 
     public static function register(EmployeeVerification $verification, EmployeeProfile $profile, string $password)
@@ -110,6 +128,7 @@ class Employee implements MetaEmployeeInterface
         $employee->department = $verification->getCompany()->getRootDepartment();
         $employee->department->addEmployee($employee);
         $employee->registeredAt = new \DateTime();
+        $employee->matrixId = $employee->getMatrixId();
 
         event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
 
@@ -148,7 +167,7 @@ class Employee implements MetaEmployeeInterface
         return $this->getCompany()->getId() . ':' . $this->getContacts()->getEmail();
     }
 
-    public function getSubject() : string
+    public function getMatrixId() : string
     {
         return
             '@' . $this->getCompany()->getId() . //company
@@ -264,5 +283,65 @@ class Employee implements MetaEmployeeInterface
         if ($oldValue !== null) {
             event(new ScopeChanged($this, $oldValue));
         }
+    }
+
+    /**
+     * @param Employee $contact
+     * @throws ContactAlreadyAdded
+     */
+    public function addContact(Employee $contact)
+    {
+        $key = $this->searchContactInList($contact);
+        if ($key !== false) {
+            throw new ContactAlreadyAdded();
+        }
+
+        $contactListItem = new EmployeeContactListItem($contact);
+        $this->contactList->add($contactListItem);
+    }
+
+    /**
+     * @param Employee $contact
+     * @throws ContactNotFound
+     */
+    public function deleteContact(Employee $contact)
+    {
+        $key = $this->searchContactInList($contact);
+        if ($key === false) {
+            throw new ContactNotFound();
+        }
+
+        $this->contactList->remove($key);
+    }
+
+    /**
+     * @param Employee $contact
+     * @return bool|int|mixed|string
+     */
+    protected function searchContactInList(Employee $contact)
+    {
+        foreach ($this->contactList as $key => $value) {
+            /**
+             * @var $value EmployeeContactListItem
+             */
+            if ($value->getEmployee()->getId() === $contact->getId()) {
+                return $key;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getContactList() : ArrayCollection
+    {
+        if ($this->contactList instanceof PersistentCollection) {
+            $this->contactList->initialize();
+            return $this->contactList->unwrap();
+        }
+
+        return $this->contactList;
     }
 }

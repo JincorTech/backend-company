@@ -54,7 +54,7 @@ class EmployeeRegistered
         $this->name = $employee->getProfile()->getName();
         $this->position = $employee->getProfile()->getPosition();
         $this->employeeId = $employee->getId();
-        $this->sub = $employee->getSubject();
+        $this->sub = $employee->getMatrixId();
     }
 
     /**

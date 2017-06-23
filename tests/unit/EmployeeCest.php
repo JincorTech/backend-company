@@ -6,6 +6,8 @@ use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
 use App\Core\Interfaces\MessengerServiceInterface;
 use App\Core\Interfaces\IdentityInterface;
+use App\Domains\Employee\Exceptions\ContactNotFound;
+use App\Domains\Employee\Exceptions\ContactAlreadyAdded;
 
 class EmployeeCest
 {
@@ -91,6 +93,42 @@ class EmployeeCest
         $verification = RestorePasswordVerification::make('test@test.com');
         $I->expectException(EmployeeVerificationException::class, function() use ($profile, $password, $verification) {
             Employee::register($verification->getVerification(), $profile, $password);
+        });
+    }
+
+    public function canAddContact(UnitTester $I)
+    {
+        $employee = EmployeeFactory::make();
+        $contact = EmployeeFactory::make();
+        $employee->addContact($contact);
+
+        $I->assertEquals(1, $employee->getContactList()->count());
+
+        $expected = $contact;
+        $actual = $employee->getContactList()->first()->getEmployee();
+        $I->assertEquals($expected, $actual);
+
+        $I->expectException(ContactAlreadyAdded::class, function () use ($employee, $contact) {
+            $employee->addContact($contact);
+        });
+    }
+
+    public function canDeleteContact(UnitTester $I)
+    {
+        $employee = EmployeeFactory::make();
+        $contact1 = EmployeeFactory::make();
+        $contact2 = EmployeeFactory::make();
+        $employee->addContact($contact1);
+        $employee->addContact($contact2);
+
+        $deletedContactItem = $employee->getContactList()->last();
+
+        $employee->deleteContact($contact2);
+        $I->assertEquals(1, $employee->getContactList()->count());
+        $I->assertFalse($employee->getContactList()->indexOf($deletedContactItem));
+
+        $I->expectException(ContactNotFound::class, function () use ($employee, $contact2) {
+            $employee->deleteContact($contact2);
         });
     }
 

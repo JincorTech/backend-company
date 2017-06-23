@@ -2,17 +2,21 @@ version: '2'
 services:
 
   companies:
-    image: registry.jincor.com/backend/companies:latest
+    image: registry.jincor.com/backend/companies
     build:
       context: ./
       dockerfile: companies.docker
     ports:
       - 9000
+    links:
+      - auth
+      - mongo
+      - redis
     environment:
       # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
       - PHP_IDE_CONFIG="serverName=companies"
-    volumes_from:
-      - src
+    volumes:
+      - ./:/var/www/companies
 
   workspace:
     image: registry.jincor.com/backend/companies-workspace:latest-test
@@ -27,8 +31,8 @@ services:
       - mongo
       - redis
       - auth
-    volumes_from:
-      - src
+    volumes:
+      - "${COMPANIEC}:/var/www/companies"
 
 # The only one reason why auth is here is an API tests in EmployeeChangePasswordCest
 # Some cases are trying to interact with real auth server.
@@ -53,8 +57,3 @@ services:
     image: registry.jincor.com/backend/mongodb:latest
     volumes:
           - ./storage/mongodb:/data/db
-
-  src:
-    image: tianon/true
-    volumes:
-      - ./:/var/www/companies

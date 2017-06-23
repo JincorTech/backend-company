@@ -1,8 +1,8 @@
 <?php
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use App\Domains\Company\Services\CompanyService;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Services\Company\CompanyService;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 
 class CompanyServiceCest
 {

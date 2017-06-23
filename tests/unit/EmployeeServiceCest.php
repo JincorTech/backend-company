@@ -4,10 +4,10 @@ use App\Domains\Employee\EntityDecorators\RegistrationVerification;
 use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
 use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Exceptions\PasswordMismatchException;
-use App\Domains\Employee\Services\EmployeeVerificationService;
+use App\Applications\Company\Services\Employee\EmployeeVerificationService;
 use App\Domains\Employee\Exceptions\CompanyNotFound;
-use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Entities\Employee;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Interfaces\MessengerServiceInterface;
@@ -32,7 +32,7 @@ class EmployeeServiceCest
 
 
     /**
-     * @var \App\Domains\Employee\Services\EmployeeService
+     * @var App\Applications\Company\Services\Employee\EmployeeService
      */
     private $employeeService;
 

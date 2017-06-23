@@ -8,8 +8,8 @@
 
 namespace App\Core\Providers;
 use Illuminate\Support\ServiceProvider;
-use App\Domains\Company\Interfaces\CompanyServiceInterface;
-use App\Domains\Company\Services\CompanyService;
+use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
+use App\Applications\Company\Services\Company\CompanyService;
 
 class CompanyServiceProvider extends ServiceProvider
 {

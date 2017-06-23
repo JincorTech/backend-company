@@ -1,12 +1,11 @@
 <?php
 
 
-use App\Domains\Employee\Services\EmployeeVerificationService;
-use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
-use App\Domains\Employee\Interfaces\EmployeeVerificationServiceInterface;
-use App\Domains\Employee\Interfaces\EmployeeServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Company\Entities\Company;
+
 
 /**
  * Created by PhpStorm.
@@ -60,7 +59,5 @@ class EmployeeSeeder extends DatabaseSeeder
     {
         return $this->container->make(EmployeeServiceInterface::class);
     }
-
-
 
 }

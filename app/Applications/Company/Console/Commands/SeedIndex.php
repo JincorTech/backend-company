@@ -12,7 +12,7 @@ use App\Domains\Company\Repositories\EconomicalActivityRepository;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Core\Dictionary\Repositories\CountryRepository;
 use App\Domains\Company\Search\CompanyIndexContract;
-use App\Domains\Company\Services\CompanyService;
+use App\Applications\Company\Services\Company\CompanyService;
 use App\Domains\Company\Entities\CompanyType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\DocumentRepository;
