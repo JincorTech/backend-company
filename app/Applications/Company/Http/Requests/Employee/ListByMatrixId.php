@@ -19,12 +19,14 @@ class ListByMatrixId extends BaseAPIRequest
 
     /**
      * @return array
-     * TODO: validate matrix IDS
      */
     public function rules() : array
     {
         return [
-            'matrixIds' => 'array',
+            'matrixIds' => 'required|array',
+            //validate that id starts with @, then contains 36 chars ID and then it has email with @ replaced to _
+            //email validation regex is too complicated so I suppose it's enough to leave it like this.
+            'matrixIds.*' => 'string|regex:/^@[a-z\d\-]{36}_.+_.+$/',
         ];
     }
 

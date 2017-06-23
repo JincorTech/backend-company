@@ -123,6 +123,7 @@ return [
         'profile.description' => 'description',
         'profile.links.*.value' => 'url',
         'profile.companyType' => 'company type',
+        'matrixIds.*' => 'matrix ID',
     ],
 
 ];

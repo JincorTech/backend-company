@@ -1,0 +1,507 @@
+{
+  "_id": {
+    "$binary": "NGQ2NjhmZTAtODVkMy00OWQ3LTkyNzctOTQ5OWM1YTMwMjRi",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "437861"
+  },
+  "phonePin": {
+    "code": "919504"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "OWZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzYy",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T06:59:34.000Z"
+  },
+  "email": "test2@test.com",
+  "emailVerifiedAt": {
+    "$date": "2017-06-07T06:59:34.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "MjczYjRhYTQtNzcwNi00NWU0LWIxM2YtNTVlYmI0M2YxODc2",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "613315"
+  },
+  "phonePin": {
+    "code": "433141"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "MDZjNTJlM2MtOTM2Ni00YjlkLTlkYTItMjY1NjEzYWRiNzJl",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T06:59:35.000Z"
+  },
+  "email": "test@test.com",
+  "emailVerifiedAt": {
+    "$date": "2017-06-07T06:59:35.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "YTQ3M2QxNzMtNzM5MS00YzZjLWE1NDMtMzEwNGRjMDA3NmRk",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "384015"
+  },
+  "phonePin": {
+    "code": "229326"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "ZGQ0NmQxNTMtMDUzMS00MmZhLThjNGEtYWNkM2E1NGFmMzlh",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:10:11.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "YjhhMGUzOTMtZDAyYi00MWI0LWExZDgtZmNiOGJhNzQxODcy",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "300256"
+  },
+  "phonePin": {
+    "code": "526640"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "OWM4NDhlMTYtZDQ5Zi00ODBlLWFjNGItZWVmMDM1ODVjMzAz",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:10:47.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "ZDIwZTI1M2MtZjRmMi00NTY1LWE0YTctZjExNWE1ZjRhNTNm",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "924360"
+  },
+  "phonePin": {
+    "code": "627944"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "NmFhYjEyMmYtYTQ1Yy00ODA4LTlmMjgtNDBkMjM0YzY2Zjc5",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:11:44.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "ZDhmYmYyYzEtMTIwYy00Y2Q5LWE2ZWMtYWU0NjljNmY2ZTM0",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "539979"
+  },
+  "phonePin": {
+    "code": "878930"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "MDM2ZWY4MGItOTM5NC00OGQwLTljNmItYzBlZWEzMzY0NmVj",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:11:51.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "MWZmZGYyNTEtZWE4Yy00MDI1LWFjYzEtOWFkMjhiOTIwYTgw",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "746233"
+  },
+  "phonePin": {
+    "code": "110165"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "ZWIyZDExNGQtZWU1MS00MDJlLTg2ZWMtNmNhMWE4OGRhNGU3",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:44:00.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "NmUwYWFlOGYtOWMwMi00Yzk1LTgxZGUtOGM0MmE5N2FkOWEx",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "499999"
+  },
+  "phonePin": {
+    "code": "758532"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "NzUzMDZiZmEtZmVlOS00MGQzLTk3ODEtMDQwZGViNGY3MTA3",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:51:06.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "NmI5MGZhMGMtNzkxMi00NTJjLWJkZGYtZTJjNzE4NDQwMjUx",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "318379"
+  },
+  "phonePin": {
+    "code": "213711"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "Mjg2Mjg5N2ItM2U4OC00MjMwLWE5YjctNTcwOTE3NzA0ZjU2",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:51:21.000Z"
+  },
+  "email": "notverified@tester.com"
+}
+{
+  "_id": {
+    "$binary": "NDcyNmZhMjctMTRkYy00OWJjLThiYjktMzJmNTE2ZmM3OWFk",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "524011"
+  },
+  "phonePin": {
+    "code": "928965"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "NTUyNjI1N2ItNDgzMC00ODc1LWJiZWItMmYwNGQzNWI4OTli",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:51:49.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "ZjlkZGRkNGQtODhlMi00N2Q2LTg0MDktYjk3MmM4ZDAwN2Rh",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "446880"
+  },
+  "phonePin": {
+    "code": "971255"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "NjllYTM3ZGItN2ZiZS00OWIxLThlYTQtYTZkNmExNTNmZTA5",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-07T08:52:26.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "MmE1Zjg3YjgtMjczYS00N2Y4LWFmMjAtNzg2ZmZjZTcxZWRj",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "783387"
+  },
+  "phonePin": {
+    "code": "509734"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "ZGQ5ZWE2YTUtMjBlNS00MjY3LWJlMGYtNDc2ZDJjN2M2ZjI2",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-08T07:55:26.000Z"
+  },
+  "email": "ortgma@gmail.com",
+  "emailVerifiedAt": {
+    "$date": "2017-06-08T07:56:49.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "YjI1YzRjZTUtOGRhMS00YmFkLWJkZDgtZjBjYTNiMjQ0YWIz",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "668845"
+  },
+  "phonePin": {
+    "code": "135028"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "NTlhNDIzY2YtNDNkZS00MTc3LWIzMDktNGQ4MzRiMDc1N2Zl",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-08T13:07:36.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "NWU4YzE5ZTgtMjc0Mi00ZmM3LTkzMmEtZDJhNWIwNjA4Y2Ez",
+    "$type": "03"
+  },
+  "email": "test@test.com",
+  "emailPin": {
+    "code": "797554"
+  },
+  "phonePin": {
+    "code": "660313"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "restore",
+  "createdAt": {
+    "$date": "2017-06-09T12:38:16.000Z"
+  },
+  "emailVerifiedAt": {
+    "$date": "2017-06-09T12:39:17.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "ZWQ0ZDA3YjktMGEzOC00MGJmLThiZWEtOWFmNzdkMWEyOGI4",
+    "$type": "03"
+  },
+  "email": "test@test.com",
+  "emailPin": {
+    "code": "955693"
+  },
+  "phonePin": {
+    "code": "227964"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "restore",
+  "createdAt": {
+    "$date": "2017-06-09T12:45:21.000Z"
+  },
+  "emailVerifiedAt": {
+    "$date": "2017-06-09T12:46:23.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "M2U0OTdkZDMtNGQyZi00ZWVlLTg0Y2UtMDI1MTY5ODJiMWZm",
+    "$type": "03"
+  },
+  "email": "test2@test.com",
+  "emailPin": {
+    "code": "647636"
+  },
+  "phonePin": {
+    "code": "222765"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "restore",
+  "createdAt": {
+    "$date": "2017-06-09T13:04:54.000Z"
+  },
+  "emailVerifiedAt": {
+    "$date": "2017-06-09T13:05:26.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "ODM2ZDMwN2EtODQ5MC00NWY1LWJiNGYtYTFjM2VlY2FhMTc3",
+    "$type": "03"
+  },
+  "emailPin": {
+    "code": "766734"
+  },
+  "phonePin": {
+    "code": "102544"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "OGQ4MGEzZTktNTE1ZC00OTc0LTkyN2QtNGIwOTdkMWViOWZl",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "register",
+  "createdAt": {
+    "$date": "2017-06-13T05:56:27.000Z"
+  },
+  "email": "admin@company2.com",
+  "emailVerifiedAt": {
+    "$date": "2017-06-13T05:57:21.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "N2JjMzY2ZjgtZjQwNS00ZDIzLTljOWMtN2ZmZjRjNjhlMTg5",
+    "$type": "03"
+  },
+  "email": "employee@company2.com",
+  "emailPin": {
+    "code": "777407"
+  },
+  "phonePin": {
+    "code": "759235"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "OGQ4MGEzZTktNTE1ZC00OTc0LTkyN2QtNGIwOTdkMWViOWZl",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": true,
+  "reason": "invited-by-employee",
+  "createdAt": {
+    "$date": "2017-06-13T05:58:12.000Z"
+  },
+  "emailVerifiedAt": {
+    "$date": "2017-06-13T06:02:36.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "N2JjMzY2ZjgtZjQwNS00ZDIzLTljOWMtN2ZmZjRjNjhlMTg6",
+    "$type": "03"
+  },
+  "email": "invited@company2.com",
+  "emailPin": {
+    "code": "777407"
+  },
+  "phonePin": {
+    "code": "759235"
+  },
+  "company": {
+    "$ref": "companies",
+    "$id": {
+      "$binary": "OGQ4MGEzZTktNTE1ZC00OTc0LTkyN2QtNGIwOTdkMWViOWZl",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "phoneVerified": false,
+  "emailVerified": false,
+  "reason": "invited-by-employee",
+  "createdAt": {
+    "$date": "2017-06-13T05:58:12.000Z"
+  },
+  "emailVerifiedAt": {
+    "$date": "2017-06-13T06:02:36.000Z"
+  }
+}

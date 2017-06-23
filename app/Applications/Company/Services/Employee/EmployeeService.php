@@ -170,7 +170,13 @@ class EmployeeService implements EmployeeServiceInterface
      */
     public function findByMatrixIds(array $ids) : Collection
     {
-        return Collection::make($this->repository->findAllByMatrixIds($ids)->toArray());
+        $employees = $this->repository->findAllByMatrixIds($ids);
+        $collection = [];
+        foreach ($employees as $employee) {
+            $collection[] = $employee;
+        }
+
+        return Collection::make($collection);
     }
 
     /**

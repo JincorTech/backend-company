@@ -33,7 +33,7 @@ class EmployeeRepository extends DocumentRepository implements EmployeeRepositor
     {
         return $this->createQueryBuilder()
             ->field('matrixId')
-            ->all($matrixIds)
+            ->in($matrixIds)
             ->getQuery()->execute();
     }
 }
