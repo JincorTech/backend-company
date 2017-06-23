@@ -1,0 +1,420 @@
+{
+  "_id": {
+    "$binary": "OWZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzYy",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Test Company",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "Москва, ул. Алая, д. 15, оф. 89, 602030",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "MDZjNTJlM2MtOTM2Ni00YjlkLTlkYTItMjY1NjEzYWRiNzJl",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Jincor Limited",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "Москва, ул. Алая, д. 15, оф. 89, 602030",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "ZGQ0NmQxNTMtMDUzMS00MmZhLThjNGEtYWNkM2E1NGFmMzlh",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "OWM4NDhlMTYtZDQ5Zi00ODBlLWFjNGItZWVmMDM1ODVjMzAz",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "NmFhYjEyMmYtYTQ1Yy00ODA4LTlmMjgtNDBkMjM0YzY2Zjc5",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "MDM2ZWY4MGItOTM5NC00OGQwLTljNmItYzBlZWEzMzY0NmVj",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "ZWIyZDExNGQtZWU1MS00MDJlLTg2ZWMtNmNhMWE4OGRhNGU3",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "NzUzMDZiZmEtZmVlOS00MGQzLTk3ODEtMDQwZGViNGY3MTA3",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "Mjg2Mjg5N2ItM2U4OC00MjMwLWE5YjctNTcwOTE3NzA0ZjU2",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "NTUyNjI1N2ItNDgzMC00ODc1LWJiZWItMmYwNGQzNWI4OTli",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "NjllYTM3ZGItN2ZiZS00OWIxLThlYTQtYTZkNmExNTNmZTA5",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "ZGQ5ZWE2YTUtMjBlNS00MjY3LWJlMGYtNDc2ZDJjN2M2ZjI2",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Jincor",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "NTlhNDIzY2YtNDNkZS00MTc3LWIzMDktNGQ4MzRiMDc1N2Zl",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Рога и Копыта",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "OGQ4MGEzZTktNTE1ZC00OTc0LTkyN2QtNGIwOTdkMWViOWZl",
+    "$type": "03"
+  },
+  "profile": {
+    "legalName": "Jincor",
+    "companyType": {
+      "$ref": "companyTypes",
+      "$id": {
+        "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "economicalActivities": [],
+    "links": [],
+    "address": {
+      "formattedAddress": "",
+      "country": {
+        "$ref": "countries",
+        "$id": {
+          "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  }
+}
