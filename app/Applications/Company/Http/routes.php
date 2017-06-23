@@ -81,9 +81,9 @@ $api->version('v1', function ($api) {
             $api->get('/contacts/search', ['as' => 'employee.contacts.search', 'uses' => $namespace.'EmployeeController@searchContacts']);
             $api->get('/contacts', ['as' => 'employee.contacts.getList', 'uses' => $namespace.'EmployeeController@getContactList']);
             $api->post('/contacts', ['as' => 'employee.contacts.add', 'uses' => $namespace.'EmployeeController@addContact']);
+            $api->post('/matrix', ['as' => 'employee.matrix', 'uses' => $namespace.'EmployeeController@matrix']); //use POST because of GET query length limitations
             $api->delete('/contacts/{id}', ['as' => 'employee.contacts.delete', 'uses' => $namespace.'EmployeeController@deleteContact']);
             $api->get('/{employeeId}', ['as' => 'employee.info', 'uses' => $namespace.'EmployeeController@info']);
-
         });
     });
 });

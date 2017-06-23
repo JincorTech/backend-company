@@ -48,6 +48,12 @@ class Employee implements MetaEmployeeInterface
     protected $id;
 
     /**
+     * @var string
+     * @ODM\Field(type="string")
+     */
+    protected $matrixId;
+
+    /**
      * @var Department
      *
      * @ODM\ReferenceOne(targetDocument="App\Domains\Company\Entities\Department", inversedBy="employees", cascade={"persist"})
@@ -122,6 +128,7 @@ class Employee implements MetaEmployeeInterface
         $employee->department = $verification->getCompany()->getRootDepartment();
         $employee->department->addEmployee($employee);
         $employee->registeredAt = new \DateTime();
+        $employee->matrixId = $employee->getMatrixId();
 
         event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
 
@@ -160,7 +167,7 @@ class Employee implements MetaEmployeeInterface
         return $this->getCompany()->getId() . ':' . $this->getContacts()->getEmail();
     }
 
-    public function getSubject() : string
+    public function getMatrixId() : string
     {
         return
             '@' . $this->getCompany()->getId() . //company
