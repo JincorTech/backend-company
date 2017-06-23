@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: http://company/api/v1/
+HOST: http://jincor.com:8080/api/v1/
 
 # JinCorCompany
 
@@ -1576,13 +1576,13 @@ Note that there are two ways of user authentication in this method.
                 "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
                 "oldPassword": "czmkimczm",
                 "password": "J74dfhdXXX"
-            }
-
-
+            }        
+        
+        
 + Response 200 (application/json)
 
     + Body
-
+    
             {
                 "data": {
                   "id": "aa51cb8e-1b3d-4569-a95a-00e5cfe1a6b8",
@@ -1643,6 +1643,41 @@ Note that there are two ways of user authentication in this method.
                     "employeesCount": 6
                   }
                 }
+            }
+
+
+## Employee profiles [/employee/matrix]
+
+### By MatrixID [POST]
+
++ Request (application/json)
+
+            {
+              "matrixIds": [
+                "@aaf9d7d6-30c1-4e90-b376-93ceb989fb26_test_test.com",
+                "@aaf9d7d6-30c1-4e90-b376-93ceb989fb26_test2_test.com"
+               ]
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "data": [
+                    {
+                                  "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                                  "email": "lauren@mayberry.com",
+                                  "name": "Lauren Mayberry",
+                                  "firstName": "Lauren",
+                                  "lastName": "Mayberry",
+                                  "avatar": "http://i.imgur.com/QKHJ3Zs.png",
+                                  "position": "Singer",
+                                  "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
+                                  "companyName": "Netflix",
+                                  "companyLogo": "https://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2016/06/Netflix-Old-Logo.png"
+                                }
+                ]
             }
 
 # Group Contacts
