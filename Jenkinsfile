@@ -3,13 +3,13 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker-compose -f docker-compose.test.yml -p companies up --build -d'
+        sh 'docker-compose -f docker-compose.test.yml build'
       }
     }
     stage('Test') {
       steps {
-        sh 'docker exec companies_workspace_1 ls -la'
-        sh 'docker-compose -f docker-compose.test.yml down'
+        sh 'docker-compose -f docker-compose.test.yml run -v /root/jenkins-ci/blueocean_home/workspace/"${PWD##*/}":/var/www/companies --rm workspace ./test.unit.sh'
+        sh 'docker-compose -f docker    -compose.test.yml run -v /root/jenkins-ci/blueocean_home/workspace/"${PWD##*/}":/var/www/companies --rm workspace ./test.api.sh'
       }
     }
     stage('Deploy') {

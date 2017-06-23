@@ -32,7 +32,7 @@ services:
       - redis
       - auth
     volumes:
-      - ./:/var/www/companies
+      - "${COMPANIEC}:/var/www/companies"
 
 # The only one reason why auth is here is an API tests in EmployeeChangePasswordCest
 # Some cases are trying to interact with real auth server.
