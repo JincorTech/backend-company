@@ -300,7 +300,6 @@ class EmployeeController extends BaseController
     public function colleagues(Colleagues $request)
     {
         $response = Collection::make($this->employeeService->getColleagues($request->getUser()));
-        $this->response->error("Error", 500);
         return new JsonResponse((new ColleagueList())->transform($response));
 //        return $this->response->item($response, ColleagueList::class);
     }
