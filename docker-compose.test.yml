@@ -31,8 +31,12 @@ services:
       - mongo
       - redis
       - auth
+    depends_on:
+      - auth
+      - redis
+      - mongo
     volumes:
-      - "${COMPANIEC}:/var/www/companies"
+      - ./:/var/www/companies
 
 # The only one reason why auth is here is an API tests in EmployeeChangePasswordCest
 # Some cases are trying to interact with real auth server.
