@@ -1,0 +1,200 @@
+{
+  "_id": {
+    "$binary": "NDZkNTI0OTgtMDY1Yy00Yzk1LWE1YjYtYWJhM2U0M2JjOGNl",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "Port Sydneeton",
+      "ru": "Домодедово"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "NWIzOTA0ODktOGE1ZC00NWYwLTg1MDktZGJiOTRlZDAxOGY1",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "South Devynberg",
+      "ru": "Зарайск"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "ZmIxZTcyNmItNzliMi00M2IzLTgxMzYtODE5NTJiMTM0NWFl",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "West Enriqueberg",
+      "ru": "Егорьевск"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "MTllNWZjMmYtMWQ3Zi00N2E2LTk3NmYtZDlhMDg5NDBlODA2",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "Giovanitown",
+      "ru": "Егорьевск"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "MGMyYzcxYTctODU0MC00OWQyLWJlZjQtNWU3ZGU3ZDJjYmM4",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "Vincenzoborough",
+      "ru": "Клин"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "YjZlMzlkNzItNWU4YS00MDM2LWE0YjQtZDNiZTlkNWMyN2Q5",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "East Bertha",
+      "ru": "Наро-Фоминск"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "NWYyYmVmOTItYThhYy00MDYxLWE1YzUtNWRiYWJiYjMyOGQ1",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "MTdjYjFhNzctNjA1Zi00ZmY2LTkwYTAtMmY4NzBhMzNjMzhl",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "New Melyssa",
+      "ru": "Ступино"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "NWYyYmVmOTItYThhYy00MDYxLWE1YzUtNWRiYWJiYjMyOGQ1",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "ZjlkYWMyNGQtYmQzYy00OGRkLTlkMDAtZGNmMmU5ZGMwYzlm",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "Lazarostad",
+      "ru": "Серпухов"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "NWYyYmVmOTItYThhYy00MDYxLWE1YzUtNWRiYWJiYjMyOGQ1",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "MWFiMWQ4ODQtYTJkMi00OGNmLWI5YmUtNTAxYjhjYTgzZTBm",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "Port Cara",
+      "ru": "Раменское"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "NWYyYmVmOTItYThhYy00MDYxLWE1YzUtNWRiYWJiYjMyOGQ1",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}
+{
+  "_id": {
+    "$binary": "YThmNTM3NTItNDliMy00Mjg1LWI2MjEtNjM2Y2I3YWQ1NDM4",
+    "$type": "03"
+  },
+  "names": {
+    "values": {
+      "en": "West Perryborough",
+      "ru": "Сергиев Посад"
+    }
+  },
+  "country": {
+    "$ref": "countries",
+    "$id": {
+      "$binary": "NWYyYmVmOTItYThhYy00MDYxLWE1YzUtNWRiYWJiYjMyOGQ1",
+      "$type": "03"
+    },
+    "$db": "test"
+  }
+}

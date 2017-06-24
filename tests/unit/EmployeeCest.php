@@ -132,4 +132,14 @@ class EmployeeCest
         });
     }
 
+    public function testIsAddedToContactList(UnitTester $I)
+    {
+        $employee = EmployeeFactory::make();
+        $contact1 = EmployeeFactory::make();
+        $contact2 = EmployeeFactory::make();
+        $employee->addContact($contact1);
+
+        $I->assertTrue($employee->isAddedToContactList($contact1));
+        $I->assertFalse($employee->isAddedToContactList($contact2));
+    }
 }

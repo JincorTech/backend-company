@@ -47,6 +47,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
 use App;
+use App\Applications\Company\Transformers\Employee\SearchEmployeeContact;
 
 class EmployeeController extends BaseController
 {
@@ -336,7 +337,7 @@ class EmployeeController extends BaseController
          * @var $foundEmployees ArrayCollection
          */
         $foundEmployees = $this->employeeService->findByEmail($email);
-        return $this->paginatedResponse($request, $foundEmployees, EmployeeContactList::class);
+        return $this->paginatedResponse($request, $foundEmployees, SearchEmployeeContact::class);
     }
 
 

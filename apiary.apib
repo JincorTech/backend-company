@@ -1684,6 +1684,8 @@ Note that there are two ways of user authentication in this method.
 
 **All endpoints require JWT authentication**
 
+**If perPage = 0 you will get all available results in Response**
+
 ## Contacts [/employee/contacts{?page}{?perPage}]
 
 ### Get contacts of an employee [GET]
@@ -1827,7 +1829,8 @@ Note that there are two ways of user authentication in this method.
               "position": "Tester",
               "companyId": "9fcad7c5-f84e-4d43-b35c-05e69d0e0362",
               "companyName": "Test Company",
-              "companyLogo": null
+              "companyLogo": null,
+              "added": false
             }
           ],
           "meta": {
