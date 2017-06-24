@@ -11,7 +11,7 @@ namespace App\Applications\Company\Transformers;
 
 
 use App\Domains\Employee\Entities\EmployeeVerification;
-use App\Domains\Employee\Services\EmployeeService;
+use App\Applications\Company\Services\Employee\EmployeeService;
 use Illuminate\Support\Collection;
 use League\Fractal\TransformerAbstract;
 

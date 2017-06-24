@@ -10,10 +10,13 @@ namespace App\Domains\Employee\Interfaces;
 
 use App\Domains\Company\Entities\Company;
 use App\Domains\Company\Entities\Department;
+use Doctrine\ODM\MongoDB\Cursor;
 
 interface EmployeeRepositoryInterface
 {
     public function findByCompanyAndEmail(Company $company, string $email);
 
     public function findByDepartmentAndEmail(Department $department, string $email);
+
+    public function findAllByMatrixIds(array $matrixIds);
 }

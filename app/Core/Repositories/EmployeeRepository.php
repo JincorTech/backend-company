@@ -28,4 +28,12 @@ class EmployeeRepository extends DocumentRepository implements EmployeeRepositor
             ->field('contacts.email')
             ->equals($email)->getQuery()->execute();
     }
+
+    public function findAllByMatrixIds(array $matrixIds)
+    {
+        return $this->createQueryBuilder()
+            ->field('matrixId')
+            ->in($matrixIds)
+            ->getQuery()->execute();
+    }
 }

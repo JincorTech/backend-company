@@ -1,0 +1,91 @@
+{
+  "_id": {
+    "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+    "$type": "03"
+  },
+  "code": "BT1",
+  "names": {
+    "values": {
+      "en": "Private Company",
+      "ru": "Частная компания"
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "MjNlMWZhY2QtMTc4ZC00OGU1LTk5OGEtOWMyYTZhMTgxMDc3",
+    "$type": "03"
+  },
+  "code": "BT2",
+  "names": {
+    "values": {
+      "en": "Public Company",
+      "ru": "Публичная компания"
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "NmNiY2IyZmItNTBmYy00NjEwLWI4MzYtYjQyMWQxMDBhZjAy",
+    "$type": "03"
+  },
+  "code": "BT3",
+  "names": {
+    "values": {
+      "en": "Sole Proprietorship",
+      "ru": "Индивидуальный предприниматель"
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "OWVmMGQ1NjQtMzBhNC00MGFlLWI1ZTAtMTcyZWVkYTkwYjI0",
+    "$type": "03"
+  },
+  "code": "BT4",
+  "names": {
+    "values": {
+      "en": "Nonprofit organization",
+      "ru": "Некоммерческая организация"
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "NDQzYTIxZjYtY2E0OC00NmZhLThlZGUtNzEzNWFmZmY0YTEz",
+    "$type": "03"
+  },
+  "code": "BT5",
+  "names": {
+    "values": {
+      "en": "Goverment Organization",
+      "ru": "Государственное предприятие"
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "ZmM1MjgyZDktNDkxMi00ODBhLWI0ODItZDljYTkwYTEyNWMw",
+    "$type": "03"
+  },
+  "code": "BT6",
+  "names": {
+    "values": {
+      "en": "State-owned enterprise",
+      "ru": "Государственное предприятие"
+    }
+  }
+}
+{
+  "_id": {
+    "$binary": "MTQ5OGFhODktMTE4YS00OGU0LTgxM2UtYjk2OTZmOTc3Y2U3",
+    "$type": "03"
+  },
+  "code": "BT7",
+  "names": {
+    "values": {
+      "en": "International organization",
+      "ru": "Международная организация"
+    }
+  }
+}

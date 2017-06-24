@@ -1,0 +1,161 @@
+{
+  "_id": {
+    "$binary": "NjNlODhkOWQtYTc5ZS00NzA1LTljOGYtODcxMmI3MWI1M2Y4",
+    "$type": "03"
+  },
+  "department": {
+    "$ref": "departments",
+    "$id": {
+      "$binary": "MmE3YjAxMjktNTk3YS00OTgyLTg2ZWMtNWE0MmE4NWJmMjI3",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "matrixId": "@9fcad7c5-f84e-4d43-b35c-05e69d0e0362_test2_test.com",
+  "password": "$2y$10$NsQvK0dYoEjBdhtcxqBxpuEclfSFDFTMwMb6VOfACOPKsfLI1Wsnm",
+  "profile": {
+    "position": "Tester",
+    "firstName": "John",
+    "lastName": "Doe",
+    "login": "9fcad7c5-f84e-4d43-b35c-05e69d0e0362:test2@test.com",
+    "scope": "company-admin",
+    "avatar": "http://existing2.avatar"
+  },
+  "contacts": {
+    "email": "test2@test.com"
+  },
+  "isActive": true,
+  "registeredAt": {
+    "$date": "2017-06-07T06:59:34.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "OTg2ODdlMjktZjA1OS00YmFhLTk0NjktMTkwNzZiYmM0YzBh",
+    "$type": "03"
+  },
+  "department": {
+    "$ref": "departments",
+    "$id": {
+      "$binary": "OTk2NzM4YWItYjkyOS00MjRlLTg0YjctMmM1ZTA0ZjcyMDkx",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "matrixId": "@06c52e3c-9366-4b9d-9da2-265613adb72e_test_test.com",
+  "password": "$2y$10$VyKcx9Nr.rZ/xDEha5T6LOAsn827ctEDk8L6pSQLjq7sPub2A599a",
+  "profile": {
+    "position": "Tester",
+    "firstName": "John",
+    "lastName": "Doe",
+    "login": "06c52e3c-9366-4b9d-9da2-265613adb72e:test@test.com",
+    "scope": "company-admin",
+    "avatar": "http://existing.avatar"
+  },
+  "contacts": {
+    "email": "test@test.com"
+  },
+  "isActive": true,
+  "registeredAt": {
+    "$date": "2017-06-07T06:59:35.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "M2U2OTY4OTUtYWIxYi00NGVjLTg2NDYtODYwNjc4NzdlMzhj",
+    "$type": "03"
+  },
+  "department": {
+    "$ref": "departments",
+    "$id": {
+      "$binary": "ZDM0ODVmM2UtYTQ0NS00YmNiLTg2M2EtYTcxMTg2OWUwMGQ1",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "password": "$2y$10$nEQNBsy71L.XvZ6K9KTn8uIO975YLvDGsfAGC1N8woJ8/sk9bNPlS",
+  "profile": {
+    "position": "Admin",
+    "firstName": "Admin",
+    "lastName": "Company 2",
+    "login": "8d80a3e9-515d-4974-927d-4b097d1eb9fe:admin@company2.com",
+    "scope": "company-admin"
+  },
+  "contacts": {
+    "email": "admin@company2.com"
+  },
+  "isActive": true,
+  "registeredAt": {
+    "$date": "2017-06-13T05:57:21.000Z"
+  },
+  "contactList": [
+    {
+      "employee": {
+        "$ref": "employees",
+        "$id": {
+          "$binary": "OTYxNzg4MWItM2FlOS00YTdmLTgyYjktZTJmNDY1NjhmMGNh",
+          "$type": "03"
+        },
+        "$db": "test"
+      }
+    }
+  ]
+}
+{
+  "_id": {
+    "$binary": "OTYxNzg4MWItM2FlOS00YTdmLTgyYjktZTJmNDY1NjhmMGNh",
+    "$type": "03"
+  },
+  "department": {
+    "$ref": "departments",
+    "$id": {
+      "$binary": "ZDM0ODVmM2UtYTQ0NS00YmNiLTg2M2EtYTcxMTg2OWUwMGQ1",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "password": "$2y$10$IPtoSvKZdqbwxucyRmVDJOtRgGt51Gql4w1lESzRFv2kqzofv4GE6",
+  "profile": {
+    "position": "Employee",
+    "firstName": "Employee",
+    "lastName": "Company 2",
+    "login": "8d80a3e9-515d-4974-927d-4b097d1eb9fe:employee@company2.com",
+    "scope": "employee"
+  },
+  "contacts": {
+    "email": "employee@company2.com"
+  },
+  "isActive": true,
+  "registeredAt": {
+    "$date": "2017-06-13T06:02:36.000Z"
+  }
+}
+{
+  "_id": {
+    "$binary": "M2U2OTY4OTUtYWIxYi00NGVjLTg2NDYtODYwNjc4NzdlMzhv",
+    "$type": "03"
+  },
+  "department": {
+    "$ref": "departments",
+    "$id": {
+      "$binary": "MmE3YjAxMjktNTk3YS00OTgyLTg2ZWMtNWE0MmE4NWJmMjI3",
+      "$type": "03"
+    },
+    "$db": "test"
+  },
+  "password": "$2y$10$IPtoSvKZdqbwxucyRmVDJOtRgGt51Gql4w1lESzRFv2kqzofv4GE6",
+  "profile": {
+    "position": "Employee",
+    "firstName": "Employee",
+    "lastName": "Company 1",
+    "login": "8d80a3e9-515d-4974-927d-4b097d1eb9fe:employee@company1.com",
+    "scope": "employee"
+  },
+  "contacts": {
+    "email": "employee@company1.com"
+  },
+  "isActive": true,
+  "registeredAt": {
+    "$date": "2017-06-13T06:02:36.000Z"
+  }
+}

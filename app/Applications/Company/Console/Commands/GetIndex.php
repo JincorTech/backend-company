@@ -10,7 +10,7 @@ namespace App\Applications\Company\Console\Commands;
 
 
 use App\Domains\Company\Search\CompanyIndexContract;
-use App\Domains\Company\Services\CompanyService;
+use App\Applications\Company\Services\Company\CompanyService;
 use Illuminate\Console\Command;
 use Elasticsearch;
 

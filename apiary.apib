@@ -26,7 +26,7 @@ can be accessed by anyone.
 
 Company registration process is built around the concept of verification sessions.
 When someone registers a company, he or she forced to create the first account in
-this company. 
+this company.
 
 According to business requirements system should allow users to have
 multiple accounts attached to one email. So, here everything is pretty like in
@@ -37,7 +37,7 @@ To make registration process more configurable we use Entity called `Verificatio
 which has unique key which you must provide to server when doing requests during verification process.
 Note that `VerificationProcess` also keeps all the data required to restore the session, think about it like about session key.
 
-In order to achieve business requirement which shortly can be described as: 'Trigger user registration after company registration' 
+In order to achieve business requirement which shortly can be described as: 'Trigger user registration after company registration'
 I've moved creating of `VerificationProcess` Entity to the end of company registration workflow.
 So, remember: The result of company registration is always `VerificationProcess`.
 
@@ -64,7 +64,7 @@ There is a concept of VerificationProcess in our app which should be mentioned. 
 the ownership of email address or mobile phone we use verification codes. I found out that this codes
 may be usable in such cases as: registration, restore password, invite employee. All this cases
 are same in general but different in some details, but the process of verification of ownership is 100%
-same. So I've creared a model called VerificationProcess which represents exact this thing. 
+same. So I've creared a model called VerificationProcess which represents exact this thing.
 It contains some helpfull references like reference to company or employee it belongs to,
 email address, phone number and information about it's statuses(verified: true, false).
 Just remember that if you need to do some actions with employee but you don't have email/password
@@ -81,7 +81,7 @@ Get the list of the countries
 + Response 200 (application/json)
 
     + Body
-    
+
             {
               "data": [
                 {
@@ -98,8 +98,8 @@ Get the list of the countries
                 }
               ]
             }
-            
-            
+
+
 ## Cities [/dictionary/city/{country}]
 
 ### Get cities dictionary [GET]
@@ -114,8 +114,8 @@ Get the list of the cities
 + Response 200 (application/json)
 
     + Body
-    
-    
+
+
             {
                 "data": [
                     {
@@ -142,7 +142,7 @@ Returns the list of company types
 + Response 200 (application/json)
 
     + Body
-    
+
             {
               "data": [
                 {
@@ -182,8 +182,8 @@ Returns the list of company types
                 }
               ]
             }
-        
-        
+
+
 ## Economical Activity Types [/company/activityTypes]
 
 ### Get the list of economical activity types [GET]
@@ -193,7 +193,7 @@ Returns the list of economical activity types
 + Response 200 (application/json)
 
     + Body
-            
+
             {
               "data": [
                 {
@@ -273,8 +273,8 @@ Returns the list of economical activity types
                   ]
                 }]
             }
-            
-            
+
+
 # Group Registration
 
 ## Register Company [/company]
@@ -285,14 +285,14 @@ Anyone can register company. The result of successfull registration is Verificat
 Use this process `id` to pass to verification requests.
 
 + Request (application/json)
-    
+
         {
             "legalName": "Компания",
             "countryId": "917aa652-6d12-446e-a0aa-89b4e2a70ce9",
             "companyType": "b9e997d2-82c5-4441-bf25-084eb06b1965"
         }
 
-            
+
 + Response 201 (application/json)
 
     + Headers
@@ -300,7 +300,7 @@ Use this process `id` to pass to verification requests.
             Location: /api/v1/company/21afcee6-6aa6-49f3-8c56-2d1b3fb03b53
 
     + Body
-            
+
             "data" : {
               "id": "a32d7960-4bd5-4a73-9aeb-4e9551c77ddc",
               "companyId": "21afcee6-6aa6-49f3-8c56-2d1b3fb03b53",
@@ -313,13 +313,13 @@ Use this process `id` to pass to verification requests.
                 "isVerified": false
               }
             }
-            
+
 
 
 + Response 422 (application/json)
 
     + Body
-            
+
             {
               "message": "422 Unprocessable Entity",
               "errors": {
@@ -329,8 +329,8 @@ Use this process `id` to pass to verification requests.
               },
               "status_code": 422
             }
-      
-      
+
+
 ## Send e-mail verification [/employee/verifyEmail/{verificationId}/{email}]
 
 ### Send email verification code [GET]
@@ -363,7 +363,7 @@ will be associated with employee on registration complete.
                   }
                 }
             }
-            
+
 ## Verify e-mail [/employee/verifyEmail]
 
 ### Verify email [POST]
@@ -396,8 +396,8 @@ Verify email by providing verificationId and email verification code.
                   }
                 }
             }
-            
-            
+
+
 ## Register employee [/employee/register]
 
 ### Register employee in the company [POST]
@@ -415,7 +415,7 @@ Internal login will be created.
                 "verificationId": "bb69ec2e-9294-41fc-a593-a01a0f973f46",
                 "position": "Директор"
             }
-            
+
 + Response 200 (application/json)
 
     + Body
@@ -500,7 +500,7 @@ In the first case you will need to provide companyId in your request and if auth
 in response. Look at the first 200 response example.
 
 In the second case you will get the list of companies you can logIn using provided email and password(Look at the second 200 response example). In order to optimize this process
-and avoid performing additional request if there's only one company you can login with provided credentials you will get `employee` 
+and avoid performing additional request if there's only one company you can login with provided credentials you will get `employee`
 and `token` in response(Look at the first 200 response example) instead of list of the companies.
 
 + Request (application/json)
@@ -510,12 +510,12 @@ and `token` in response(Look at the first 200 response example) instead of list 
               "email": "test@tester.com",
               "password": "test2test"
             }
-            
-            
+
+
 + Response 200 (application/json)
 
     + Body
-            
+
             {
               "data": {
                 "employee": {
@@ -580,18 +580,18 @@ and `token` in response(Look at the first 200 response example) instead of list 
                 "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4NDFiMTY5LTNhMTgtNDJhNy1hNDQ4LTRiNGZiODViZGM1OSIsImxvZ2luIjoiYTNjYmUyMWMtYmFiNi00YzcyLTlkMmUtODkwN2Y5YTU2ODk4OnRlc3RAdGVzdC5jb20iLCJzY29wZSI6ImNvbXBhbnktYWRtaW4iLCJkZXZpY2VJZCI6IjEyMzQ1IiwianRpIjoiMjg0MWIxNjktM2ExOC00MmE3LWE0NDgtNGI0ZmI4NWJkYzU5MTIzNDUxNDkyMTQ1MDMxMzcxIiwiaWF0IjoxNDkyMTQ1MDMxMzcxLCJleHAiOjE0OTIxNDU2MzYxNzF9.rf8fL7iirl8URhLQuZpPd7JAuPhvQWiyKZJE8guw_Zs"
               }
             }
-        
+
 + Request (application/json)
 
             {
               "email": "test@tester.com",
               "password": "test2test"
-            }      
-            
+            }
+
 + Response 200 (application/json)
 
     + Body
-            
+
             {
               "data": [
                 {
@@ -667,8 +667,8 @@ and `token` in response(Look at the first 200 response example) instead of list 
                 }
               ]
             }
-            
-                
+
+
 # Group Company
 
 ## My company [/company/my]
@@ -680,7 +680,7 @@ Get details of my company
 + Response 200 (application/json)
 
     + Body
-            
+
             {
               "data": {
                     "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
@@ -728,14 +728,14 @@ Get details of my company
                     "employeesCount": 2
                 }
             }
-            
+
 
 ### Update my company [PUT]
 
 Update existing company by specifying it's attributes
 
 + Request (application/json)
-    
+
             {
               "legalName": "Test Company",
               "profile": {
@@ -762,11 +762,11 @@ Update existing company by specifying it's attributes
                 }
             }
 
-        
+
 + Response 200 (application/json)
 
     + Body
-            
+
             {
               "data": {
                 "id": "a3cbe21c-bab6-4c72-9d2e-8907f9a56898",
@@ -814,11 +814,11 @@ Update existing company by specifying it's attributes
                 "employeesCount": 2
               }
             }
-            
+
 + Response 422 (application/json)
 
     + Body
-            
+
             {
               "message": "422 Unprocessable Entity",
               "errors": {
@@ -828,8 +828,8 @@ Update existing company by specifying it's attributes
               },
               "status_code":422
             }
-  
-  
+
+
 ## Concrete company [/company/{id}]
 
 
@@ -839,8 +839,8 @@ Update existing company by specifying it's attributes
 
     + id (string, required)
       Id of an existing  company
-      
-      
+
+
 + Response 200 (application/json)
 
     + Body
@@ -906,7 +906,7 @@ Update existing company by specifying it's attributes
       Region to find exact matching
     + request (string, required)
       Text of your request
-      
+
 + Response 200 (application/json)
 
     + Body
@@ -1019,8 +1019,8 @@ Update existing company by specifying it's attributes
               }
             }
 
-  
-  
+
+
 ## Invite Employees [/company/invite]
 
 ### Invite users to the company [POST]
@@ -1039,11 +1039,11 @@ The `verificationId` request param is `verificationId` if the user who is trying
                     "test2@test.com"
                 ]
             }
-            
+
 + Response 200 (application/json)
 
     + Body
-    
+
             {
               "data": [
                 {
@@ -1068,16 +1068,16 @@ The `verificationId` request param is `verificationId` if the user who is trying
                 }
               ]
             }
-            
-            
 
-# Group Employees          
+
+
+# Group Employees
 
 ## Colleagues [/employee/colleagues]
 
 ### Get the list of employee's colleagues [GET]
 
-Get the list of colleagues of this employee. 
+Get the list of colleagues of this employee.
 The result doesnt contains employee who performed request.
 
 + Response 200 (application/json)
@@ -1123,7 +1123,7 @@ The result doesnt contains employee who performed request.
                     }
                   }
                 ],
-                "deleted": [  
+                "deleted": [
                   {
                     "id": "3d7563a2-cdc9-4877-a322-a3c3edd5ad24",
                     "profile": {
@@ -1218,8 +1218,8 @@ Get information about authenticated employee.
                   }
                 }
             }
-            
-            
+
+
 ### Update [PUT]
 
 + Request (application/json)
@@ -1232,10 +1232,10 @@ Get information about authenticated employee.
                 "avatar": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARwAAAELCAYAAAALJznDAAAAAXNSR0IArs4c6QAAKWdJREFUeAHtnQeYXMWV788NnbtnNIqjQSOUkEAjRBIStrDBgEleEbwWD39OROPnvGs/B+zdh9dr7+KAw/phRH6L8doSJohkYTAYLzaSECCQQFhpUBiN0qTO4d7aU90TO0/37Z5uzb++707fW+FU1e/2nK54iggOBEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABEAABGqUgFKj5apqsXbMXdSqOAVYVJX6+MpszsqV+5RbbjHHV60zazvu/8l2nXTa8YlEfBGj2ZWJBz4gYAUB4SBSovO3b3nbCmn1LEOv58JbUXYjHtc1m/63uW+/vt0KeZABAukEZAtaKMKX7j8en9XxWGnUGQRAYGwIQOGMDXfkCgLjkgAUzrh87ag0CIwNgXE/hpML+0mnfet4ncwW01SNXHHgDwLpBPg707N587/9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"
               }
             }
-            
+
 + Response 200 (application/json)
 
-    
+
             {
                 "data": {
                     {
@@ -1326,8 +1326,8 @@ Deactivate employee by its id
                 }
               }
             }
-            
-            
+
+
 ## Make Admin / Remove Admin [/employee/admin]
 
 
@@ -1340,11 +1340,11 @@ You must be an admin of the company in order to perform this action
                 "id": "3d7563a2-cdc9-4877-a322-a3c3edd5ad24",
                 "value": false
             }
-            
-            
+
+
 + Response 200 (application/json)
   + Body
-  
+
             {
                 "data": {
                     "id": "3d7563a2-cdc9-4877-a322-a3c3edd5ad24",
@@ -1381,8 +1381,8 @@ Show the list of the companies. For more information read description bellow.
 User is a real world physical person.
 Emplpoyee is the model which is strongly belongs to the Company. In real world some people are working in multiple
 companies at once. And at the same time it's usually not the same thing. This leads to the idea that even login credentials
-may be different. Moreover there are different ways to check that account belongs to user. One of that ways is 
-** employee verification process**. 
+may be different. Moreover there are different ways to check that account belongs to user. One of that ways is
+** employee verification process**.
 Exact the same thing we already used during registration process. EmployeeVerificationProcess is designed to be
 enough flexible to store all the information we need to make decisions about user authentication. Additionaly, we generate and check Pin Codes, send emails and sms using this model.
 
@@ -1401,16 +1401,16 @@ for the request parameters used on backend:
             {
                 "verificationId": "11f43465-d042-4db0-8aa9-13bac482bb59"
             }
-            
-            
+
+
 + Request (application/json)
 
             {
                 "email": "user@email.com",
                 "password": "myCoolPassword"
             }
-            
-            
+
+
 + Response 200 (application/json)
 
 
@@ -1508,15 +1508,15 @@ for the request parameters used on backend:
                 },
               ]
             }
-            
-            
-            
+
+
+
 
 ## Send Restore password e-mail [/employee/restorePassword]
 
-### Send restore instructions to email [POST] 
-Create Verification process instance to authorize request and send E-mail to employee with auth instructions. 
-This method returns VerificationProcess entity to allow you to track verification on frontend. 
+### Send restore instructions to email [POST]
+Create Verification process instance to authorize request and send E-mail to employee with auth instructions.
+This method returns VerificationProcess entity to allow you to track verification on frontend.
 This action is designed to initiate verification process usually you would like to show Enter PIN input to finish this process.
 In order to verify input take a look at **Verify e-mail** method.
 
@@ -1526,13 +1526,13 @@ In order to verify input take a look at **Verify e-mail** method.
             {
                 "email": "user@email.com"
             }
-        
-        
-        
+
+
+
 + Response 200 (application/json)
 
     + Body
-    
+
             {
                 "data": {
                     "id": "11f43465-d042-4db0-8aa9-13bac482bb59",
@@ -1644,3 +1644,205 @@ Note that there are two ways of user authentication in this method.
                   }
                 }
             }
+
+
+## Employee profiles [/employee/matrix]
+
+### By MatrixID [POST]
+
++ Request (application/json)
+
+            {
+              "matrixIds": [
+                "@aaf9d7d6-30c1-4e90-b376-93ceb989fb26_test_test.com",
+                "@aaf9d7d6-30c1-4e90-b376-93ceb989fb26_test2_test.com"
+               ]
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "data": [
+                    {
+                                  "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+                                  "email": "lauren@mayberry.com",
+                                  "name": "Lauren Mayberry",
+                                  "firstName": "Lauren",
+                                  "lastName": "Mayberry",
+                                  "avatar": "http://i.imgur.com/QKHJ3Zs.png",
+                                  "position": "Singer",
+                                  "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
+                                  "companyName": "Netflix",
+                                  "companyLogo": "https://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2016/06/Netflix-Old-Logo.png"
+                                }
+                ]
+            }
+
+# Group Contacts
+
+**All endpoints require JWT authentication**
+
+**If perPage = 0 you will get all available results in Response**
+
+## Contacts [/employee/contacts{?page}{?perPage}]
+
+### Get contacts of an employee [GET]
+
++ Parameters
+
+    + page (number, optional)
+      Page number
+    + perPage (number, optional)
+      Contacts count per page
+
++ Response 200 (application/json)
+
+        {
+          "data": [
+            {
+              "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+              "email": "lauren@mayberry.com",
+              "name": "Lauren Mayberry",
+              "firstName": "Lauren",
+              "lastName": "Mayberry",
+              "avatar": "http://i.imgur.com/QKHJ3Zs.png",
+              "position": "Singer",
+              "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
+              "companyName": "Netflix",
+              "companyLogo": "https://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2016/06/Netflix-Old-Logo.png"
+            }
+          ],
+          "meta": {
+            "pagination": {
+              "total": 96,
+              "perPage": 20,
+              "currentPage": 1,
+              "lastPage": 5,
+              "prevPageUrl": "http:/company/api/v1/employee/contacts?page=0",
+              "nextPageUrl": "http:/company/api/v1/employee/contacts?page=2",
+              "from": 21,
+              "to": 40
+            }
+          }
+        }
+
+### Add new contact [POST]
+
++ Request (application/json)
+
+        {
+            "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
+            "email": "test@test.com"
+        }
+
++ Response 200 (application/json)
+
+        {
+          "data": [
+            {
+              "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+              "email": "lauren@mayberry.com",
+              "name": "Lauren Mayberry",
+              "firstName": "Lauren",
+              "lastName": "Mayberry",
+              "position": "Singer",
+              "avatar": "http://i.imgur.com/QKHJ3Zs.png",
+              "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
+              "companyName": "Netflix",
+              "companyLogo": "https://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2016/06/Netflix-Old-Logo.png"
+            }
+          ],
+          "meta": {
+            "pagination": {
+              "total": 96,
+              "perPage": 20,
+              "currentPage": 1,
+              "lastPage": 5,
+              "prevPageUrl": "http:/company/api/v1/employee/contacts?page=0",
+              "nextPageUrl": "http:/company/api/v1/employee/contacts?page=2",
+              "from": 21,
+              "to": 40
+            }
+          }
+        }
+
+### Delete a contact [DELETE]
+
++ Response 200 (application/json)
+
+        {
+          "data": [
+            {
+              "id": "547e7d91-bc27-4407-a27a-429d2855652b",
+              "email": "lauren@mayberry.com",
+              "name": "Lauren Mayberry",
+              "firstName": "Lauren",
+              "lastName": "Mayberry",
+              "avatar": "http://i.imgur.com/QKHJ3Zs.png",
+              "position": "Singer",
+              "companyId": "52b30158-05ee-474d-85b3-b489a5089ad0",
+              "companyName": "Netflix",
+              "companyLogo": "https://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2016/06/Netflix-Old-Logo.png"
+            }
+          ],
+          "meta": {
+            "pagination": {
+              "total": 96,
+              "perPage": 20,
+              "currentPage": 1,
+              "lastPage": 5,
+              "prevPageUrl": "http:/company/api/v1/employee/contacts?page=0",
+              "nextPageUrl": "http:/company/api/v1/employee/contacts?page=2",
+              "from": 21,
+              "to": 40
+            }
+          }
+        }
+
+
+## Contacts search [/employee/contacts/search{?email}{?page}{?perPage}]
+
+### Search contacts by email [GET]
+
++ Parameters
+
+    + email (string, required)
+      Find contacts with specified email
+    + page (number, optional)
+      Page number
+    + perPage (number, optional)
+      Contacts count per page
+
++ Response 200 (application/json)
+
+        {
+          "data": [
+            {
+              "id": "63e88d9d-a79e-4705-9c8f-8712b71b53f8",
+              "email": "test@test.com",
+              "name": "John Doe",
+              "firstName": "John",
+              "lastName": "Doe",
+              "avatar": "http://existing2.avatar",
+              "position": "Tester",
+              "companyId": "9fcad7c5-f84e-4d43-b35c-05e69d0e0362",
+              "companyName": "Test Company",
+              "companyLogo": null,
+              "added": false
+            }
+          ],
+          "meta": {
+            "pagination": {
+              "total": 96,
+              "perPage": 20,
+              "currentPage": 1,
+              "lastPage": 5,
+              "prevPageUrl": "http:/company/api/v1/employee/contacts/search?email=test@test.com&page=0",
+              "nextPageUrl": "http:/company/api/v1/employee/contacts/search?email=test@test.com&page=2",
+              "from": 21,
+              "to": 40
+            }
+          }
+        }
