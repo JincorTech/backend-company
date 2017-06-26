@@ -25,6 +25,7 @@ class EmployeeContactList extends TransformerAbstract
             'companyId' => $employee->getCompany()->getId(),
             'companyName' => $employee->getCompany()->getProfile()->getName(),
             'companyLogo' => $employee->getCompany()->getProfile()->getPicture(),
+            'matrixId' => $employee->getMatrixId(),
         ];
     }
 }

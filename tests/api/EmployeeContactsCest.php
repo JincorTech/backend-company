@@ -31,6 +31,7 @@ class EmployeeContactsCest
                     'companyId' => '8d80a3e9-515d-4974-927d-4b097d1eb9fe',
                     'companyName' => 'Jincor',
                     'companyLogo' => null,
+                    'matrixId' => '@8d80a3e9-515d-4974-927d-4b097d1eb9fe_employee_company2.com',
                 ],
             ],
             'meta' => [
@@ -70,6 +71,7 @@ class EmployeeContactsCest
                     'companyId' => '8d80a3e9-515d-4974-927d-4b097d1eb9fe',
                     'companyName' => 'Jincor',
                     'companyLogo' => null,
+                    'matrixId' => '@8d80a3e9-515d-4974-927d-4b097d1eb9fe_employee_company2.com',
                 ],
             ],
             'meta' => [
@@ -109,6 +111,7 @@ class EmployeeContactsCest
                 'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
                 'companyName' => 'Test Company',
                 'companyLogo' => null,
+                'matrixId' => '@9fcad7c5-f84e-4d43-b35c-05e69d0e0362_test2_test.com',
             ],
         ]);
     }
@@ -204,6 +207,7 @@ class EmployeeContactsCest
                 'companyId' => '8d80a3e9-515d-4974-927d-4b097d1eb9fe',
                 'companyName' => 'Jincor',
                 'companyLogo' => null,
+                'matrixId' => '@8d80a3e9-515d-4974-927d-4b097d1eb9fe_employee_company2.com',
             ],
         ]);
     }
@@ -246,6 +250,8 @@ class EmployeeContactsCest
                     'companyName' => 'Test Company',
                     'companyLogo' => null,
                     'added' => false,
+                    'matrixId' => '@9fcad7c5-f84e-4d43-b35c-05e69d0e0362_test2_test.com',
+
                 ],
             ],
             'meta' => [
@@ -286,6 +292,8 @@ class EmployeeContactsCest
                     'companyName' => 'Jincor',
                     'companyLogo' => null,
                     'added' => true,
+                    'matrixId' => '@8d80a3e9-515d-4974-927d-4b097d1eb9fe_employee_company2.com',
+
                 ],
             ],
             'meta' => [
