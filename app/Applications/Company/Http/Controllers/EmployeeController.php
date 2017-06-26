@@ -314,20 +314,18 @@ class EmployeeController extends BaseController
 
     public function addContact(AddContact $request)
     {
-        $this->employeeService->addContact(
+        $contact = $this->employeeService->addContact(
             $request->get('email'),
             $request->get('companyId')
         );
 
-        $contacts = $this->employeeService->getContactList();
-        return $this->paginatedResponse($request, $contacts, ContactList::class);
+        return $this->response->item($contact, EmployeeContactList::class);
     }
 
     public function deleteContact(DeleteContact $request, string $id)
     {
-        $this->employeeService->deleteContact($id);
-        $contacts = $this->employeeService->getContactList();
-        return $this->paginatedResponse($request, $contacts, ContactList::class);
+        $contact = $this->employeeService->deleteContact($id);
+        return $this->response->item($contact, EmployeeContactList::class);
     }
 
     public function searchContacts(SearchContacts $request)

@@ -483,6 +483,7 @@ class EmployeeService implements EmployeeServiceInterface
     /**
      * @param $email
      * @param $companyId
+     * @return Employee
      * @throws EmployeeNotFound
      */
     public function addContact($email, $companyId)
@@ -501,10 +502,13 @@ class EmployeeService implements EmployeeServiceInterface
         $employee->addContact($contact);
         $this->dm->persist($employee);
         $this->dm->flush();
+
+        return $contact;
     }
 
     /**
      * @param string $id
+     * @return Employee
      * @throws EmployeeNotFound
      */
     public function deleteContact(string $id)
@@ -526,6 +530,8 @@ class EmployeeService implements EmployeeServiceInterface
         $employee->deleteContact($contact);
         $this->dm->persist($employee);
         $this->dm->flush();
+
+        return $contact;
     }
 
     /**

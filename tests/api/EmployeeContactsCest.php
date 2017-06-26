@@ -99,42 +99,16 @@ class EmployeeContactsCest
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseContainsJson([
             'data' => [
-                [
-                    'id' => '9617881b-3ae9-4a7f-82b9-e2f46568f0ca',
-                    'email' => 'employee@company2.com',
-                    'name' => 'Employee Company 2',
-                    'firstName' => 'Employee',
-                    'lastName' => 'Company 2',
-                    'avatar' => null,
-                    'position' => 'Employee',
-                    'companyId' => '8d80a3e9-515d-4974-927d-4b097d1eb9fe',
-                    'companyName' => 'Jincor',
-                    'companyLogo' => null,
-                ],
-                [
-                    'id' => '63e88d9d-a79e-4705-9c8f-8712b71b53f8',
-                    'email' => 'test2@test.com',
-                    'name' => 'John Doe',
-                    'firstName' => 'John',
-                    'lastName' => 'Doe',
-                    'avatar' => 'http://existing2.avatar',
-                    'position' => 'Tester',
-                    'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
-                    'companyName' => 'Test Company',
-                    'companyLogo' => null,
-                ],
-            ],
-            'meta' => [
-                'pagination' => [
-                    'total' => 2,
-                    'perPage' => 10,
-                    'currentPage' => 1,
-                    'lastPage' => 1,
-                    'nextPageUrl' => null,
-                    'prevPageUrl' => null,
-                    'from' => 1,
-                    'to' => 2,
-                ],
+                'id' => '63e88d9d-a79e-4705-9c8f-8712b71b53f8',
+                'email' => 'test2@test.com',
+                'name' => 'John Doe',
+                'firstName' => 'John',
+                'lastName' => 'Doe',
+                'avatar' => 'http://existing2.avatar',
+                'position' => 'Tester',
+                'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
+                'companyName' => 'Test Company',
+                'companyLogo' => null,
             ],
         ]);
     }
@@ -219,18 +193,17 @@ class EmployeeContactsCest
 
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseContainsJson([
-            'data' => [],
-            'meta' => [
-                'pagination' => [
-                    'total' => 0,
-                    'perPage' => 10,
-                    'currentPage' => 1,
-                    'lastPage' => 0,
-                    'nextPageUrl' => null,
-                    'prevPageUrl' => null,
-                    'from' => null,
-                    'to' => null,
-                ],
+            'data' => [
+                'id' => '9617881b-3ae9-4a7f-82b9-e2f46568f0ca',
+                'email' => 'employee@company2.com',
+                'name' => 'Employee Company 2',
+                'firstName' => 'Employee',
+                'lastName' => 'Company 2',
+                'avatar' => null,
+                'position' => 'Employee',
+                'companyId' => '8d80a3e9-515d-4974-927d-4b097d1eb9fe',
+                'companyName' => 'Jincor',
+                'companyLogo' => null,
             ],
         ]);
     }
