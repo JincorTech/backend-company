@@ -22,4 +22,16 @@ class EmployeeProfileFactory implements FactoryInterface
         return new EmployeeProfile($ru->firstName(), $ru->lastName, $ru->text(10));
     }
 
+    public static function makeIvan()
+    {
+        $first = 'ivan';
+        $last = 'ivanov';
+        $position = 'position';
+
+        return new EmployeeProfile(
+            $first,
+            $last,
+            $position
+        );
+    }
 }

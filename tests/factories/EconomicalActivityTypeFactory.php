@@ -9,7 +9,7 @@
  */
 
 use App\Domains\Company\Entities\EconomicalActivityType;
-
+use Doctrine\ODM\MongoDB\DocumentManager;
 
 class EconomicalActivityTypeFactory implements FactoryInterface
 {
@@ -25,5 +25,14 @@ class EconomicalActivityTypeFactory implements FactoryInterface
         ], $en->randomLetter);
     }
 
+    public static function makeFromDb()
+    {
+        $id = '14585013-89c9-4dba-82e2-71a0efe196e9';
+        /**
+         * @var $type EconomicalActivityType
+         */
+        $type = App::make(DocumentManager::class)->getRepository(EconomicalActivityType::class)->find($id);
+        return $type;
+    }
 
 }

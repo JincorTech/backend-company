@@ -26,15 +26,20 @@ class CompanyExternalLinkCest
     public function notAllowsCreateWrong(UnitTester $I)
     {
         $I->expectException(InvalidArgumentException::class, function(){
-            $name = 'test';
             $link = 'htps://facebook.com/test';
             new CompanyExternalLink($link);
         });
 
         $I->expectException(InvalidArgumentException::class, function(){
-            $name = 'test';
             $link = 'http://facebook';
             new CompanyExternalLink($link);
         });
+    }
+
+    public function getDomainFalse(UnitTester $I)
+    {
+        $link = 'http://192.168.1.1';
+        $externalLink = new CompanyExternalLink($link);
+        $I->assertFalse($externalLink->getDomain($link));
     }
 }

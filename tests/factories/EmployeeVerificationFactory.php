@@ -10,8 +10,7 @@
 
 use Faker\Factory;
 use App\Domains\Employee\Entities\EmployeeVerification;
-use App\Domains\Company\Contracts\EmployeeVerificationActionContract;
-use App\Domains\Company\ValueObjects\VerificationProcess\Actions\RegisterAction;
+use App\Domains\Company\Entities\Company;
 
 class EmployeeVerificationFactory implements FactoryInterface
 {
@@ -25,6 +24,22 @@ class EmployeeVerificationFactory implements FactoryInterface
         $employeeVerification->associateCompany(CompanyFactory::make());
         $employeeVerification->associatePhone($ru->phoneNumber);
         return $employeeVerification;
+    }
+
+    public static function makeVerifiedByCompany($company)
+    {
+        $ru = Factory::create('ru_RU');
+        $employeeVerification = new EmployeeVerification();
+        $employeeVerification->associateEmail($ru->email);
+        $employeeVerification->associateCompany($company);
+        $employeeVerification->associatePhone($ru->phoneNumber);
+        $employeeVerification->verifyEmail($employeeVerification->getEmailCode());
+        return $employeeVerification;
+    }
+
+    public static function makeVerified()
+    {
+        return static::makeVerifiedByCompany(CompanyFactory::make());
     }
 
 }

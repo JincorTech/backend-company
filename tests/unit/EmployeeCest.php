@@ -8,6 +8,7 @@ use App\Core\Interfaces\MessengerServiceInterface;
 use App\Core\Interfaces\IdentityInterface;
 use App\Domains\Employee\Exceptions\ContactNotFound;
 use App\Domains\Employee\Exceptions\ContactAlreadyAdded;
+use App\Domains\Employee\ValueObjects\EmployeeRole;
 
 class EmployeeCest
 {
@@ -39,6 +40,10 @@ class EmployeeCest
         $I->assertEquals($profile, $employee->getProfile());
         $I->assertNotEquals($password, $employee->getPassword());
         $I->assertTrue($employee->checkPassword($password));
+        $I->assertInstanceOf(\DateTime::class, $employee->getRegisteredAt());
+
+        //first employee of company is always registered as admin
+        $I->assertEquals(EmployeeRole::ADMIN, $employee->getProfile()->scope);
     }
 
     /**
@@ -130,6 +135,43 @@ class EmployeeCest
         $I->expectException(ContactNotFound::class, function () use ($employee, $contact2) {
             $employee->deleteContact($contact2);
         });
+    }
+
+    public function registerNotVerified(UnitTester $I)
+    {
+        $verification = EmployeeVerificationFactory::make();
+        $profile = EmployeeProfileFactory::make();
+        $password = 'test123';
+
+        $I->expectException(EmployeeVerificationException::class, function () use ($verification, $profile, $password) {
+            Employee::register($verification, $profile, $password);
+        });
+    }
+
+    public function testEmployeeRoleAssignOnRegistration(UnitTester $I)
+    {
+        $company = CompanyFactory::makeMockWith1Employee();
+        $verification = EmployeeVerificationFactory::makeVerifiedByCompany($company);
+        $profile = EmployeeProfileFactory::make();
+        $password = 'test123';
+
+        $employee = Employee::register($verification, $profile, $password);
+
+        //not first employee of company is registered not as admin
+        $I->assertEquals(EmployeeRole::EMPLOYEE, $employee->getProfile()->scope);
+    }
+
+    public function canGetDeletedAt(UnitTester $I)
+    {
+        $employee = EmployeeFactory::make();
+        $employee->deactivate();
+        $I->assertInstanceOf(\DateTime::class, $employee->getDeletedAt());
+    }
+
+    public function canGetContactListFromDb(UnitTester $I)
+    {
+        $employee = EmployeeFactory::makeFromDb();
+        $I->assertEquals(1, $employee->getContactList()->count());
     }
 
     public function testIsAddedToContactList(UnitTester $I)

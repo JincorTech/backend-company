@@ -9,6 +9,7 @@
  */
 
 use App\Domains\Employee\Entities\Employee;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
 class EmployeeFactory implements FactoryInterface
 {
@@ -21,6 +22,13 @@ class EmployeeFactory implements FactoryInterface
         $verification = EmployeeVerificationFactory::make();
         $verification->verifyEmail($verification->getEmailCode());
         $employee = Employee::register($verification, $profile, $password);
+        return $employee;
+    }
+
+    public static function makeFromDb() : Employee
+    {
+        $id = '3e696895-ab1b-44ec-8646-86067877e38c';
+        $employee = App::make(DocumentManager::class)->getRepository(Employee::class)->find($id);
         return $employee;
     }
 

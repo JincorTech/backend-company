@@ -24,6 +24,12 @@ coverage:
     enabled: true
     include:
         - app/*
+        - app/Applications/Company/Services/*
     exclude:
         - app/Core/*
-        - app/Applications/*
+        - app/Applications/Dictionary/*
+        - app/Applications/Company/Console/*
+        - app/Applications/Company/Http/*
+        - app/Applications/Company/Providers/*
+        - app/Applications/Company/Transformers/*
+        - app/Applications/Company/Validators/*

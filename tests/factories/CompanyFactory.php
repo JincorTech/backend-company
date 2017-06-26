@@ -12,6 +12,7 @@ use App\Domains\Company\Entities\CompanyType;
 use App\Domains\Company\Entities\Company;
 use App\Core\Dictionary\Entities\Country;
 use App\Core\ValueObjects\Address;
+use Doctrine\Common\Collections\ArrayCollection;
 use Faker\Factory;
 
 class CompanyFactory implements FactoryInterface
@@ -31,5 +32,24 @@ class CompanyFactory implements FactoryInterface
         return new Company($ru->company, AddressFactory::make(), $companyType);
     }
 
+    public static function makeMockWith1Employee()
+    {
+        $company = Mockery::mock(Company::class);
 
+        //just random collection to have count > 0
+        $collection = new ArrayCollection([
+            '123',
+        ]);
+        $companyProfile = CompanyFactory::make()->getProfile();
+        $department = Mockery::mock(\App\Domains\Company\Entities\Department::class);
+        $department->shouldReceive('getCompany')->andReturn($company);
+        $department->shouldReceive('addEmployee')->andReturn(null);
+
+        $company->shouldReceive('getEmployees')->andReturn($collection);
+        $company->shouldReceive('getId')->andReturn('id');
+        $company->shouldReceive('getRootDepartment')->andReturn($department);
+        $company->shouldReceive('getProfile')->andReturn($companyProfile);
+
+        return $company;
+    }
 }

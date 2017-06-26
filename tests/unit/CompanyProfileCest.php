@@ -140,7 +140,72 @@ class CompanyProfileCest
         ]);
         $I->assertEquals($en, $profile->getBrandName()->getValue('en'));
         $I->assertEquals($ru, $profile->getBrandName()->getValue('ru'));
+
+        $newBrandNames = [
+            'ru' => 'Новое имя',
+            'es' => 'Spanish',
+        ];
+        $profile->setBrandNames($newBrandNames);
+
+        $expected = [
+            'en' => $en,
+            'ru' => 'Новое имя',
+            'es' => 'Spanish',
+        ];
+        $I->assertEquals($expected, $profile->getBrandName()->getValues());
     }
 
+    public function canSetGetPhone(UnitTester $I)
+    {
+        $companyProfile = CompanyFactory::make()->getProfile();
+
+        $companyProfile->setPhone('+79131111111');
+        $I->assertEquals('+79131111111', $companyProfile->getPhone());
+    }
+
+    public function canSetGetEmail(UnitTester $I)
+    {
+        $companyProfile = CompanyFactory::make()->getProfile();
+
+        $companyProfile->setEmail('test@test.com');
+        $I->assertEquals('test@test.com', $companyProfile->getEmail());
+    }
+
+    public function canSetGetUnsetPicture(UnitTester $I)
+    {
+        $companyProfile = CompanyFactory::make()->getProfile();
+
+        $companyProfile->setPicture('http://picture.com');
+        $I->assertEquals('http://picture.com', $companyProfile->getPicture());
+
+        $companyProfile->unsetPicture();
+        $I->assertNull($companyProfile->getPicture());
+    }
+
+    public function canSetGetDescription(UnitTester $I)
+    {
+        $companyProfile = CompanyFactory::make()->getProfile();
+
+        $companyProfile->setDescription('New description');
+        $I->assertEquals('New description', $companyProfile->getDescription());
+    }
+
+    public function canChangeName(UnitTester $I)
+    {
+        $companyProfile = CompanyFactory::make()->getProfile();
+
+        $companyProfile->changeName('New name');
+        $I->assertEquals('New name', $companyProfile->getName());
+    }
+
+    public function canSetGetCompanyType(UnitTester $I)
+    {
+        $companyProfile = CompanyFactory::make()->getProfile();
+
+        $type = CompanyTypeFactory::make();
+        $companyProfile->setCompanyType($type);
+
+        $I->assertEquals($type, $companyProfile->getType());
+    }
 
 }
