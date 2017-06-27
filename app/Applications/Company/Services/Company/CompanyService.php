@@ -140,11 +140,19 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
                         break;
 
                     case 'phone':
-                        $company->getProfile()->setPhone($value);
+                        if (empty($value)) {
+                            $company->getProfile()->unsetPhone();
+                        } else {
+                            $company->getProfile()->setPhone($value);
+                        }
                         break;
 
                     case 'email':
-                        $company->getProfile()->setEmail($value);
+                        if (empty($value)) {
+                            $company->getProfile()->unsetEmail();
+                        } else {
+                            $company->getProfile()->setEmail($value);
+                        }
                         break;
 
                     case 'economicalActivityTypes':
@@ -173,7 +181,11 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
                         break;
 
                     case 'description':
-                        $company->getProfile()->setDescription($value);
+                        if (empty($value)) {
+                            $company->getProfile()->unsetDescription();
+                        } else {
+                            $company->getProfile()->setDescription($value);
+                        }
                         break;
                 }
 

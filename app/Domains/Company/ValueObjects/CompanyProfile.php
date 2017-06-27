@@ -16,6 +16,7 @@ use App\Domains\Company\Entities\EconomicalActivityType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\PersistentCollection;
+use InvalidArgumentException;
 
 /**
  * Class CompanyProfile.
@@ -241,13 +242,27 @@ class CompanyProfile
         $this->phone = $phone;
     }
 
+    public function unsetPhone()
+    {
+        $this->phone = null;
+    }
+
 
     /**
      * @param string $email
      */
     public function setEmail(string $email)
     {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            throw new InvalidArgumentException(trans('exceptions.email.invalid'));
+        }
+
         $this->email = $email;
+    }
+
+    public function unsetEmail()
+    {
+        $this->email = null;
     }
 
     /**
@@ -285,6 +300,11 @@ class CompanyProfile
     public function setDescription(string $description)
     {
         $this->description = $description;
+    }
+
+    public function unsetDescription()
+    {
+        $this->description = null;
     }
 
     /**

@@ -198,7 +198,7 @@ class CompanyMyCest
 
         $I->sendPUT('company/my', [
             'profile' => [
-                'description' => $I->generateRandomString(551),
+                'description' => $I->generateRandomString(851),
             ],
         ]);
 
@@ -206,7 +206,7 @@ class CompanyMyCest
 
         $message = trans('validation.max.string', [
             'attribute' => $attrName,
-            'max' => 550,
+            'max' => 850,
         ]);
 
         $I->canSeeResponseContainsValidationErrors([
@@ -327,6 +327,60 @@ class CompanyMyCest
             'profile.address.city' => [
                 $message,
             ],
+        ]);
+    }
+
+    public function emailNull(ApiTester $I)
+    {
+        $I->wantTo('Update my company with null email and make sure email was unset');
+
+        $I->sendPUT('company/my', [
+            'profile' => [
+                'email' => null,
+            ],
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->canSeeResponseContainsJson([
+            'profile' => [
+                'email' => null,
+            ]
+        ]);
+    }
+
+    public function descriptionNull(ApiTester $I)
+    {
+        $I->wantTo('Update my company with null description and make sure description was unset');
+
+        $I->sendPUT('company/my', [
+            'profile' => [
+                'description' => null,
+            ],
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->canSeeResponseContainsJson([
+            'profile' => [
+                'description' => null,
+            ]
+        ]);
+    }
+
+    public function phoneNull(ApiTester $I)
+    {
+        $I->wantTo('Update my company with null phone and make sure phone was unset');
+
+        $I->sendPUT('company/my', [
+            'profile' => [
+                'phone' => null,
+            ],
+        ]);
+
+        $I->seeResponseCodeIs(200);
+        $I->canSeeResponseContainsJson([
+            'profile' => [
+                'phone' => null,
+            ]
         ]);
     }
 }

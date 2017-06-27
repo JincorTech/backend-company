@@ -155,20 +155,30 @@ class CompanyProfileCest
         $I->assertEquals($expected, $profile->getBrandName()->getValues());
     }
 
-    public function canSetGetPhone(UnitTester $I)
+    public function canSetGetUnsetPhone(UnitTester $I)
     {
         $companyProfile = CompanyFactory::make()->getProfile();
 
         $companyProfile->setPhone('+79131111111');
         $I->assertEquals('+79131111111', $companyProfile->getPhone());
+
+        $companyProfile->unsetPhone();
+        $I->assertNull($companyProfile->getPhone());
     }
 
-    public function canSetGetEmail(UnitTester $I)
+    public function canSetGetUnsetEmail(UnitTester $I)
     {
         $companyProfile = CompanyFactory::make()->getProfile();
 
         $companyProfile->setEmail('test@test.com');
         $I->assertEquals('test@test.com', $companyProfile->getEmail());
+
+        $companyProfile->unsetEmail();
+        $I->assertNull($companyProfile->getEmail());
+
+        $I->expectException(InvalidArgumentException::class, function () use ($companyProfile) {
+            $companyProfile->setEmail('123');
+        });
     }
 
     public function canSetGetUnsetPicture(UnitTester $I)
@@ -182,12 +192,15 @@ class CompanyProfileCest
         $I->assertNull($companyProfile->getPicture());
     }
 
-    public function canSetGetDescription(UnitTester $I)
+    public function canSetGetUnsetDescription(UnitTester $I)
     {
         $companyProfile = CompanyFactory::make()->getProfile();
 
         $companyProfile->setDescription('New description');
         $I->assertEquals('New description', $companyProfile->getDescription());
+
+        $companyProfile->unsetDescription();
+        $I->assertNull($companyProfile->getDescription());
     }
 
     public function canChangeName(UnitTester $I)

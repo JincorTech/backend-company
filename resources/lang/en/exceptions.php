@@ -59,5 +59,8 @@ return [
             'incorrect' => 'Verification code is incorrect',
         ],
         'failed' => 'Verification failed',
-    ]
+    ],
+    'email' => [
+        'invalid' => 'Argument is not a valid email',
+    ],
 ];
