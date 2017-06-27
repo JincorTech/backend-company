@@ -64,7 +64,7 @@ class Api extends \Codeception\Module
                         'name' => 'Частная компания',
                         'code' => 'BT1',
                     ],
-                    'employeesCount' => 2,
+                    'employeesCount' => 3,
                 ],
             ],
         ];

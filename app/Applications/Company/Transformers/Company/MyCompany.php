@@ -38,10 +38,7 @@ class MyCompany extends TransformerAbstract
                 $company->getProfile()->getEconomicalActivities()
             ),
             'companyType' => $this->transformCompanyType($company->getProfile()->getType()),
-            'employeesCount' => count($company->getEmployees()->partition(function($key, $value) {
-                /** @var Employee $value */
-                return $value->isActive();
-            }))
+            'employeesCount' => $company->getEmployeesCount(),
         ];
     }
 

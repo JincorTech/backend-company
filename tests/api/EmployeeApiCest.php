@@ -66,8 +66,8 @@ class EmployeeApiCest
                     'lastName' => 'Doe',
                     'avatar' => 'http://existing.avatar',
                     'position' => 'Tester',
-                    'companyId' => '06c52e3c-9366-4b9d-9da2-265613adb72e',
-                    'companyName' => 'Jincor Limited',
+                    'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
+                    'companyName' => 'Test Company',
                     'companyLogo' => null,
                 ],
                 [

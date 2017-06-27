@@ -142,7 +142,7 @@ class CompanyApiCest
 
         $I->canSeeResponseIsJson();
         $I->canSeeResponseCodeIs(200);
-        $I->canSeeResponseContains('{"data":{"id":"9fcad7c5-f84e-4d43-b35c-05e69d0e0362","legalName":"Test Company","profile":{"brandName":null,"description":null,"picture":null,"links":[],"email":null,"phone":null,"address":{"country":{"id":"c699fc1a-ec7f-4021-9102-31ff03c5624a","name":"\u0420\u043e\u0441\u0441\u0438\u044f"},"city":null,"formattedAddress":"\u041c\u043e\u0441\u043a\u0432\u0430, \u0443\u043b. \u0410\u043b\u0430\u044f, \u0434. 15, \u043e\u0444. 89, 602030"}},"economicalActivityTypes":[],"companyType":{"id":"4f021f7f-23bd-4317-a40b-086bf8e6a98d","name":"\u0427\u0430\u0441\u0442\u043d\u0430\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","code":"BT1"},"employeesCount":2}}');
+        $I->canSeeResponseContains('{"data":{"id":"9fcad7c5-f84e-4d43-b35c-05e69d0e0362","legalName":"Test Company","profile":{"brandName":null,"description":null,"picture":null,"links":[],"email":null,"phone":null,"address":{"country":{"id":"c699fc1a-ec7f-4021-9102-31ff03c5624a","name":"\u0420\u043e\u0441\u0441\u0438\u044f"},"city":null,"formattedAddress":"\u041c\u043e\u0441\u043a\u0432\u0430, \u0443\u043b. \u0410\u043b\u0430\u044f, \u0434. 15, \u043e\u0444. 89, 602030"}},"economicalActivityTypes":[],"companyType":{"id":"4f021f7f-23bd-4317-a40b-086bf8e6a98d","name":"\u0427\u0430\u0441\u0442\u043d\u0430\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","code":"BT1"},"employeesCount":3}}');
     }
 
     public function companySearchByCountry(ApiTester $I)
@@ -203,7 +203,7 @@ class CompanyApiCest
                         'name' => 'Частная компания',
                         'code' => 'BT1',
                     ],
-                    'employeesCount' => 2,
+                    'employeesCount' => 0,
                 ],
                 [
                     'id' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
@@ -230,7 +230,7 @@ class CompanyApiCest
                         'name' => 'Частная компания',
                         'code' => 'BT1',
                     ],
-                    'employeesCount' => 2,
+                    'employeesCount' => 3,
                 ],
             ],
             'meta' => [

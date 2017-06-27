@@ -14,6 +14,7 @@ use App\Core\Dictionary\Entities\Country;
 use App\Core\ValueObjects\Address;
 use Doctrine\Common\Collections\ArrayCollection;
 use Faker\Factory;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
 class CompanyFactory implements FactoryInterface
 {
@@ -50,6 +51,13 @@ class CompanyFactory implements FactoryInterface
         $company->shouldReceive('getRootDepartment')->andReturn($department);
         $company->shouldReceive('getProfile')->andReturn($companyProfile);
 
+        return $company;
+    }
+
+    public static function makeTestCompanyFromDb() : Company
+    {
+        $id = base64_decode('OWZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzYy');
+        $company = App::make(DocumentManager::class)->getRepository(Company::class)->find($id);
         return $company;
     }
 }

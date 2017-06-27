@@ -14,6 +14,7 @@ use App\Domains\Company\ValueObjects\CompanyProfile;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Ramsey\Uuid\Uuid;
+use App\Domains\Employee\Entities\Employee;
 
 /**
  * Class Company.
@@ -102,5 +103,16 @@ class Company
     public function getEmployees() : ArrayCollection
     {
         return $this->getRootDepartment()->getEmployees();
+    }
+
+    /**
+     * @return int
+     */
+    public function getEmployeesCount()
+    {
+        return count($this->getEmployees()->filter(function($value) {
+            /** @var Employee $value */
+            return $value->isActive();
+        }));
     }
 }

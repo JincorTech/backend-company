@@ -17,5 +17,9 @@ class CompanyCest
         $I->assertInstanceOf(ArrayCollection::class, $company->getEmployees());
     }
 
-
+    public function testGetEmployeesCount(UnitTester $I)
+    {
+        $company = CompanyFactory::makeTestCompanyFromDb();
+        $I->assertEquals(3, $company->getEmployeesCount());
+    }
 }
