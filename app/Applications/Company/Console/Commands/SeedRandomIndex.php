@@ -8,7 +8,6 @@
 
 namespace App\Applications\Company\Console\Commands;
 
-use App\Domains\Company\Repositories\EconomicalActivityRepository;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Core\Dictionary\Repositories\CountryRepository;
 use App\Domains\Company\Search\CompanyIndexContract;
@@ -25,7 +24,7 @@ use Faker\Factory;
 use Elasticsearch;
 use App;
 
-class SeedIndex extends Command implements CompanyIndexContract
+class SeedRandomIndex extends Command implements CompanyIndexContract
 {
 
     /**
@@ -33,7 +32,7 @@ class SeedIndex extends Command implements CompanyIndexContract
      *
      * @var string
      */
-    protected $signature = 'search:seed';
+    protected $signature = 'search:seed:random';
 
     /**
      * The console command description.

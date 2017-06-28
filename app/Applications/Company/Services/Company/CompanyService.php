@@ -282,6 +282,7 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
         if (!array_key_exists('hits', $result) || !array_key_exists('hits', $result['hits'])) {
             return new Collection();
         }
+
         $ids = Collection::make($result['hits']['hits'])->map(function($item) {
             return $item['_id'];
         });
@@ -304,18 +305,15 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
     private function buildSearchRequest($query = null, $country = null, $activity = null)
     {
         $request = [
-            'index' => '',
-            'type' => '',
+            'index' => CompanyIndexContract::INDEX,
+            'type' => CompanyIndexContract::TYPE,
             '_source' => '_id',
             'size' => $this->searchSize,
             'body' => [
                 'query' => [
                     'bool' => [
-                        'filter' => [
-                            'bool' => [
-                                'must' => []
-                            ]
-                        ]
+                        'must' => [],
+                        'filter' => [],
                     ],
                 ]
             ]
@@ -325,21 +323,25 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
             $request['body']['query']['bool']['must'] = [
                 'multi_match' => [
                     'query' => $query,
-                    'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*'],
-                    'type' => 'cross_fields'
-                ]
+                    'fields'=> ['legalName', 'description', 'companyType*', 'economicalActivities*', 'brandName*'],
+                    'type' => 'phrase_prefix'
+                ],
             ];
         }
 
         if ($country !== null) {
-            $request['body']['query']['bool']['filter']['bool']['must'][] = [
-                'term' => ['country' => $country],
+            $request['body']['query']['bool']['filter'][] = [
+                'term' => [
+                    'country' => $country,
+                ],
             ];
         }
 
         if ($activity !== null) {
-            $request['body']['query']['bool']['filter']['bool']['must'][] = [
-                'term' => ['eActivityIds' => $activity],
+            $request['body']['query']['bool']['filter'][] = [
+                'term' => [
+                    'eActivityIds' => $activity,
+                ],
             ];
         }
 

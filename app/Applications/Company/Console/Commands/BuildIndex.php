@@ -53,22 +53,26 @@ class BuildIndex extends Command implements CompanyIndexContract
                         'enabled' => true
                     ],
                     'dynamic_templates' => [
-                        ['en' => [
-                            'match' => '*en',
-                            'match_mapping_type' => 'string',
-                            'mapping' => [
-                                'type' => 'string',
-                                'analyzer' => 'english'
+                        [
+                            'en' => [
+                                'match' => '*en',
+                                'match_mapping_type' => 'string',
+                                'mapping' => [
+                                    'type' => 'string',
+                                    'analyzer' => 'english'
+                                ]
                             ]
-                        ]],
-                        ['ru' => [
-                            'match' => '*ru',
-                            'match_mapping_type' => 'string',
-                            'mapping' => [
-                                'type' => 'string',
-                                'analyzer' => 'russian'
+                        ],
+                        [
+                            'ru' => [
+                                'match' => '*ru',
+                                'match_mapping_type' => 'string',
+                                'mapping' => [
+                                    'type' => 'string',
+                                    'analyzer' => 'russian'
+                                ]
                             ]
-                        ]],
+                        ],
                     ],
                     'properties' => [
                         'legalName' => [
@@ -76,16 +80,13 @@ class BuildIndex extends Command implements CompanyIndexContract
                             'analyzer' => 'standard'
                         ],
                         'country' => [
-                            'type' => 'string',
-                            'index' => 'not_analyzed'
+                            'type' => 'keyword',
                         ],
                         'eActivityIds' => [
-                            'type' => 'string',
-                            'index' => 'not_analyzed'
+                            'type' => 'keyword',
                         ],
                         'city' => [
-                            'type' => 'string',
-                            'index' => 'not_analyzed'
+                            'type' => 'keyword',
                         ],
                     ]
                 ]

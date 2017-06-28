@@ -6,9 +6,10 @@ use App\Applications\Company\Console\Commands\BuildIndex;
 use App\Applications\Company\Console\Commands\DropCompanies;
 use App\Applications\Company\Console\Commands\DropIndex;
 use App\Applications\Company\Console\Commands\GetIndex;
-use App\Applications\Company\Console\Commands\SeedIndex;
+use App\Applications\Company\Console\Commands\SeedRandomIndex;
 use App\Applications\Company\Console\Commands\SeedRandomCompanies;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Applications\Company\Console\Commands\SeedRealIndex;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -20,11 +21,12 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         GetIndex::class,
-        SeedIndex::class,
+        SeedRandomIndex::class,
         BuildIndex::class,
         DropIndex::class,
         SeedRandomCompanies::class,
-        DropCompanies::class
+        DropCompanies::class,
+        SeedRealIndex::class
     ];
 
     /**
