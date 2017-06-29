@@ -10,6 +10,7 @@ use App\Applications\Company\Console\Commands\SeedRandomIndex;
 use App\Applications\Company\Console\Commands\SeedRandomCompanies;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Applications\Company\Console\Commands\SeedRealIndex;
+use App\Applications\Company\Console\Commands\SeedEmployeesIdentity;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -26,7 +27,8 @@ class Kernel extends ConsoleKernel
         DropIndex::class,
         SeedRandomCompanies::class,
         DropCompanies::class,
-        SeedRealIndex::class
+        SeedRealIndex::class,
+        SeedEmployeesIdentity::class
     ];
 
     /**

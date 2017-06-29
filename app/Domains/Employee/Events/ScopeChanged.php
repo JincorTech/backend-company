@@ -34,7 +34,7 @@ class ScopeChanged
         return [
             'email' => $this->employee->getContacts()->getEmail(),
             'password' => $this->employee->getPassword(),
-            'company' => $this->employee->getCompany()->getId(),
+            'tenant' => $this->employee->getCompany()->getId(),
             'companyName' => $this->employee->getCompany()->getProfile()->getName(),
             'name' => $this->employee->getProfile()->getName(),
             'position' => $this->employee->getProfile()->getPosition(),

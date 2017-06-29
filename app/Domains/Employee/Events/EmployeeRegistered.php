@@ -68,7 +68,7 @@ class EmployeeRegistered
             'employeeId' => $this->employeeId,
             'email' => $this->email,
             'password' => $this->password,
-            'company' => $this->companyId,
+            'tenant' => $this->companyId,
             'companyName' => $this->companyName,
             'name' => $this->name,
             'position' => $this->position,
