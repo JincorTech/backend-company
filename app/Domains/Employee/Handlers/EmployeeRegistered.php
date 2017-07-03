@@ -61,7 +61,7 @@ class EmployeeRegistered
     public function notifyMessenger(array $eventData)
     {
         $data = [
-            'username' => $eventData['company'] . '_' . str_replace('@', '_', $eventData['email']),
+            'username' => $eventData['tenant'] . '_' . str_replace('@', '_', $eventData['email']),
             'password' => $eventData['password'],
             "bind_email" => false,
         ];
