@@ -11,32 +11,11 @@ namespace App\Domains\Employee\Events;
 
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\Entities\Employee;
+use App\Domains\Employee\Events\Traits\GetEmployeeData;
 
 class EmployeeRegistered
 {
-    /**
-     * UUID4 of the company employee belongs to.
-     *
-     * @var string
-     */
-    protected $companyId;
-
-    protected $companyName;
-
-    protected $email;
-
-    protected $password;
-
-    protected $scope;
-
-    protected $name;
-
-    protected $position;
-
-    protected $employeeId;
-
-    protected $sub;
-
+    use GetEmployeeData;
     /**
      * EmployeeRegistered constructor.
      *
@@ -46,34 +25,6 @@ class EmployeeRegistered
      */
     public function __construct(Company $company, Employee $employee, string $scope)
     {
-        $this->companyId = $company->getId();
-        $this->companyName = $company->getProfile()->getName();
-        $this->email = $employee->getContacts()->getEmail();
-        $this->password = $employee->getPassword();
-        $this->scope = $scope;
-        $this->name = $employee->getProfile()->getName();
-        $this->position = $employee->getProfile()->getPosition();
-        $this->employeeId = $employee->getId();
-        $this->sub = $employee->getMatrixId();
-    }
-
-    /**
-     * Get an event data
-     *
-     * @return array
-     */
-    public function getData(): array
-    {
-        return [
-            'employeeId' => $this->employeeId,
-            'email' => $this->email,
-            'password' => $this->password,
-            'tenant' => $this->companyId,
-            'companyName' => $this->companyName,
-            'name' => $this->name,
-            'position' => $this->position,
-            'scope' => $this->scope,
-            'sub' => $this->sub,
-        ];
+        $this->employee = $employee;
     }
 }

@@ -51,6 +51,7 @@ class SeedEmployeesIdentity extends Command
                     'name' => $employee->getProfile()->getName(),
                     'position' => $employee->getProfile()->getPosition(),
                     'scope' => $employee->getProfile()->scope,
+                    'sub' => $employee->getMatrixId(),
                 ];
                 $identityService->register($data);
             }

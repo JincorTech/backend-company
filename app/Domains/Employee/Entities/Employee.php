@@ -349,4 +349,9 @@ class Employee implements MetaEmployeeInterface
     {
         return $this->searchContactInList($contact) !== false;
     }
+
+    public function getScope()
+    {
+        return $this->profile->scope;
+    }
 }

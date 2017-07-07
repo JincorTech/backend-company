@@ -9,37 +9,19 @@
 namespace App\Domains\Employee\Events;
 
 
+use App\Domains\Employee\Events\Traits\GetEmployeeData;
 use App\Domains\Employee\Entities\Employee;
 
 class ScopeChanged
 {
+    use GetEmployeeData;
 
     protected $oldValue;
-
-    public $employee;
 
     public function __construct(Employee $employee, string $old)
     {
         $this->employee = $employee;
         $this->oldValue = $old;
-    }
-
-    /**
-     * Get an event data
-     *
-     * @return array
-     */
-    public function getData(): array
-    {
-        return [
-            'email' => $this->employee->getContacts()->getEmail(),
-            'password' => $this->employee->getPassword(),
-            'tenant' => $this->employee->getCompany()->getId(),
-            'companyName' => $this->employee->getCompany()->getProfile()->getName(),
-            'name' => $this->employee->getProfile()->getName(),
-            'position' => $this->employee->getProfile()->getPosition(),
-            'scope' => $this->employee->getProfile()->scope,
-        ];
     }
 
 }

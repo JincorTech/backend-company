@@ -11,14 +11,11 @@ namespace App\Domains\Employee\Events;
 
 
 use App\Domains\Employee\Entities\Employee;
+use App\Domains\Employee\Events\Traits\GetEmployeeData;
 
 class PasswordChanged
 {
-
-    /**
-     * @var Employee
-     */
-    private $employee;
+    use GetEmployeeData;
 
     /**
      * @var string
@@ -37,23 +34,4 @@ class PasswordChanged
         $this->old = $old;
         $this->password = $employee->getPassword();
     }
-
-    /**
-     * Get an event data
-     *
-     * @return array
-     */
-    public function getData(): array
-    {
-        return [
-            'email' => $this->employee->getContacts()->getEmail(),
-            'password' => $this->password,
-            'tenant' => $this->employee->getCompany()->getId(),
-            'companyName' => $this->employee->getCompany()->getProfile()->getName(),
-            'name' => $this->employee->getProfile()->getName(),
-            'position' => $this->employee->getProfile()->getPosition(),
-            'scope' => $this->employee->getProfile()->scope,
-        ];
-    }
-
 }
