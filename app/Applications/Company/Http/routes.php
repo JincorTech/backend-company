@@ -53,8 +53,6 @@ $api->version('v1', function ($api) {
 
 //            $api->put('/{id}', ['as' => 'company.update', 'uses' => $namespace.'CompanyController@update']);
 
-            //Admin-only routes
-            $api->get('/activityTypes/schema', ['as' => 'company.eatypes.schema', 'uses' => $namespace.'CompanyController@economicalActivityTypesSchema']);
         });
 
         $api->group(['prefix' => 'employee'], function ($api) {
@@ -83,7 +81,6 @@ $api->version('v1', function ($api) {
             $api->post('/contacts', ['as' => 'employee.contacts.add', 'uses' => $namespace.'EmployeeController@addContact']);
             $api->post('/matrix', ['as' => 'employee.matrix', 'uses' => $namespace.'EmployeeController@matrix']); //use POST because of GET query length limitations
             $api->delete('/contacts/{id}', ['as' => 'employee.contacts.delete', 'uses' => $namespace.'EmployeeController@deleteContact']);
-            $api->get('/{employeeId}', ['as' => 'employee.info', 'uses' => $namespace.'EmployeeController@info']);
         });
     });
 });
