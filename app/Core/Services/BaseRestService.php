@@ -27,6 +27,9 @@ abstract class BaseRestService
     {
         $this->client = new Client([
             'base_uri' => $baseUri,
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
         ]);
     }
 }
