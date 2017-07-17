@@ -63,4 +63,13 @@ return [
     'email' => [
         'invalid' => 'Argument is not a valid email',
     ],
+    'mailingList' => [
+        'id' => [
+            'unknown' => 'Unknown mailing list id',
+        ],
+        'item' => [
+            'not_found' => 'Email is not found in the mailing list',
+            'already_exists' => 'This email already added to mailing list',
+        ]
+    ],
 ];

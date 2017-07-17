@@ -192,6 +192,7 @@ return [
         App\Core\Providers\MessengerServiceProvider::class,
         App\Core\Providers\EmployeeServiceProvider::class,
         App\Core\Providers\CompanyServiceProvider::class,
+        App\Core\Providers\MailingListProvider::class,
     ],
 
     /*

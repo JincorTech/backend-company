@@ -82,5 +82,12 @@ $api->version('v1', function ($api) {
             $api->post('/matrix', ['as' => 'employee.matrix', 'uses' => $namespace.'EmployeeController@matrix']); //use POST because of GET query length limitations
             $api->delete('/contacts/{id}', ['as' => 'employee.contacts.delete', 'uses' => $namespace.'EmployeeController@deleteContact']);
         });
+
+        $api->group(['prefix' => 'mailingList'], function ($api) {
+            /* @var \Dingo\Api\Routing\Router $api */
+            $namespace = 'App\Applications\Company\Http\Controllers\\';
+            $api->post('/subscribe', ['as' => 'mailingList.subscribe', 'uses' => $namespace.'MailingListController@subscribe']);
+            $api->post('/unsubscribe', ['as' => 'mailingList.unsubscribe', 'uses' => $namespace.'MailingListController@unsubscribe']);
+        });
     });
 });

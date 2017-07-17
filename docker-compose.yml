@@ -51,7 +51,7 @@ services:
       FORCE_HTTPS: disabled
       JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
     volumes:
-      - /home/artem/dev/backend-auth:/usr/src/app
+      - /usr/src/app
     links:
       - redis
     networks:

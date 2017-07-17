@@ -16,7 +16,10 @@ class MessengerService extends BaseRestService implements MessengerServiceInterf
 
     public function __construct()
     {
-        parent::__construct(config('services.messenger.uri'));
+        $options = [
+            'base_uri' => config('services.messenger.uri'),
+        ];
+        parent::__construct($options);
     }
 
     /**

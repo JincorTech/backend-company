@@ -16,7 +16,10 @@ class DadataService extends BaseRestService implements INNInfoInterface
 {
     public function __construct()
     {
-        parent::__construct('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/');
+        $options = [
+            'base_uri' => 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/',
+        ];
+        parent::__construct($options);
     }
 
     /**

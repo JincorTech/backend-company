@@ -33,7 +33,10 @@ class IdentityService extends BaseRestService implements IdentityInterface
         CompanyServiceInterface $companyService
     )
     {
-        parent::__construct(config('services.identity.uri'));
+        $options = [
+            'base_uri' => config('services.identity.uri'),
+        ];
+        parent::__construct($options);
         $this->companyService = $companyService;
         $this->employeeService = $employeeService;
     }

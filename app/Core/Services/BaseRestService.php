@@ -21,15 +21,16 @@ abstract class BaseRestService
     /**
      * BaseRestService constructor.
      *
-     * @param string $baseUri
+     * @param array $options
      */
-    public function __construct($baseUri)
+    public function __construct($options)
     {
-        $this->client = new Client([
-            'base_uri' => $baseUri,
+        $headers = [
             'headers' => [
                 'Accept' => 'application/json',
             ],
-        ]);
+        ];
+        $options = array_merge($options, $headers);
+        $this->client = new Client($options);
     }
 }

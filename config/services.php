@@ -17,6 +17,7 @@ return [
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
+        'apiUri' => env('MAILGUN_API_URI'),
     ],
 
     'ses' => [

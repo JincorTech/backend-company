@@ -1823,3 +1823,42 @@ Note that there are two ways of user authentication in this method.
             }
           }
         }
+
+# Group Mailing List
+
+## Subscribe an email to newsletter (add to mailing list) [/mailingList/subscribe]
+
+### Subscribe new email [POST]
+
++ Request (application/json)
+
+        {
+            "email": "test@test.com",
+            "subject": "ico" //supports only "ico" or "beta" value
+        }
+
++ Response 200 (application/json)
+
+        {
+            "email": "test@test.com",
+            "mailingListId": "ico@jincor.com"
+        }
+
+
+## Unsubscribe an email from newsletter (remove from mailing list) [/mailingList/unsubscribe]
+
+### Unsubscribe email [POST]
+
++ Request (application/json)
+
+        {
+            "email": "test@test.com",
+            "subject": "ico" //supports only "ico" or "beta" value
+        }
+
++ Response 200 (application/json)
+
+        {
+            "email": "test@test.com",
+            "mailingListId": "ico@jincor.com"
+        }
