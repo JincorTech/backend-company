@@ -7,9 +7,9 @@
  */
 
 namespace App\Core\Exceptions;
+use Dingo\Api\Exception\ValidationHttpException;
 
-
-class MailingListItemAlreadyExists extends \Exception
+class MailingListItemAlreadyExists extends ValidationHttpException
 {
 
 }

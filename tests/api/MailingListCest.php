@@ -59,10 +59,13 @@ class MailingListCest
             'subject' => 'ico',
         ]);
 
-        $I->canSeeResponseCodeIs(500);
-        $I->canSeeResponseContainsJson([
-            'message' => trans('exceptions.mailingList.item.already_exists'),
-        ]);
+        $errors = [
+            'email' => [
+                trans('exceptions.mailingList.item.already_exists'),
+            ],
+        ];
+
+        $I->canSeeResponseContainsValidationErrors($errors);
     }
 
     public function testSubscribeInvalidEmail(ApiTester $I)

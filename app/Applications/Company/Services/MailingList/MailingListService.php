@@ -50,7 +50,11 @@ class MailingListService
         $item = $this->mailingListRepository->findByEmailAndSubject($email, $subject);
 
         if ($item) {
-            throw new MailingListItemAlreadyExists(trans('exceptions.mailingList.item.already_exists'));
+            throw new MailingListItemAlreadyExists([
+                'email' => [
+                    trans('exceptions.mailingList.item.already_exists'),
+                ],
+            ]);
         }
 
         $newItem = new MailingListItem($email, $subject);
