@@ -1,10 +1,19 @@
 <?php
 use App\Domains\Company\Entities\Department;
+use App\Core\Interfaces\MessengerServiceInterface;
+use App\Core\Interfaces\IdentityInterface;
 
 class DepartmentCest
 {
     public function _before(UnitTester $I)
     {
+        $messengerMock = Mockery::mock(MessengerServiceInterface::class);
+        $messengerMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(MessengerServiceInterface::class, $messengerMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(IdentityInterface::class, $identityMock);
     }
 
     public function _after(UnitTester $I)

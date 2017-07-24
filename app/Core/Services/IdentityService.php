@@ -35,6 +35,9 @@ class IdentityService extends BaseRestService implements IdentityInterface
     {
         $options = [
             'base_uri' => config('services.identity.uri'),
+            'headers' => [
+                'Authorization' => 'Bearer ' . config('services.identity.jwt'),
+            ]
         ];
         parent::__construct($options);
         $this->companyService = $companyService;

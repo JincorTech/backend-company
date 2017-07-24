@@ -22,7 +22,7 @@ trait GetEmployeeData
             'employeeId' => $this->employee->getId(),
             'email' => $this->employee->getContacts()->getEmail(),
             'password' => $this->employee->getPassword(),
-            'tenant' => $this->employee->getCompany()->getId(),
+            'login' => $this->employee->getLogin(),
             'companyName' => $this->employee->getCompany()->getProfile()->getName(),
             'name' => $this->employee->getProfile()->getName(),
             'position' => $this->employee->getProfile()->getPosition(),

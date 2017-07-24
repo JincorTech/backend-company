@@ -41,6 +41,14 @@ $app->singleton(
     App\Core\Exceptions\Handler::class
 );
 
+$app->afterLoadingEnvironment(function () {
+    $appEnv = env('APP_ENV');
+    $identityJwt = env('IDENTITY_JWT');
+
+    if ($appEnv === 'production' && empty($identityJwt)) {
+        throw new \Exception('IDENTITY_JWT environment variable is not set!');
+    }
+});
 /*
 |--------------------------------------------------------------------------
 | Return The Application

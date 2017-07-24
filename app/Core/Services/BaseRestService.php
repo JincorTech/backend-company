@@ -30,7 +30,7 @@ abstract class BaseRestService
                 'Accept' => 'application/json',
             ],
         ];
-        $options = array_merge($options, $headers);
+        $options = array_merge_recursive($options, $headers);
         $this->client = new Client($options);
     }
 }

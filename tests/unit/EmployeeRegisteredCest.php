@@ -21,7 +21,7 @@ class EmployeeRegisteredCest
             'employeeId' => $employee->getId(),
             'email' => $employee->getContacts()->getEmail(),
             'password' => $employee->getPassword(),
-            'tenant' => $employee->getCompany()->getId(),
+            'login' => $employee->getLogin(),
             'companyName' => $employee->getCompany()->getProfile()->getName(),
             'name' => $employee->getProfile()->getName(),
             'position' => $employee->getProfile()->getPosition(),

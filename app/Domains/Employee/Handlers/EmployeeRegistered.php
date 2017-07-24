@@ -61,9 +61,9 @@ class EmployeeRegistered
     public function notifyMessenger(array $eventData)
     {
         $data = [
-            'username' => $eventData['tenant'] . '_' . str_replace('@', '_', $eventData['email']),
+            'username' => str_replace('@', '', $eventData['sub']),
             'password' => $eventData['password'],
-            "bind_email" => false,
+            'bind_email' => false,
         ];
         $this->messengerService->register($data, $eventData['employeeId']);
     }
