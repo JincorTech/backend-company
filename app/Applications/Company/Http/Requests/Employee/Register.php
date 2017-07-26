@@ -19,7 +19,7 @@ class Register extends BaseAPIRequest
         return [
             'firstName' => 'required|string|min:2',
             'lastName' => 'required|string|min:2',
-            'password' => 'required|string|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/',
+            'password' => 'required|string|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0\d!"#$%&\'()*+,-.\/:;<=>?@[\]^_`{|}~]{8,}$/',
             'position' => 'required|string|min:2|max:60',
             'verificationId' => 'required|string|size:36',
         ];
