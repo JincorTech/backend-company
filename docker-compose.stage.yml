@@ -132,6 +132,41 @@ services:
       default:
         ipv4_address: 10.5.0.10
 
+  src-admin:
+    image: tianon/true
+    volumes:
+      - ../backend-admin:/var/www/jincor-admin
+    networks:
+      default:
+        ipv4_address: 10.5.0.11
+
+  admin:
+    image: registry.jincor.com/backend/admin:latest
+    ports:
+      - 9000
+    links:
+      - mongo
+    environment:
+      # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
+      - PHP_IDE_CONFIG="serverName=companies"
+    volumes_from:
+      - src-admin
+    networks:
+      default:
+        ipv4_address: 10.5.0.12
+
+  nginx-admin:
+    image: registry.jincor.com/backend/nginx-admin:latest
+    volumes_from:
+      - src-admin
+    ports:
+     - 8081:80
+    links:
+     - admin
+    networks:
+      default:
+        ipv4_address: 10.5.0.13
+
 networks:
   default:
     driver: bridge
