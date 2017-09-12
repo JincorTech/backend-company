@@ -31,6 +31,7 @@ class DepartmentCest
         $company = CompanyFactory::make();
         $department->associateCompany($company);
         $I->assertEquals($company, $department->getCompany());
+        $I->assertEquals($company->getId(), $department->getCompanyId());
 
         $employee = EmployeeFactory::make();
         $department->addEmployee($employee);

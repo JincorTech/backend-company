@@ -84,6 +84,36 @@ class EmployeeRegisterCest
         $I->seeResponseJsonMatchesJsonPath('data.employee.profile.position');
     }
 
+    public function successPasswordPunctuation(ApiTester $I)
+    {
+        $I->wantTo('Register new employee with correct data and receive success response');
+
+        $messengerMock = Mockery::mock(MessengerServiceInterface::class);
+        $messengerMock->shouldReceive('register')->once()->andReturn(true);
+        $I->haveInstance(MessengerServiceInterface::class, $messengerMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        $identityMock->shouldReceive('login')->once()->andReturn('123');
+        $I->haveInstance(IdentityInterface::class, $identityMock);
+
+        $I->sendPOST('employee/register', [
+            'firstName' => 'Ivan',
+            'lastName' => 'Ivanov',
+            'password' => "Cm3jpmrt7c!@#$%^&*()`~[]{}'\"?/\<>,.|",
+            'verificationId' => '2a5f87b8-273a-47f8-af20-786ffce71edc',
+            'position' => 'Wizard',
+        ]);
+
+        $I->canSeeResponseCodeIs(200);
+        $I->canSeeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data.employee.id');
+        $I->seeResponseJsonMatchesJsonPath('data.employee.profile.name');
+        $I->seeResponseJsonMatchesJsonPath('data.employee.profile.firstName');
+        $I->seeResponseJsonMatchesJsonPath('data.employee.profile.lastName');
+        $I->seeResponseJsonMatchesJsonPath('data.employee.profile.position');
+    }
+
     public function passwordIncorrectFormat(ApiTester $I)
     {
         $I->wantTo('Register new employee with incorrect password format and receive 422 response code');
@@ -122,7 +152,7 @@ class EmployeeRegisterCest
         $attrName = trans('password');
         $message = trans('validation.min.string', [
             'attribute' => $attrName,
-            'min' => 6,
+            'min' => 8,
         ]);
 
         $I->canSeeResponseContainsValidationErrors([

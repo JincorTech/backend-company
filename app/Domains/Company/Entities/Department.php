@@ -56,6 +56,12 @@ class Department
     protected $company;
 
     /**
+     * @var string
+     * @ODM\Field(type="bin_uuid")
+     */
+    protected $companyId;
+
+    /**
      * Department constructor.
      *
      * @param string $name
@@ -97,11 +103,17 @@ class Department
     public function associateCompany(Company $company)
     {
         $this->company = $company;
+        $this->companyId = $company->getId();
     }
 
     public function getCompany() : Company
     {
         return $this->company;
+    }
+
+    public function getCompanyId() : string
+    {
+        return $this->companyId;
     }
 
     /**

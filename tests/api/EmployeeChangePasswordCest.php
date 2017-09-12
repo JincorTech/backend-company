@@ -79,6 +79,74 @@ class EmployeeChangePasswordCest
         $I->canSeeResponseJsonMatchesJsonPath('$.data.token');
     }
 
+    public function changeUsingValidVerificationIdPasswordPunctuation(ApiTester $I)
+    {
+        $I->wantTo('Change my password (punctuation chars) using valid verification ID and receive 200 response code');
+
+        $mock = Mockery::mock(IdentityInterface::class);
+        $mock->shouldReceive('login')->andReturn('token');
+        $mock->shouldReceive('register')->andReturn(true);
+        $I->haveInstance(IdentityInterface::class, $mock);
+
+        $I->sendPUT('employee/changePassword', [
+            'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
+            'verificationId' => '3e497dd3-4d2f-4eee-84ce-02516982b1ff',
+            'password' => "Cm3jpmrt7c!@#$%^&*()`~[]{}'\"?/\<>,.|",
+        ]);
+        $response = $I->grabResponse();
+        $I->canSeeResponseCodeIs(200);
+        $I->canSeeResponseIsJson();
+        $I->canSeeResponseContainsJson([
+            'data' => [
+                'employee' => [
+                    'id' => '63e88d9d-a79e-4705-9c8f-8712b71b53f8',
+                    'profile' => [
+                        'name' => 'John Doe',
+                        'firstName' => 'John',
+                        'lastName' => 'Doe',
+                        'position' => 'Tester',
+                        'role' => 'company-admin',
+                        'avatar' => 'http://existing2.avatar',
+                    ],
+                    'admin' => true,
+                    'contacts' => [
+                        'email' => 'test2@test.com',
+                        'phone' => null,
+                    ],
+                    'company' => [
+                        'id' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
+                        'legalName' => 'Test Company',
+                        'profile' => [
+                            'brandName' => [],
+                            'description' => null,
+                            'picture' => null,
+                            'links' => [],
+                            'email' => null,
+                            'phone' => null,
+                            'address' => [
+                                'country' => [
+                                    'id' => 'c699fc1a-ec7f-4021-9102-31ff03c5624a',
+                                    'name' => 'Россия',
+                                ],
+                                'city' => null,
+                                'formattedAddress' => 'Москва, ул. Алая, д. 15, оф. 89, 602030',
+                            ],
+                        ],
+                        'economicalActivityTypes' => [],
+                        'companyType' => [
+                            'id' => '4f021f7f-23bd-4317-a40b-086bf8e6a98d',
+                            'name' => 'Частная компания',
+                            'code' => 'BT1',
+                        ],
+                        'employeesCount' => 3,
+                    ],
+                ],
+            ],
+        ]);
+
+        $I->canSeeResponseJsonMatchesJsonPath('$.data.token');
+    }
+
     public function changeByValidVerificationIdIncorrectPasswordFormat(ApiTester $I)
     {
         $I->wantTo('Change my password using valid verification ID but with incorrect password format. 422 response code expected');
@@ -112,7 +180,7 @@ class EmployeeChangePasswordCest
         $attrName = trans('password');
         $message = trans('validation.min.string', [
             'attribute' => $attrName,
-            'min' => 6,
+            'min' => 8,
         ]);
 
         $I->canSeeResponseContainsValidationErrors([

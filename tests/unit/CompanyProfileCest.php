@@ -3,9 +3,8 @@
 
 use App\Domains\Company\ValueObjects\CompanyProfile;
 use App\Domains\Company\ValueObjects\CompanyExternalLink;
-use App\Domains\Company\Entities\CompanyType;
 use Faker\Factory;
-
+use MongoDB\BSON\Binary;
 
 class CompanyProfileCest
 {
@@ -33,6 +32,7 @@ class CompanyProfileCest
         $I->assertEquals($ct, $profile->getType());
         $I->assertEquals($name, $profile->getName());
         $I->assertEquals($address, $profile->getAddress());
+        $I->assertEquals($profile->getCompanyTypeId(), $ct->getId());
     }
 
     /**
@@ -102,7 +102,12 @@ class CompanyProfileCest
             EconomicalActivityTypeFactory::make(),
         ];
         $profile->setEconomicalActivities($economicalActivities);
+        $I->assertEquals($economicalActivities[0], $profile->getEconomicalActivities()->get(0));
+        $I->assertEquals($economicalActivities[0], $profile->getEconomicalActivitiesIds()->get(0));
         $I->assertEquals($economicalActivities[1], $profile->getEconomicalActivities()->get(1));
+        $I->assertEquals($economicalActivities[1], $profile->getEconomicalActivitiesIds()->get(1));
+        $I->assertEquals($economicalActivities[2], $profile->getEconomicalActivities()->get(2));
+        $I->assertEquals($economicalActivities[2], $profile->getEconomicalActivitiesIds()->get(2));
     }
 
     /**
@@ -219,6 +224,7 @@ class CompanyProfileCest
         $companyProfile->setCompanyType($type);
 
         $I->assertEquals($type, $companyProfile->getType());
+        $I->assertEquals($type->getId(), $companyProfile->getCompanyTypeId());
     }
 
 }

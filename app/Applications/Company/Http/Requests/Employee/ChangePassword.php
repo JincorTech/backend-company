@@ -13,7 +13,7 @@ namespace App\Applications\Company\Http\Requests\Employee;
 use App\Core\Http\Requests\BaseAPIRequest;
 use App;
 
-class ChangePassword extends BaseAPIRequest
+class ChangePassword extends BaseAPIRequest implements PasswordValidation
 {
 
     public function rules()
@@ -22,7 +22,12 @@ class ChangePassword extends BaseAPIRequest
             'companyId' => 'required|string|size:36',
             'verificationId' => 'required_without:oldPassword|string|size:36',
             'oldPassword' => 'required_without:verificationId|string',
-            'password' => 'required|string|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/'
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                self::PASSWORD_REGEX,
+            ],
         ];
     }
 
@@ -58,5 +63,4 @@ class ChangePassword extends BaseAPIRequest
         }
         return true;
     }
-
 }

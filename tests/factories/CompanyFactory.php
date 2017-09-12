@@ -45,6 +45,7 @@ class CompanyFactory implements FactoryInterface
         $department = Mockery::mock(\App\Domains\Company\Entities\Department::class);
         $department->shouldReceive('getCompany')->andReturn($company);
         $department->shouldReceive('addEmployee')->andReturn(null);
+        $department->shouldReceive('getId')->andReturn('id');
 
         $company->shouldReceive('getEmployees')->andReturn($collection);
         $company->shouldReceive('getId')->andReturn('id');

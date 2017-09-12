@@ -16,7 +16,8 @@ class AddressCest
         $country = CountryFactory::make();
         $address = new Address('ул. Пушкина, дом Колотушкина, г. Москва', $country);
         $I->assertInstanceOf(Address::class, $address);
-        $I->assertEquals($address->getCountry()->getId(), $country->getId());
+        $I->assertEquals($address->getCountry(), $country);
+        $I->assertEquals($address->getCountryId(), $country->getId());
         $I->assertEquals('ул. Пушкина, дом Колотушкина, г. Москва', $address->getFormattedAddress());
     }
 

@@ -38,6 +38,13 @@ class Address
     protected $country;
 
     /**
+     * @var string
+     *
+     * @ODM\Field(type="bin_uuid")
+     */
+    protected $countryId;
+
+    /**
      * @var App\Core\Dictionary\Entities\City
      * @ODM\ReferenceOne(
      *     targetDocument="App\Core\Dictionary\Entities\City",
@@ -50,6 +57,7 @@ class Address
     {
         $this->formattedAddress = $address;
         $this->country = $country;
+        $this->countryId = $country->getId();
         $this->city = $city;
     }
 
@@ -82,6 +90,14 @@ class Address
     }
 
     /**
+     * @return string
+     */
+    public function getCountryId() : string
+    {
+        return $this->countryId;
+    }
+
+    /**
      * @return App\Core\Dictionary\Entities\City|null
      */
     public function getCity()
@@ -102,5 +118,10 @@ class Address
         }
 
         return $values;
+    }
+
+    public function updateCountryReference()
+    {
+        $this->countryId = $this->country->getId();
     }
 }

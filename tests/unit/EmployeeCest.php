@@ -44,6 +44,8 @@ class EmployeeCest
 
         //first employee of company is always registered as admin
         $I->assertEquals(EmployeeRole::ADMIN, $employee->getProfile()->scope);
+
+        $I->assertEquals($employee->getCompany()->getRootDepartment()->getId(), $employee->getDepartmentId());
     }
 
     /**

@@ -54,6 +54,12 @@ class Employee implements MetaEmployeeInterface
     protected $matrixId;
 
     /**
+     * @var string
+     * @ODM\Field(type="bin_uuid")
+     */
+    protected $departmentId;
+
+    /**
      * @var Department
      *
      * @ODM\ReferenceOne(targetDocument="App\Domains\Company\Entities\Department", inversedBy="employees", cascade={"persist"})
@@ -126,6 +132,7 @@ class Employee implements MetaEmployeeInterface
         $employee->setScope($verification->getCompany());
 
         $employee->department = $verification->getCompany()->getRootDepartment();
+        $employee->departmentId = $verification->getCompany()->getRootDepartment()->getId();
         $employee->department->addEmployee($employee);
         $employee->registeredAt = new \DateTime();
         $employee->matrixId = $employee->getMatrixId();
@@ -353,5 +360,15 @@ class Employee implements MetaEmployeeInterface
     public function getScope()
     {
         return $this->profile->scope;
+    }
+
+    public function getDepartmentId() : string
+    {
+        return $this->departmentId;
+    }
+
+    public function updateDepartmentReference()
+    {
+        $this->departmentId = $this->department->getId();
     }
 }

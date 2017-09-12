@@ -52,6 +52,12 @@ class CompanyProfile
      */
     protected $companyType;
 
+    /**
+     * @var string
+     *
+     * @ODM\Field(type="bin_uuid")
+     */
+    protected $companyTypeId;
 
     /**
      * @var EconomicalActivityType
@@ -62,6 +68,17 @@ class CompanyProfile
      * )
      */
     protected $economicalActivities;
+
+    /**
+     * @var array
+     *
+     * @ODM\ReferenceMany(
+     *     targetDocument="App\Domains\Company\Entities\EconomicalActivityType",
+     *     cascade={"persist"},
+     *     storeAs="id"
+     * )
+     */
+    protected $economicalActivitiesIds;
 
     /**
      * @var ArrayCollection
@@ -118,7 +135,9 @@ class CompanyProfile
         $this->legalName = $name;
         $this->address  = $address;
         $this->companyType = $type;
+        $this->companyTypeId = $type->getId();
         $this->economicalActivities = new ArrayCollection([]);
+        $this->economicalActivitiesIds = new ArrayCollection([]);
         $this->links = new ArrayCollection([]);
     }
 
@@ -134,11 +153,23 @@ class CompanyProfile
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getEconomicalActivitiesIds() : ArrayCollection
+    {
+        if ($this->economicalActivitiesIds instanceof PersistentCollection) {
+            $this->economicalActivitiesIds = new ArrayCollection($this->economicalActivitiesIds->toArray());
+        }
+        return $this->economicalActivitiesIds;
+    }
+
+    /**
      * @param EconomicalActivityType[] $activities
      */
     public function setEconomicalActivities(array $activities)
     {
         $this->economicalActivities = new ArrayCollection($activities);
+        $this->economicalActivitiesIds = new ArrayCollection($activities);
     }
 
 
@@ -187,6 +218,14 @@ class CompanyProfile
     public function getType() : CompanyType
     {
         return $this->companyType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompanyTypeId() : string
+    {
+        return $this->companyTypeId;
     }
 
     /**
@@ -313,6 +352,7 @@ class CompanyProfile
     public function setCompanyType(CompanyType $companyType)
     {
         $this->companyType = $companyType;
+        $this->companyTypeId = $companyType->getId();
     }
 
     public function changeName(string $name)
