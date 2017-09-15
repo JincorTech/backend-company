@@ -4,6 +4,9 @@ class CompanyApiCest
 {
     public function _before(ApiTester $I)
     {
+        Elasticsearch::shouldReceive('index')
+            ->once()
+            ->andReturn(null);
     }
 
     public function _after(ApiTester $I)

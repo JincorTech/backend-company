@@ -7,6 +7,10 @@ class CompanyMyCest
     {
         $token = '123'; //just random token
         $I->amAuthorizedAsTestCompanyAdmin($token);
+
+        Elasticsearch::shouldReceive('index')
+            ->once()
+            ->andReturn(null);
     }
 
     public function _after(ApiTester $I)

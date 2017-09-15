@@ -54,7 +54,7 @@ class Index implements CompanyIndexContract
             }
         }
         try {
-            Elasticsearch::connection()->index([
+            Elasticsearch::index([
                 'index' => self::INDEX,
                 'type' => self::TYPE,
                 'id' => $event->getCompany()->getId(),
@@ -68,5 +68,4 @@ class Index implements CompanyIndexContract
             }
         }
     }
-
 }
