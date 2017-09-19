@@ -18,15 +18,16 @@ use Mail;
 
 class SendVerificationEmail
 {
-
-
+    /**
+     * @param VerificationEmailRequested $event
+     */
     public function handle(VerificationEmailRequested $event)
     {
         /** @var JWTService $jwtService */
         $jwtService = App::make(JWTService::class);
         $jwt = $jwtService->makeRegistrationToken($event->getEmail(), $event->getVerificationId(), $event->getCompanyName(), $event->getCode());
 
+        // @TODO: Remove when use RestAPI Service
         Mail::to($event->getEmail())->queue(new VerifyEmail($event->getCode(), $jwt));
     }
-
 }

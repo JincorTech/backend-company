@@ -139,6 +139,15 @@ class EmployeeVerification implements MetaEmployeeInterface
     }
 
     /**
+     * @param bool $isVerified
+     */
+    public function setVerifyEmail(bool $isVerified)
+    {
+        $this->emailVerified = $isVerified;
+        $this->emailVerifiedAt = $isVerified ? new DateTime() : null;
+    }
+
+    /**
      * @param string $pin
      * @throws EmailPinIncorrect
      */

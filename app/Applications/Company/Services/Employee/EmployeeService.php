@@ -10,6 +10,9 @@
 namespace App\Applications\Company\Services\Employee;
 
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
+use App\Applications\Company\Services\Employee\Verification\InviteEmailVerificationFactory;
+use App\Core\Services\JWTService;
+use App\Core\Services\Verification\VerificationService;
 use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Exceptions\EmployeeVerificationException;
 use App\Domains\Employee\Exceptions\EmployeeAlreadyExists;
@@ -66,21 +69,37 @@ class EmployeeService implements EmployeeServiceInterface
     private $verificationService;
 
     /**
+     * @var VerificationService
+     */
+    private $commonVerificationService;
+
+    /**
+     * @var JWTService
+     */
+    private $jwtService;
+
+    /**
      * EmployeeService constructor.
      * @param EmployeeRepositoryInterface $employeeRepository
      * @param EmployeeVerificationRepositoryInterface $verificationRepository
      * @param EmployeeVerificationServiceInterface $verificationService
+     * @param VerificationService $commonVerificationService
+     * @param JWTService $jwtService
      */
     public function __construct(
         EmployeeRepositoryInterface $employeeRepository,
         EmployeeVerificationRepositoryInterface $verificationRepository,
-        EmployeeVerificationServiceInterface $verificationService
+        EmployeeVerificationServiceInterface $verificationService,
+        VerificationService $commonVerificationService,
+        JWTService $jwtService
     )
     {
         $this->dm = App::make(DocumentManager::class);
         $this->repository = $employeeRepository;
         $this->verificationRepository = $verificationRepository;
         $this->verificationService = $verificationService;
+        $this->commonVerificationService = $commonVerificationService;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -297,7 +316,7 @@ class EmployeeService implements EmployeeServiceInterface
         $company = $this->dm->getRepository(Company::class)->find($companyId);
         /** @var EmployeeVerification $verification */
         $verification = $this->dm->getRepository(EmployeeVerification::class)->find($verificationId);
-        if (!$verification) {
+        if (!$verification || !$verification->completelyVerified()) {
             throw new HttpException(401, trans('exceptions.verification.failed'));
         }
 
@@ -381,6 +400,24 @@ class EmployeeService implements EmployeeServiceInterface
         $employeeVerification->associateEmail($email);
         $employeeVerification->associateCompany($inviter->getCompany());
         $this->dm->persist($employeeVerification);
+
+        $this->commonVerificationService->initiate(
+            (new InviteEmailVerificationFactory())->buildEmailVerificationMethod(
+                $this->jwtService->makeRegistrationToken(
+                    $email,
+                    $employeeVerification->getId(),
+                    $employeeVerification->getCompany()->getProfile()->getName(),
+                    $employeeVerification->getEmailCode()
+                ),
+                $inviter->getCompany()->getProfile()->getName(),
+                $inviter->getProfile()->getName(),
+                $email,
+                $employeeVerification->getId()
+            )->setForcedCode($employeeVerification->getEmailCode()) // @TODO: Remove when change behavior processing of
+                                                                    // @TODO: jwt on the frontend.
+        );
+
+        // @TODO: Remove when use RestAPI Service
         Mail::to($email)->queue(
             new InviteColleague(
                 $inviter->getProfile()->getName(),
@@ -390,6 +427,7 @@ class EmployeeService implements EmployeeServiceInterface
                 $employeeVerification->getEmailCode()
             )
         );
+
         return $employeeVerification;
     }
 

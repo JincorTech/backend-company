@@ -17,7 +17,7 @@ return [
 
 
     'restore-password' => [
-        'notFound' => 'Сотрудник с e-mail адресом :email ненайден на Jincor'
+        'notFound' => 'Сотрудник с e-mail адресом :email не найден на Jincor'
     ],
 
     'change-password' => [

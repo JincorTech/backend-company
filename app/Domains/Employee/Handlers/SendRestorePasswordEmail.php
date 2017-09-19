@@ -19,6 +19,7 @@ class SendRestorePasswordEmail
 
     public function handle(RestorePasswordRequested $event)
     {
+        // @TODO: Remove when use RestAPI Service
         Mail::to($event->getEmail())->queue(new RestorePassword($event->getEmail(), $event->getId(), $event->getCode()));
     }
 }

@@ -189,6 +189,7 @@ return [
         App\Applications\Dictionary\Providers\RouteServiceProvider::class,
         Cviebrock\LaravelElasticsearch\ServiceProvider::class,
         App\Core\Providers\IdentityServiceProvider::class,
+        App\Core\Providers\VerificationServiceProvider::class,
         App\Core\Providers\MessengerServiceProvider::class,
         App\Core\Providers\EmployeeServiceProvider::class,
         App\Core\Providers\CompanyServiceProvider::class,

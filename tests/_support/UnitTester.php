@@ -23,4 +23,16 @@ class UnitTester extends \Codeception\Actor
    /*
     * Define custom actions here
     */
+
+    /**
+     * @param $object object
+     * @param string $propertyName
+     * @return mixed
+     */
+    public function getObjectPropertyValue($object, string $propertyName)
+    {
+        return Closure::bind(function & () use ($propertyName) {
+            return $this->$propertyName;
+        }, $object, $object)->__invoke();
+    }
 }

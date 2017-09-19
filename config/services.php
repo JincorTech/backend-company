@@ -41,6 +41,11 @@ return [
         'jwt' => env('IDENTITY_JWT'),
     ],
 
+    'verification' => [
+        'uri' => env('VERIFICATION_SCHEME') . '://' . env('VERIFICATION_HOST') . ':' . env('VERIFICATION_PORT'),
+        'jwt' => env('VERIFICATION_JWT'),
+    ],
+
     'messenger' => [
         'uri' => env('MESSENGER_SCHEME') . '://' . env('MESSENGER_HOST') . ':' . env('MESSENGER_PORT'),
     ],
