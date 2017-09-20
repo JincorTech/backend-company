@@ -18,6 +18,6 @@ class VerificationServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind(VerificationService::class, DummyVerificationService::class);
+        $this->app->bind(VerificationService::class, RestVerificationService::class);
     }
 }

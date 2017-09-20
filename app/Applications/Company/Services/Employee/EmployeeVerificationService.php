@@ -112,7 +112,7 @@ class EmployeeVerificationService implements EmployeeVerificationServiceInterfac
                 ),
                 $verificationId,
                 $email
-            )->setForcedCode($verification->getEmailCode()) // @TODO: Remove when use RestAPI Service
+            )->setForcedCode($verification->getEmailCode())
         );
 
         event(new VerificationEmailRequested($verification));
@@ -135,7 +135,7 @@ class EmployeeVerificationService implements EmployeeVerificationServiceInterfac
             (new RestorePasswordEmailVerificationFactory())->buildEmailVerificationMethod(
                 $verification->getVerification()->getId(),
                 $email
-            )->setForcedCode($verification->getVerification()->getEmailCode()) // @TODO: Remove when use RestAPI Service
+            )->setForcedCode($verification->getVerification()->getEmailCode())
         );
 
         event(new RestorePasswordRequested($verification->getVerification()));

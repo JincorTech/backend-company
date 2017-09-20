@@ -1,9 +1,14 @@
 <?php
 
+use App\Core\Services\Verification\DummyVerificationService;
+use App\Core\Services\Verification\VerificationService;
+
 class CompanyApiCest
 {
     public function _before(ApiTester $I)
     {
+        $I->haveBinding(VerificationService::class, DummyVerificationService::class);
+
         Elasticsearch::shouldReceive('index')
             ->once()
             ->andReturn(null);

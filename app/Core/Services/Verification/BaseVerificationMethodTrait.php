@@ -132,7 +132,8 @@ trait BaseVerificationMethodTrait
         }
 
         $this->generateCode = [
-            'symbols' => $symbolsSet
+            'symbolSet' => $symbolsSet,
+            'length' => $length
         ];
 
         return $this;

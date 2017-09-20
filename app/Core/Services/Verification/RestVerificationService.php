@@ -11,6 +11,7 @@ namespace App\Core\Services\Verification;
 
 use App\Core\Services\Verification\Exceptions\VerificationFatalError;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 
 /**
  * Class RestVerificationService
@@ -29,14 +30,13 @@ class RestVerificationService implements VerificationService
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => config('services.verification.uri') . '/methods',
-            'auth' => [
-                'api',
-                config('services.verification.jwt'),
-            ],
+            'base_uri' => config('services.verification.uri'),
             'headers' => [
-                'Accept' => 'application/vnd.jincor+json; version=' . config('services.verification.version', 1)
-            ]
+                'Authorization' => 'Bearer ' . config('services.verification.jwt'),
+                'Accept' => 'application/vnd.jincor+json; version=' . config('services.verification.version', 1),
+                'Content-Type' => 'application/json'
+            ],
+            'json' => true
         ]);
     }
 
@@ -48,7 +48,9 @@ class RestVerificationService implements VerificationService
      */
     protected function doApiRequest(string $httpVerb, string $apiUrl, array $parameters = []): array
     {
-        $response = $this->client->request($httpVerb, $apiUrl, $parameters);
+        $response = $this->client->request($httpVerb, '/methods' . $apiUrl, [
+            'json' => $parameters
+        ]);
 
         $data = json_decode($response->getBody()->getContents(), true);
         if (!$data) {
@@ -67,22 +69,26 @@ class RestVerificationService implements VerificationService
      */
     public function initiate(VerificationMethod $method): VerificationIdentifier
     {
-        $responseArray = $this->doApiRequest(
-            'post',
-            "/{$method->getMethodType()}/actions/initiate",
-            $method->getRequestParameters()
-        );
+        try {
+            $responseArray = $this->doApiRequest(
+                'post',
+                "/{$method->getMethodType()}/actions/initiate",
+                $method->getRequestParameters()
+            );
 
-        if (!array_key_exists('verificationId', $responseArray)) {
-            throw new VerificationFatalError('No verificationId');
+            if (!array_key_exists('verificationId', $responseArray)) {
+                throw new VerificationFatalError('No verificationId');
+            }
+
+            if ($responseArray['status'] !== 200) {
+                throw new VerificationFatalError($responseArray['error'] ?? 'Unknown behavior', $responseArray['status']);
+            }
+
+            return (new VerificationIdentifier($responseArray['verificationId']))
+                ->setExpiredOn($responseArray['expiredOn'] ?? null);
+        } catch (BadResponseException $ex) {
+            throw new VerificationFatalError('Initialization of verification process is failed');
         }
-
-        if ($responseArray['status'] !== 200) {
-            throw new VerificationFatalError($responseArray['error'] ?? 'Unknown behavior', $responseArray['status']);
-        }
-
-        return (new VerificationIdentifier($responseArray['verificationId']))
-            ->setExpiredOn($responseArray['expiredOn'] ?? null);
     }
 
     /**
@@ -90,13 +96,17 @@ class RestVerificationService implements VerificationService
      */
     public function validate(VerificationData $data): bool
     {
-        $responseArray = $this->doApiRequest(
-            'post',
-            "/{$data->getMethodType()}/verifiers" .
+        try {
+            $responseArray = $this->doApiRequest(
+                'post',
+                "/{$data->getMethodType()}/verifiers" .
                 "/{$data->getVerificationIdentifier()->getVerificationId()}/actions/validate",
-            $data->getFormattedApiRequestParameters()
-        );
+                $data->getFormattedApiRequestParameters()
+            );
 
-        return $responseArray['status'] === 200;
+            return $responseArray['status'] === 200;
+        } catch (BadResponseException $ex) {
+            return false;
+        }
     }
 }

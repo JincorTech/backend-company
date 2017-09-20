@@ -39,7 +39,7 @@ class EmailVerificationFactory
                 'jwt' => $jwt,
                 'pin' => '{{{CODE}}}',
             ])
-        )->setPolicy('120 min')
+        )->setPolicy('02:00:00')
             ->setForcedVerificationId(new VerificationIdentifier($verificationId))
             ->setGenerateCode(['DIGITS'], 6);
     }

@@ -46,7 +46,7 @@ class InviteEmailVerificationFactory
                 'employee' => $employee,
                 'jwt' => $jwt,
             ])
-        )->setPolicy('1 day')
+        )->setPolicy('23:59:59')
             ->setForcedVerificationId(new VerificationIdentifier($verificationId));
     }
 }

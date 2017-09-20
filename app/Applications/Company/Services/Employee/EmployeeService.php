@@ -417,17 +417,6 @@ class EmployeeService implements EmployeeServiceInterface
                                                                     // @TODO: jwt on the frontend.
         );
 
-        // @TODO: Remove when use RestAPI Service
-        Mail::to($email)->queue(
-            new InviteColleague(
-                $inviter->getProfile()->getName(),
-                $email,
-                $employeeVerification->getId(),
-                $employeeVerification->getCompany()->getProfile()->getName(),
-                $employeeVerification->getEmailCode()
-            )
-        );
-
         return $employeeVerification;
     }
 

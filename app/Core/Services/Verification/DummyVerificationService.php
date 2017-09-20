@@ -14,7 +14,6 @@ use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
 
 
 /**
- * @TODO: Remove this, it's only for a stub
  * Class FileBaseVerificationService
  * @package App\Core\Services\Verification
  */

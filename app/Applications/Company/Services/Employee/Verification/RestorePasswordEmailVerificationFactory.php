@@ -39,7 +39,7 @@ class RestorePasswordEmailVerificationFactory
                 'verificationId' => $verificationId,
                 'code' => '{{{CODE}}}',
             ])
-        )->setPolicy('60 min')
+        )->setPolicy('01:00:00')
             ->setForcedVerificationId(new VerificationIdentifier($verificationId))
             ->setGenerateCode(['DIGITS'], 6);
     }
