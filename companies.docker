@@ -2,6 +2,9 @@ FROM laradock/php-fpm:7.0--1.2
 
 MAINTAINER Andrey Degtyaruk <hlogeon1@gmail.com>
 
+RUN groupadd -g 1000 companies && \
+    useradd -u 1000 -g companies -m companies
+
 USER root
 
 RUN pecl install mongodb-1.1.9 && \
@@ -19,14 +22,13 @@ USER root
 
 RUN rm -r /var/lib/apt/lists/*
 
-RUN usermod -u 1000 www-data
-
 VOLUME /var/www/companies
 
-RUN chown -R www-data:www-data /var/www/companies
+RUN chown -R companies:companies /var/www/companies
 
 WORKDIR /var/www/companies
-USER root
-CMD ["php-fpm"]
+
+USER companies
+ENTRYPOINT ["php-fpm"]
 
 EXPOSE 9000

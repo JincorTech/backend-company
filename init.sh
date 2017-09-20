@@ -5,3 +5,5 @@ cp .env.local .env
 
 php artisan search:index:company
 php artisan db:seed
+
+chown -R companies:companies $PWD
