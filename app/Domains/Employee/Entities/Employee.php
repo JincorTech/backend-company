@@ -211,7 +211,6 @@ class Employee implements MetaEmployeeInterface
      */
     public function isAdmin()
     {
-//        dd($this->getProfile()->scope);
         return $this->getProfile()->scope === EmployeeRole::ADMIN;
     }
 

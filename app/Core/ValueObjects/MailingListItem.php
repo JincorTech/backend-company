@@ -8,6 +8,7 @@
 
 namespace App\Core\ValueObjects;
 
+use App\Core\Services\Mailing\Lists\MailingListServiceInterface;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use InvalidArgumentException;
 use App\Core\Exceptions\UnknownMailingListId;
@@ -23,11 +24,6 @@ use Ramsey\Uuid\Uuid;
  */
 class MailingListItem
 {
-    const MAILING_LIST_IDS = [
-        'ico' => 'ico@jincor.com',
-        'beta' => 'beta@jincor.com',
-    ];
-
     /**
      * @var string
      * @ODM\Id(strategy="NONE", type="bin_uuid")
@@ -52,13 +48,20 @@ class MailingListItem
             throw new InvalidArgumentException(trans('exceptions.email.invalid'));
         }
 
-        if (!array_key_exists($mailingListId, static::MAILING_LIST_IDS)) {
+        if (!array_key_exists($mailingListId, static::getMailingLists())) {
             throw new UnknownMailingListId(trans('exceptions.mailingList.id.unknown'));
         }
 
         $this->id = Uuid::uuid4()->toString();
         $this->email = $email;
-        $this->mailingListId = static::MAILING_LIST_IDS[$mailingListId];
+        $this->mailingListId = static::getMailingLists()[$mailingListId];
+    }
+
+    public static function getMailingLists()
+    {
+        static $data;
+        // @TODO: Make it over facade?
+        return $data ?: $data = app(MailingListServiceInterface::class)->getMailingLists();
     }
 
     public function getEmail()

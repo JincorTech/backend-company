@@ -7,6 +7,8 @@
  */
 
 namespace App\Core\Providers;
+use App\Core\Services\Mailing\Lists\MailingListManager;
+use App\Core\Services\Mailing\Lists\MailingListServiceInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Core\Interfaces\MailingListRepositoryInterface;
 use App\Core\ValueObjects\MailingListItem;
@@ -21,5 +23,14 @@ class MailingListProvider extends ServiceProvider
             MailingListRepositoryInterface::class,
             $this->app->make(DocumentManager::class)->getRepository(MailingListItem::class)
         );
+
+        $this->app->alias('mailinglist.driver', MailingListServiceInterface::class);
+        $this->app->singleton('mailinglist', function ($app) {
+            $app['mailinglist.loaded'] = true;
+            return new MailingListManager($app);
+        });
+        $this->app->singleton('mailinglist.driver', function ($app) {
+            return $app['mailinglist']->driver();
+        });
     }
 }

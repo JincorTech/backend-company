@@ -7,8 +7,8 @@
  */
 
 namespace App\Applications\Company\Services\MailingList;
+use App\Core\Services\Mailing\Lists\MailingListServiceInterface;
 use App\Core\ValueObjects\MailingListItem;
-use App\Core\Services\MailgunService;
 use App;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Interfaces\MailingListRepositoryInterface;
@@ -18,9 +18,9 @@ use App\Core\Exceptions\MailingListItemAlreadyExists;
 class MailingListService
 {
     /**
-     * @var MailgunService
+     * @var MailingListServiceInterface
      */
-    protected $mailgunService;
+    protected $mailingService;
 
     /**
      * @var DocumentManager
@@ -35,20 +35,19 @@ class MailingListService
     /**
      * MailingListService constructor.
      *
-     * @param $mailgunService MailgunService
+     * @param $mailingService MailingListServiceInterface
      * @param $mailingListRepository MailingListRepositoryInterface
      */
-    public function __construct(MailgunService $mailgunService, MailingListRepositoryInterface $mailingListRepository)
+    public function __construct(MailingListServiceInterface $mailingService, MailingListRepositoryInterface $mailingListRepository)
     {
         $this->dm = App::make(DocumentManager::class);;
-        $this->mailgunService = $mailgunService;
+        $this->mailingService = $mailingService;
         $this->mailingListRepository = $mailingListRepository;
     }
 
     public function subscribe($email, $subject)
     {
         $item = $this->mailingListRepository->findByEmailAndSubject($email, $subject);
-
         if ($item) {
             throw new MailingListItemAlreadyExists([
                 'email' => [
@@ -64,7 +63,7 @@ class MailingListService
         $this->dm->persist($newItem);
         $this->dm->flush();
 
-        $this->mailgunService->addItemToList($newItem);
+        $this->mailingService->addItemToList($newItem);
 
         return $newItem;
     }
@@ -79,7 +78,7 @@ class MailingListService
 
         $this->dm->remove($item);
         $this->dm->flush();
-        $this->mailgunService->deleteItemFromList($item);
+        $this->mailingService->deleteItemFromList($item);
         return $item;
     }
 }

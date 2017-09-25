@@ -17,7 +17,7 @@ class MailingListRepository extends DocumentRepository implements MailingListRep
     {
         return $this->findOneBy([
             'email' => $email,
-            'mailingListId' => MailingListItem::MAILING_LIST_IDS[$subject],
+            'mailingListId' => MailingListItem::getMailingLists()[$subject],
         ]);
     }
 }

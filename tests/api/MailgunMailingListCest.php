@@ -1,10 +1,14 @@
 <?php
-use App\Core\Services\MailgunService;
 
-class MailingListCest
+use App\Core\Services\Mailing\Lists\MailgunListService;
+use App\Core\Services\Mailing\Lists\MailingListServiceInterface;
+
+class MailgunMailingListCest
 {
     public function _before(ApiTester $I)
     {
+        putenv('MAILING_LIST_DRIVER=mailgun');
+        $I->haveBinding(MailingListServiceInterface::class, MailgunListService::class);
     }
 
     public function _after(ApiTester $I)
@@ -15,9 +19,9 @@ class MailingListCest
     {
         $I->wantTo('Add new email to ICO mailing list and receive success response');
 
-        $mock = Mockery::mock(MailgunService::class);
+        $mock = Mockery::mock(MailgunListService::class);
         $mock->shouldReceive('addItemToList')->andReturnNull();
-        $I->haveInstance(MailgunService::class, $mock);
+        $I->haveInstance(MailingListServiceInterface::class, $mock->makePartial());
 
         $I->sendPOST('mailingList/subscribe', [
             'email' => 'ortgma1@gmail.com',
@@ -27,7 +31,7 @@ class MailingListCest
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseContainsJson([
             'email' => 'ortgma1@gmail.com',
-            'mailingListId' => 'ico@jincor.com',
+            'mailingListId' => $mock->getMailingLists()['ico'],
         ]);
     }
 
@@ -35,9 +39,9 @@ class MailingListCest
     {
         $I->wantTo('Add new email to ICO mailing list and receive success response');
 
-        $mock = Mockery::mock(MailgunService::class);
+        $mock = Mockery::mock(MailgunListService::class);
         $mock->shouldReceive('addItemToList')->andReturnNull();
-        $I->haveInstance(MailgunService::class, $mock);
+        $I->haveInstance(MailingListServiceInterface::class, $mock->makePartial());
 
         $I->sendPOST('mailingList/subscribe', [
             'email' => 'ortgma1@gmail.com',
@@ -150,9 +154,9 @@ class MailingListCest
     {
         $I->wantTo('Remove my email from ICO mailing list and receive success response');
 
-        $mock = Mockery::mock(MailgunService::class);
+        $mock = Mockery::mock(MailgunListService::class);
         $mock->shouldReceive('deleteItemFromList')->andReturnNull();
-        $I->haveInstance(MailgunService::class, $mock);
+        $I->haveInstance(MailingListServiceInterface::class, $mock->makePartial());
 
         $I->sendPOST('mailingList/unsubscribe', [
             'email' => 'ortgma@gmail.com',
@@ -162,7 +166,7 @@ class MailingListCest
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseContainsJson([
             'email' => 'ortgma@gmail.com',
-            'mailingListId' => 'ico@jincor.com',
+            'mailingListId' => $mock->getMailingLists()['ico'],
         ]);
     }
 

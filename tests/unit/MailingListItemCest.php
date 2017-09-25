@@ -1,4 +1,7 @@
 <?php
+
+use App\Core\Services\Mailing\Lists\MailgunListService;
+use App\Core\Services\Mailing\Lists\MailingListServiceInterface;
 use App\Core\ValueObjects\MailingListItem;
 use App\Core\Exceptions\UnknownMailingListId;
 
@@ -6,6 +9,8 @@ class MailingListItemCest
 {
     public function _before(UnitTester $I)
     {
+        putenv('MAILING_LIST_DRIVER=mailgun');
+        app()->bind(MailingListServiceInterface::class, MailgunListService::class);
     }
 
     public function _after(UnitTester $I)
