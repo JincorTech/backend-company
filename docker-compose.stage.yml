@@ -63,7 +63,8 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      THROTTLER_WHITE_LIST: 127.0.0.1,10.5.0.2
+      THROTTLER_WHITE_LIST: 127.0.0.1,10.5.0.2,10.0.5.3
+      TENANT_WHITE_LIST: 127.0.0.1,10.5.0.2,10.0.5.3
       FORCE_HTTPS: disabled
       JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
     volumes:
