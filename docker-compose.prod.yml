@@ -8,9 +8,9 @@ services:
     links:
       - search
       - auth
-      - verify
       - mongo
       - redis
+      - verify
     environment:
       # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
       - PHP_IDE_CONFIG="serverName=companies"
@@ -31,10 +31,10 @@ services:
     tty: true
     links:
       - auth
-      - verify
       - mongo
       - redis
       - search
+      - verify
     volumes_from:
       - src
     networks:
@@ -45,10 +45,10 @@ services:
     image: nielsvdoorn/laravel-supervisor:latest
     links:
       - auth
-      - verify
       - mongo
       - redis
       - search
+      - verify
     environment:
       - QUEUE=default
       - CONNECTION=redis
@@ -63,8 +63,8 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      THROTTLER_WHITE_LIST: 127.0.0.1,10.5.0.2,10.0.5.3
-      TENANT_WHITE_LIST: 127.0.0.1,10.5.0.2,10.0.5.3
+      THROTTLER_WHITE_LIST: 127.0.0.1,10.5.0.2,10.5.0.3
+      TENANT_WHITE_LIST: 127.0.0.1,10.5.0.2,10.5.0.3
       FORCE_HTTPS: disabled
       JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
     volumes:
@@ -105,7 +105,6 @@ services:
       - src
     ports:
      - 8080:80
-     - 443:443
     links:
       - companies
     networks:
@@ -136,41 +135,6 @@ services:
       default:
         ipv4_address: 10.5.0.10
 
-  src-admin:
-    image: tianon/true
-    volumes:
-      - ../backend-admin:/var/www/jincor-admin
-    networks:
-      default:
-        ipv4_address: 10.5.0.11
-
-  admin:
-    image: registry.jincor.com/backend/admin:latest
-    ports:
-      - 9000
-    links:
-      - mongo
-    environment:
-      # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
-      - PHP_IDE_CONFIG="serverName=companies"
-    volumes_from:
-      - src-admin
-    networks:
-      default:
-        ipv4_address: 10.5.0.12
-
-  nginx-admin:
-    image: registry.jincor.com/backend/nginx-admin:latest
-    volumes_from:
-      - src-admin
-    ports:
-     - 8081:80
-    links:
-     - admin
-    networks:
-      default:
-        ipv4_address: 10.5.0.13
-
   verify:
     image: registry.jincor.com/backend/verify:latest
     environment:
@@ -179,13 +143,13 @@ services:
       REDIS_PORT: 6379
       MAILGUN_DOMAIN: jincor.com
       MAILGUN_SECRET: key-176cd97e7ce70c9e75d826792669e53a
-      MAILGUN_API_URI: https://api.mailgun.net/v3/      
+      MAILGUN_API_URI: https://api.mailgun.net/v3/
     links:
       - auth
       - redis
     networks:
       default:
-        ipv4_address: 10.5.0.14
+        ipv4_address: 10.5.0.11
 
 networks:
   default:
