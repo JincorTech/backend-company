@@ -76,16 +76,22 @@ class MailchimpListService extends BaseRestService implements MailingListService
     public function addExtendedItemToList(ExtendedMailingListItem $item)
     {
         $uri = "lists/{$item->getMailingListId()}/members";
-        $this->client->post($uri, [
+
+        $data = [
             'json' => [
                 'email_address' => $item->getEmail(),
                 'status' => 'subscribed',
                 'merge_fields' => [
                     'MMERGE4' => $item->getLandingLanguage(),
-                    'MMERGE5' => $item->getCountry(),
                 ],
                 'language' => $item->getLandingLanguage(),
             ],
-        ]);
+        ];
+
+        if ($item->getCountry() !== null) {
+            $data['json']['merge_fields']['MMERGE5'] = $item->getCountry();
+        }
+
+        $this->client->post($uri, $data);
     }
 }
