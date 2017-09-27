@@ -5,10 +5,11 @@ use App\Core\Services\Mailing\Lists\MailingListServiceInterface;
 
 class MailgunMailingListCest
 {
+    protected static $serviceClass = MailgunListService::class;
+
     public function _before(ApiTester $I)
     {
         putenv('MAILING_LIST_DRIVER=mailgun');
-        $I->haveBinding(MailingListServiceInterface::class, MailgunListService::class);
     }
 
     public function _after(ApiTester $I)
@@ -19,7 +20,7 @@ class MailgunMailingListCest
     {
         $I->wantTo('Add new email to ICO mailing list and receive success response');
 
-        $mock = Mockery::mock(MailgunListService::class);
+        $mock = Mockery::mock(static::$serviceClass);
         $mock->shouldReceive('addItemToList')->andReturnNull();
         $I->haveInstance(MailingListServiceInterface::class, $mock->makePartial());
 
@@ -37,9 +38,9 @@ class MailgunMailingListCest
 
     public function testSubscribeBetaSuccess(ApiTester $I)
     {
-        $I->wantTo('Add new email to ICO mailing list and receive success response');
+        $I->wantTo('Add new email to Beta mailing list and receive success response');
 
-        $mock = Mockery::mock(MailgunListService::class);
+        $mock = Mockery::mock(static::$serviceClass);
         $mock->shouldReceive('addItemToList')->andReturnNull();
         $I->haveInstance(MailingListServiceInterface::class, $mock->makePartial());
 
@@ -51,7 +52,7 @@ class MailgunMailingListCest
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseContainsJson([
             'email' => 'ortgma1@gmail.com',
-            'mailingListId' => 'beta@jincor.com',
+            'mailingListId' => $mock->getMailingLists()['beta'],
         ]);
     }
 
@@ -154,7 +155,7 @@ class MailgunMailingListCest
     {
         $I->wantTo('Remove my email from ICO mailing list and receive success response');
 
-        $mock = Mockery::mock(MailgunListService::class);
+        $mock = Mockery::mock(static::$serviceClass);
         $mock->shouldReceive('deleteItemFromList')->andReturnNull();
         $I->haveInstance(MailingListServiceInterface::class, $mock->makePartial());
 

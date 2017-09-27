@@ -8,9 +8,11 @@
 
 namespace App\Applications\Company\Http\Controllers;
 use App\Applications\Company\Http\Requests\MailingList\Subscribe;
+use App\Applications\Company\Http\Requests\MailingList\ExtendedSubscribe;
 use App\Applications\Company\Http\Requests\MailingList\Unsubscribe;
 use App\Applications\Company\Services\MailingList\MailingListService;
 use App\Applications\Company\Transformers\MailingList\MailingListItemTransformer;
+use App\Applications\Company\Transformers\MailingList\ExtendedMailingListItemTransformer;
 
 class MailingListController extends BaseController
 {
@@ -32,6 +34,16 @@ class MailingListController extends BaseController
     {
         $item = $this->mailingListService->subscribe($request->get('email'), $request->get('subject'));
         return $this->response->item($item, MailingListItemTransformer::class);
+    }
+
+    public function subscribeExtended(ExtendedSubscribe $request)
+    {
+        $item = $this->mailingListService->subscribeExtended(
+            $request->get('email'),
+            $request->get('subject'),
+            $request->getExtendedData()
+        );
+        return $this->response->item($item, ExtendedMailingListItemTransformer::class);
     }
 
     public function unsubscribe(Unsubscribe $request)

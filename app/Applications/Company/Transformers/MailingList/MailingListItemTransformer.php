@@ -12,7 +12,11 @@ use App\Core\ValueObjects\MailingListItem;
 
 class MailingListItemTransformer extends TransformerAbstract
 {
-    public function transform(MailingListItem $item)
+    /**
+     * @param MailingListItem $item
+     * @return array
+     */
+    public function transform($item)
     {
         return [
             'email' => $item->getEmail(),

@@ -8,16 +8,15 @@
 
 namespace App\Core\Repositories;
 use Doctrine\ODM\MongoDB\DocumentRepository;
-use App\Core\ValueObjects\MailingListItem;
 use App\Core\Interfaces\MailingListRepositoryInterface;
 
 class MailingListRepository extends DocumentRepository implements MailingListRepositoryInterface
 {
-    public function findByEmailAndSubject(string $email, string $subject)
+    public function findByEmailAndMailingListId(string $email, string $id)
     {
         return $this->findOneBy([
             'email' => $email,
-            'mailingListId' => MailingListItem::getMailingLists()[$subject],
+            'mailingListId' => $id,
         ]);
     }
 }

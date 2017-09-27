@@ -9,6 +9,7 @@
 namespace App\Core\Services\Mailing\Lists;
 
 use App\Core\Services\BaseRestService;
+use App\Core\ValueObjects\ExtendedMailingListItem;
 use App\Core\ValueObjects\MailingListItem;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
@@ -70,5 +71,21 @@ class MailchimpListService extends BaseRestService implements MailingListService
     public function getMailingLists()
     {
         return config('mailinglist.mailchimp.lists');
+    }
+
+    public function addExtendedItemToList(ExtendedMailingListItem $item)
+    {
+        $uri = "lists/{$item->getMailingListId()}/members";
+        $this->client->post($uri, [
+            'json' => [
+                'email_address' => $item->getEmail(),
+                'status' => 'subscribed',
+                'merge_fields' => [
+                    'MMERGE4' => $item->getLandingLanguage(),
+                    'MMERGE5' => $item->getCountry(),
+                ],
+                'language' => $item->getLandingLanguage(),
+            ],
+        ]);
     }
 }

@@ -1,210 +1,212 @@
-{
-  "_id": {
-    "$binary": "MmE3YjAxMjktNTk3YS00OTgyLTg2ZWMtNWE0MmE4NWJmMjI3",
-    "$type": "03"
-  },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "OWZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzYy",
+[
+  {
+    "_id": {
+      "$binary": "MmE3YjAxMjktNTk3YS00OTgyLTg2ZWMtNWE0MmE4NWJmMjI3",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "OTk2NzM4YWItYjkyOS00MjRlLTg0YjctMmM1ZTA0ZjcyMDkx",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "OWZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzYy",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "MDZjNTJlM2MtOTM2Ni00YjlkLTlkYTItMjY1NjEzYWRiNzJl",
+  {
+    "_id": {
+      "$binary": "OTk2NzM4YWItYjkyOS00MjRlLTg0YjctMmM1ZTA0ZjcyMDkx",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "NmY1NWQ0NDQtYjgxMy00OThiLThlNWQtY2JlM2M4M2Q1MzY2",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "MDZjNTJlM2MtOTM2Ni00YjlkLTlkYTItMjY1NjEzYWRiNzJl",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "ZGQ0NmQxNTMtMDUzMS00MmZhLThjNGEtYWNkM2E1NGFmMzlh",
+  {
+    "_id": {
+      "$binary": "NmY1NWQ0NDQtYjgxMy00OThiLThlNWQtY2JlM2M4M2Q1MzY2",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "NDc1NzMwZGMtMjAxYi00M2QyLWEzMDItNDEwOWU0OTNiMDcw",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "ZGQ0NmQxNTMtMDUzMS00MmZhLThjNGEtYWNkM2E1NGFmMzlh",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "OWM4NDhlMTYtZDQ5Zi00ODBlLWFjNGItZWVmMDM1ODVjMzAz",
+  {
+    "_id": {
+      "$binary": "NDc1NzMwZGMtMjAxYi00M2QyLWEzMDItNDEwOWU0OTNiMDcw",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "MGYxMGE4YzItZDJmNi00MDc5LTlkZTQtNTNhMTVhM2NhYTQ0",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "OWM4NDhlMTYtZDQ5Zi00ODBlLWFjNGItZWVmMDM1ODVjMzAz",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "NmFhYjEyMmYtYTQ1Yy00ODA4LTlmMjgtNDBkMjM0YzY2Zjc5",
+  {
+    "_id": {
+      "$binary": "MGYxMGE4YzItZDJmNi00MDc5LTlkZTQtNTNhMTVhM2NhYTQ0",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "MjI3NTY5NTEtOTc1My00ZjY0LTgzYmYtNTQyZjEzNjYyNWQ5",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NmFhYjEyMmYtYTQ1Yy00ODA4LTlmMjgtNDBkMjM0YzY2Zjc5",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "MDM2ZWY4MGItOTM5NC00OGQwLTljNmItYzBlZWEzMzY0NmVj",
+  {
+    "_id": {
+      "$binary": "MjI3NTY5NTEtOTc1My00ZjY0LTgzYmYtNTQyZjEzNjYyNWQ5",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "YWVlNjllOTQtNDQzMi00Y2U2LTkwMDgtZWNhM2VjOGI1ZTdj",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "MDM2ZWY4MGItOTM5NC00OGQwLTljNmItYzBlZWEzMzY0NmVj",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "ZWIyZDExNGQtZWU1MS00MDJlLTg2ZWMtNmNhMWE4OGRhNGU3",
+  {
+    "_id": {
+      "$binary": "YWVlNjllOTQtNDQzMi00Y2U2LTkwMDgtZWNhM2VjOGI1ZTdj",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "YWU3NjA0MTAtZWZmZS00ZTVlLWI1NGUtZDUwNjlmZjRjNTYz",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "ZWIyZDExNGQtZWU1MS00MDJlLTg2ZWMtNmNhMWE4OGRhNGU3",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "NzUzMDZiZmEtZmVlOS00MGQzLTk3ODEtMDQwZGViNGY3MTA3",
+  {
+    "_id": {
+      "$binary": "YWU3NjA0MTAtZWZmZS00ZTVlLWI1NGUtZDUwNjlmZjRjNTYz",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "M2RmMjc5YmUtNWQzZS00YjllLTllYTktMTNlYmQ1OGEyZmU3",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NzUzMDZiZmEtZmVlOS00MGQzLTk3ODEtMDQwZGViNGY3MTA3",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "Mjg2Mjg5N2ItM2U4OC00MjMwLWE5YjctNTcwOTE3NzA0ZjU2",
+  {
+    "_id": {
+      "$binary": "M2RmMjc5YmUtNWQzZS00YjllLTllYTktMTNlYmQ1OGEyZmU3",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "YTFjNWY4NTgtNjgxZC00MjA4LTkwMWUtZTUzZjEzMTE2NjA0",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "Mjg2Mjg5N2ItM2U4OC00MjMwLWE5YjctNTcwOTE3NzA0ZjU2",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "NTUyNjI1N2ItNDgzMC00ODc1LWJiZWItMmYwNGQzNWI4OTli",
+  {
+    "_id": {
+      "$binary": "YTFjNWY4NTgtNjgxZC00MjA4LTkwMWUtZTUzZjEzMTE2NjA0",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "YWI3M2YwYjctODU4ZS00NThiLWE5NTYtODhiYTIxNDBiMTg5",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NTUyNjI1N2ItNDgzMC00ODc1LWJiZWItMmYwNGQzNWI4OTli",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "NjllYTM3ZGItN2ZiZS00OWIxLThlYTQtYTZkNmExNTNmZTA5",
+  {
+    "_id": {
+      "$binary": "YWI3M2YwYjctODU4ZS00NThiLWE5NTYtODhiYTIxNDBiMTg5",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "YTgxYWVkOWUtZjQzNi00NjBkLTg0YmYtOTI4ZDhhODAxOGFi",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NjllYTM3ZGItN2ZiZS00OWIxLThlYTQtYTZkNmExNTNmZTA5",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "ZGQ5ZWE2YTUtMjBlNS00MjY3LWJlMGYtNDc2ZDJjN2M2ZjI2",
+  {
+    "_id": {
+      "$binary": "YTgxYWVkOWUtZjQzNi00NjBkLTg0YmYtOTI4ZDhhODAxOGFi",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "Y2MxYWZmOWQtYWViNS00MGZlLTg4ZmItOTY3YzhiOTY3NTE1",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "ZGQ5ZWE2YTUtMjBlNS00MjY3LWJlMGYtNDc2ZDJjN2M2ZjI2",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "NTlhNDIzY2YtNDNkZS00MTc3LWIzMDktNGQ4MzRiMDc1N2Zl",
+  {
+    "_id": {
+      "$binary": "Y2MxYWZmOWQtYWViNS00MGZlLTg4ZmItOTY3YzhiOTY3NTE1",
       "$type": "03"
     },
-    "$db": "test"
-  }
-}
-{
-  "_id": {
-    "$binary": "ZDM0ODVmM2UtYTQ0NS00YmNiLTg2M2EtYTcxMTg2OWUwMGQ1",
-    "$type": "03"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NTlhNDIzY2YtNDNkZS00MTc3LWIzMDktNGQ4MzRiMDc1N2Zl",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
-  "name": "initial",
-  "company": {
-    "$ref": "companies",
-    "$id": {
-      "$binary": "OGQ4MGEzZTktNTE1ZC00OTc0LTkyN2QtNGIwOTdkMWViOWZl",
+  {
+    "_id": {
+      "$binary": "ZDM0ODVmM2UtYTQ0NS00YmNiLTg2M2EtYTcxMTg2OWUwMGQ1",
       "$type": "03"
     },
-    "$db": "test"
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "OGQ4MGEzZTktNTE1ZC00OTc0LTkyN2QtNGIwOTdkMWViOWZl",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   }
-}
+]

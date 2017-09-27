@@ -87,6 +87,7 @@ $api->version('v1', function ($api) {
             /* @var \Dingo\Api\Routing\Router $api */
             $namespace = 'App\Applications\Company\Http\Controllers\\';
             $api->post('/subscribe', ['as' => 'mailingList.subscribe', 'uses' => $namespace.'MailingListController@subscribe']);
+            $api->post('/subscribev2', ['as' => 'mailingList.subscribev2', 'uses' => $namespace.'MailingListController@subscribeExtended']);
             $api->post('/unsubscribe', ['as' => 'mailingList.unsubscribe', 'uses' => $namespace.'MailingListController@unsubscribe']);
         });
     });

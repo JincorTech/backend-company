@@ -1,16 +1,20 @@
-{
-  "_id": {
-    "$binary": "NGQ2NjhmZTAtODVkMy00OWQ3LTkyNzctOTQ5OWM1YTMwMjRi",
-    "$type": "03"
+[
+  {
+    "_id": {
+      "$binary": "NGQ2NjhmZTAtODVkMy00OWQ3LTkyNzctOTQ5OWM1YTMwMjRi",
+      "$type": "03"
+    },
+    "email": "ortgma@gmail.com",
+    "mailingListId": "ico@jincor.com",
+    "type": "standard"
   },
-  "email": "ortgma@gmail.com",
-  "mailingListId": "ico@jincor.com"
-}
-{
-  "_id": {
-    "$binary": "NjNmMWE3MjAtM2UzMy00OTM2LWI2NDktNDMzNTE2ZjBlODE3",
-    "$type": "03"
-  },
-  "email": "ortgma@gmail.com",
-  "mailingListId": "932d003a4c"
-}
+  {
+    "_id": {
+      "$binary": "NjNmMWE3MjAtM2UzMy00OTM2LWI2NDktNDMzNTE2ZjBlODE3",
+      "$type": "03"
+    },
+    "email": "ortgma@gmail.com",
+    "mailingListId": "932d003a4c",
+    "type": "standard"
+  }
+]

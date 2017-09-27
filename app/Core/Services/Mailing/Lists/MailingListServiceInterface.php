@@ -9,6 +9,7 @@
 namespace App\Core\Services\Mailing\Lists;
 
 use App\Core\ValueObjects\MailingListItem;
+use App\Core\ValueObjects\ExtendedMailingListItem;
 
 interface MailingListServiceInterface
 {
@@ -17,6 +18,12 @@ interface MailingListServiceInterface
      * @return mixed
      */
     public function addItemToList(MailingListItem $item);
+
+    /**
+     * @param ExtendedMailingListItem $item
+     * @return mixed
+     */
+    public function addExtendedItemToList(ExtendedMailingListItem $item);
 
     /**
      * @param MailingListItem $item

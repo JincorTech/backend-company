@@ -12,6 +12,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use App\Applications\Company\Console\Commands\SeedRealIndex;
 use App\Applications\Company\Console\Commands\SeedEmployeesIdentity;
 use App\Applications\Company\Console\Commands\MigrateMailingListsIds;
+use App\Applications\Company\Console\Commands\MigrateMailingListsTypes;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -30,7 +31,8 @@ class Kernel extends ConsoleKernel
         DropCompanies::class,
         SeedRealIndex::class,
         SeedEmployeesIdentity::class,
-        MigrateMailingListsIds::class
+        MigrateMailingListsIds::class,
+        MigrateMailingListsTypes::class
     ];
 
     /**

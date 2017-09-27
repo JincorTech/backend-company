@@ -11,5 +11,5 @@ namespace App\Core\Interfaces;
 
 interface MailingListRepositoryInterface
 {
-    public function findByEmailAndSubject(string $email, string $subject);
+    public function findByEmailAndMailingListId(string $email, string $id);
 }

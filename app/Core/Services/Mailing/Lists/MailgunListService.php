@@ -9,7 +9,9 @@
 namespace App\Core\Services\Mailing\Lists;
 
 use App\Core\Services\BaseRestService;
+use App\Core\ValueObjects\ExtendedMailingListItem;
 use App\Core\ValueObjects\MailingListItem;
+use Nette\NotImplementedException;
 
 class MailgunListService extends BaseRestService implements MailingListServiceInterface
 {
@@ -53,5 +55,10 @@ class MailgunListService extends BaseRestService implements MailingListServiceIn
     public function getMailingLists()
     {
         return config('mailinglist.mailgun.lists');
+    }
+
+    public function addExtendedItemToList(ExtendedMailingListItem $item)
+    {
+        throw new NotImplementedException('addExtendedItemToList is not implemented for Mailgun!');
     }
 }

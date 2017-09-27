@@ -1,34 +1,36 @@
-{
-  "_id": {
-    "$binary": "YWVhM2U0YjYtNTg1NS00ZjAyLWFjNWYtMDhiN2MzN2MyMGY2",
-    "$type": "03"
+[
+  {
+    "_id": {
+      "$binary": "YWVhM2U0YjYtNTg1NS00ZjAyLWFjNWYtMDhiN2MzN2MyMGY2",
+      "$type": "03"
+    },
+    "names": {
+      "en": "Russian ruble",
+      "ru": "Российский рубль"
+    },
+    "ISOCodes": {
+      "alpha3Code": "RUB",
+      "numericCode": {
+        "$numberLong": "643"
+      }
+    },
+    "sign": "₽"
   },
-  "names": {
-    "en": "Russian ruble",
-    "ru": "Российский рубль"
-  },
-  "ISOCodes": {
-    "alpha3Code": "RUB",
-    "numericCode": {
-      "$numberLong": "643"
-    }
-  },
-  "sign": "₽"
-}
-{
-  "_id": {
-    "$binary": "OGJmOWZjNTYtY2FlNC00MWVkLWE5OGMtYWM4NjJlNGJhZDY2",
-    "$type": "03"
-  },
-  "names": {
-    "en": "US dollar",
-    "ru": "Доллар США"
-  },
-  "ISOCodes": {
-    "alpha3Code": "USD",
-    "numericCode": {
-      "$numberLong": "840"
-    }
-  },
-  "sign": "$"
-}
+  {
+    "_id": {
+      "$binary": "OGJmOWZjNTYtY2FlNC00MWVkLWE5OGMtYWM4NjJlNGJhZDY2",
+      "$type": "03"
+    },
+    "names": {
+      "en": "US dollar",
+      "ru": "Доллар США"
+    },
+    "ISOCodes": {
+      "alpha3Code": "USD",
+      "numericCode": {
+        "$numberLong": "840"
+      }
+    },
+    "sign": "$"
+  }
+]

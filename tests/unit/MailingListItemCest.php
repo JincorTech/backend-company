@@ -25,18 +25,10 @@ class MailingListItemCest
         });
     }
 
-    public function testConstructUnknownMailingListId(UnitTester $I)
-    {
-        $I->expectException(UnknownMailingListId::class, function () {
-            $email = 'valid@email.com';
-            new MailingListItem($email, 'ico1');
-        });
-    }
-
     public function canCreate(UnitTester $I)
     {
         $email = 'ortgma@gmail.com';
-        $item = new MailingListItem($email, 'ico');
+        $item = new MailingListItem($email, 'ico@jincor.com');
 
         $I->assertEquals($email, $item->getEmail());
         $I->assertEquals('ico@jincor.com', $item->getMailingListId());

@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /var/www/companies/tests/_data/json
 for f in *; do
-  mongoimport -h mongo --db test --file "$f" --drop
+  mongoimport -h mongo --db test --file "$f" --drop --jsonArray
 done
 cd /var/www/companies/tests/_data
 mongodump -h mongo --db test

@@ -8,10 +8,8 @@
 
 namespace App\Core\ValueObjects;
 
-use App\Core\Services\Mailing\Lists\MailingListServiceInterface;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use InvalidArgumentException;
-use App\Core\Exceptions\UnknownMailingListId;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -21,6 +19,9 @@ use Ramsey\Uuid\Uuid;
  *     collection="mailingList",
  *     repositoryClass="App\Core\Repositories\MailingListRepository"
  * )
+ * @ODM\InheritanceType("SINGLE_COLLECTION")
+ * @ODM\DiscriminatorField(name="type")
+ * @ODM\DiscriminatorMap({"standard" = "MailingListItem", "extended" = "ExtendedMailingListItem"})
  */
 class MailingListItem
 {
@@ -48,20 +49,9 @@ class MailingListItem
             throw new InvalidArgumentException(trans('exceptions.email.invalid'));
         }
 
-        if (!array_key_exists($mailingListId, static::getMailingLists())) {
-            throw new UnknownMailingListId(trans('exceptions.mailingList.id.unknown'));
-        }
-
         $this->id = Uuid::uuid4()->toString();
         $this->email = $email;
-        $this->mailingListId = static::getMailingLists()[$mailingListId];
-    }
-
-    public static function getMailingLists()
-    {
-        static $data;
-        // @TODO: Make it over facade?
-        return $data ?: $data = app(MailingListServiceInterface::class)->getMailingLists();
+        $this->mailingListId = $mailingListId;
     }
 
     public function getEmail()
