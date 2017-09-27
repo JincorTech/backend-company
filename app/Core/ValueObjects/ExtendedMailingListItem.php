@@ -115,13 +115,12 @@ class ExtendedMailingListItem extends MailingListItem
     }
 
     /**
-     * @return string
+     * @return string | null
      */
-    public function getCountry() : string
+    public function getCountry()
     {
         return $this->country;
     }
-
 
     /**
      * @return string
