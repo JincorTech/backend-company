@@ -16,5 +16,39 @@
     "email": "ortgma@gmail.com",
     "mailingListId": "932d003a4c",
     "type": "standard"
+  },
+  {
+    "_id" : {
+      "$binary": "OWMxYzUyMWItODExMi00OTNjLTk1ZDYtNzVlNWQxNzhjNDc2",
+      "$type": "03"
+    },
+    "email" : "extended.exist@jincor.com",
+    "mailingListId" : "932d003a4c",
+    "name" : "John Doe",
+    "company" : "Jincor",
+    "position" : "CEO",
+    "browserLanguage" : "ru",
+    "landingLanguage" : "ru",
+    "ip" : "1.2.3.4",
+    "country" : "RU",
+    "addedAt" : "2017-09-27T13:24:33.000+07:00",
+    "type" : "extended"
+  },
+  {
+    "_id" : {
+      "$binary": "MDlmMTdiZDMtNDk1ZS00ZjRmLWE5ZWEtMmYxZDU2ZDlhYjNm",
+      "$type": "03"
+    },
+    "email" : "extended.exist@jincor.com",
+    "mailingListId" : "ico@jincor.com",
+    "name" : "John Doe",
+    "company" : "Jincor",
+    "position" : "CEO",
+    "browserLanguage" : "ru",
+    "landingLanguage" : "ru",
+    "ip" : "1.2.3.4",
+    "country" : "RU",
+    "addedAt" : "2017-09-27T13:24:33.000+07:00",
+    "type" : "extended"
   }
 ]

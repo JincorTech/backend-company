@@ -73,6 +73,28 @@ class MailgunMailingListCest
         $I->canSeeResponseContainsValidationErrors($errors);
     }
 
+    public function testSubscribeAlreadyExistsExtended(ApiTester $I)
+    {
+        $I->wantTo('Add existing email (extended) to ICO mailing list and receive error');
+
+        $mock = Mockery::mock(static::$serviceClass);
+        $mock->shouldReceive('addItemToList')->andReturnNull();
+        $I->haveInstance(MailingListServiceInterface::class, $mock->makePartial());
+
+        $I->sendPOST('mailingList/subscribe', [
+            'email' => 'extended.exist@jincor.com',
+            'subject' => 'ico',
+        ]);
+
+        $errors = [
+            'email' => [
+                trans('exceptions.mailingList.item.already_exists'),
+            ],
+        ];
+
+        $I->canSeeResponseContainsValidationErrors($errors);
+    }
+
     public function testSubscribeInvalidEmail(ApiTester $I)
     {
         $I->wantTo('Try to add invalid email to ICO mailing list and receive validation error');

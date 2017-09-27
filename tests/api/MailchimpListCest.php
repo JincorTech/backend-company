@@ -106,6 +106,28 @@ class MailchimpListCest extends MailgunMailingListCest
         $I->canSeeResponseContainsValidationErrors($errors);
     }
 
+    public function testSubscribeV2AlreadyExistsExtended(ApiTester $I)
+    {
+        $I->wantTo('Add existing email (extended) to ICO mailing list and receive error');
+        $I->sendPOST('mailingList/subscribev2', [
+            'email' => 'extended.exist@jincor.com',
+            'subject' => 'ico',
+            'name' => 'John Doe',
+            'company' => 'Jincor',
+            'position' => 'CEO',
+            'browserLanguage' => 'en',
+            'landingLanguage' => 'en',
+        ]);
+
+        $errors = [
+            'email' => [
+                trans('exceptions.mailingList.item.already_exists'),
+            ],
+        ];
+
+        $I->canSeeResponseContainsValidationErrors($errors);
+    }
+
     public function testSubscribeV2InvalidEmail(ApiTester $I)
     {
         $I->wantTo('Try to add invalid email to ICO mailing list and receive validation error');
@@ -159,6 +181,69 @@ class MailchimpListCest extends MailgunMailingListCest
 
         $I->canSeeResponseContainsValidationErrors([
             'name' => [
+                $message,
+            ],
+        ]);
+    }
+
+    public function testSubscribeV2TooShortName(ApiTester $I)
+    {
+        $I->wantTo('Subscribe to ICO mailing list with too short name and receive validation error');
+
+        $I->sendPOST('mailingList/subscribev2', [
+            'subject' => 'ico',
+            'name' => 'Na'
+        ]);
+
+        $message = trans('validation.min.string', [
+            'attribute' => 'name',
+            'min' => 3,
+        ]);
+
+        $I->canSeeResponseContainsValidationErrors([
+            'name' => [
+                $message,
+            ],
+        ]);
+    }
+
+    public function testSubscribeV2TooShortCompany(ApiTester $I)
+    {
+        $I->wantTo('Subscribe to ICO mailing list with too short company and receive validation error');
+
+        $I->sendPOST('mailingList/subscribev2', [
+            'subject' => 'ico',
+            'company' => 'Na'
+        ]);
+
+        $message = trans('validation.min.string', [
+            'attribute' => 'company',
+            'min' => 3,
+        ]);
+
+        $I->canSeeResponseContainsValidationErrors([
+            'company' => [
+                $message,
+            ],
+        ]);
+    }
+
+    public function testSubscribeV2TooShortPosition(ApiTester $I)
+    {
+        $I->wantTo('Subscribe to ICO mailing list with too short position and receive validation error');
+
+        $I->sendPOST('mailingList/subscribev2', [
+            'subject' => 'ico',
+            'position' => 'N'
+        ]);
+
+        $message = trans('validation.min.string', [
+            'attribute' => 'position',
+            'min' => 2,
+        ]);
+
+        $I->canSeeResponseContainsValidationErrors([
+            'position' => [
                 $message,
             ],
         ]);
