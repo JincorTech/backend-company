@@ -28,9 +28,6 @@ class MailchimpListCest extends MailgunMailingListCest
         $I->sendPOST('mailingList/subscribev2', [
             'email' => 'arti123@arti.com',
             'subject' => 'ico',
-            'name' => 'John Doe',
-            'company' => 'Jincor',
-            'position' => 'CEO',
             'browserLanguage' => 'ru',
             'landingLanguage' => 'ru',
         ]);
@@ -39,9 +36,9 @@ class MailchimpListCest extends MailgunMailingListCest
         $I->canSeeResponseContainsJson([
             'email' => 'arti123@arti.com',
             'mailingListId' => $mock->getMailingLists()['ico'],
-            'name' => 'John Doe',
-            'company' => 'Jincor',
-            'position' => 'CEO',
+            'name' => null,
+            'company' => null,
+            'position' => null,
             'ip' => '1.2.3.4',
             'country' => 'RU',
             'browserLanguage' => 'ru',
@@ -150,10 +147,10 @@ class MailchimpListCest extends MailgunMailingListCest
 
     public function testSubscribeV2NoEmail(ApiTester $I)
     {
-        $I->wantTo('Subscribe to ICO mailing list without email and receive validation error');
+        $I->wantTo('Subscribe to Beta mailing list without email and receive validation error');
 
         $I->sendPOST('mailingList/subscribev2', [
-            'subject' => 'ico',
+            'subject' => 'beta',
         ]);
 
         $message = trans('validation.required', [
@@ -169,14 +166,16 @@ class MailchimpListCest extends MailgunMailingListCest
 
     public function testSubscribeV2NoName(ApiTester $I)
     {
-        $I->wantTo('Subscribe to ICO mailing list without name and receive validation error');
+        $I->wantTo('Subscribe to Beta mailing list without name and receive validation error');
 
         $I->sendPOST('mailingList/subscribev2', [
-            'subject' => 'ico',
+            'subject' => 'beta',
         ]);
 
-        $message = trans('validation.required', [
+        $message = trans('validation.required_if', [
             'attribute' => 'name',
+            'other' => 'subject',
+            'value' => 'beta',
         ]);
 
         $I->canSeeResponseContainsValidationErrors([
@@ -188,10 +187,10 @@ class MailchimpListCest extends MailgunMailingListCest
 
     public function testSubscribeV2TooShortName(ApiTester $I)
     {
-        $I->wantTo('Subscribe to ICO mailing list with too short name and receive validation error');
+        $I->wantTo('Subscribe to Beta mailing list with too short name and receive validation error');
 
         $I->sendPOST('mailingList/subscribev2', [
-            'subject' => 'ico',
+            'subject' => 'beta',
             'name' => 'Na'
         ]);
 
@@ -209,10 +208,10 @@ class MailchimpListCest extends MailgunMailingListCest
 
     public function testSubscribeV2TooShortCompany(ApiTester $I)
     {
-        $I->wantTo('Subscribe to ICO mailing list with too short company and receive validation error');
+        $I->wantTo('Subscribe to Beta mailing list with too short company and receive validation error');
 
         $I->sendPOST('mailingList/subscribev2', [
-            'subject' => 'ico',
+            'subject' => 'beta',
             'company' => 'Na'
         ]);
 
@@ -230,10 +229,10 @@ class MailchimpListCest extends MailgunMailingListCest
 
     public function testSubscribeV2TooShortPosition(ApiTester $I)
     {
-        $I->wantTo('Subscribe to ICO mailing list with too short position and receive validation error');
+        $I->wantTo('Subscribe to Beta mailing list with too short position and receive validation error');
 
         $I->sendPOST('mailingList/subscribev2', [
-            'subject' => 'ico',
+            'subject' => 'beta',
             'position' => 'N'
         ]);
 
@@ -251,14 +250,17 @@ class MailchimpListCest extends MailgunMailingListCest
 
     public function testSubscribeV2NoCompany(ApiTester $I)
     {
-        $I->wantTo('Subscribe to ICO mailing list without company and receive validation error');
+        $I->wantTo('Subscribe to Beta mailing list without company and receive validation error');
 
         $I->sendPOST('mailingList/subscribev2', [
-            'subject' => 'ico',
+            'subject' => 'beta',
+
         ]);
 
-        $message = trans('validation.required', [
+        $message = trans('validation.required_if', [
             'attribute' => 'company',
+            'other' => 'subject',
+            'value' => 'beta',
         ]);
 
         $I->canSeeResponseContainsValidationErrors([
@@ -270,14 +272,16 @@ class MailchimpListCest extends MailgunMailingListCest
 
     public function testSubscribeV2NoPosition(ApiTester $I)
     {
-        $I->wantTo('Subscribe to ICO mailing list without position and receive validation error');
+        $I->wantTo('Subscribe to Beta mailing list without position and receive validation error');
 
         $I->sendPOST('mailingList/subscribev2', [
-            'subject' => 'ico',
+            'subject' => 'beta',
         ]);
 
-        $message = trans('validation.required', [
+        $message = trans('validation.required_if', [
             'attribute' => 'position',
+            'other' => 'subject',
+            'value' => 'beta',
         ]);
 
         $I->canSeeResponseContainsValidationErrors([

@@ -83,25 +83,25 @@ class ExtendedMailingListItem extends MailingListItem
     }
 
     /**
-     * @return string
+     * @return string | null
      */
-    public function getName() : string
+    public function getName()
     {
         return $this->name;
     }
 
     /**
-     * @return string
+     * @return string | null
      */
-    public function getPosition() : string
+    public function getPosition()
     {
         return $this->position;
     }
 
     /**
-     * @return string
+     * @return string | null
      */
-    public function getCompany() : string
+    public function getCompany()
     {
         return $this->company;
     }

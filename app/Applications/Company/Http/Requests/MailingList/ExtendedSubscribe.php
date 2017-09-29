@@ -15,9 +15,9 @@ class ExtendedSubscribe extends Subscribe
     public function rules()
     {
         $additionalRules = [
-            'name' => 'required|string|min:3',
-            'company' => 'required|string|min:3',
-            'position' => 'required|string|min:2',
+            'name' => 'required_if:subject,beta|string|min:3',
+            'company' => 'required_if:subject,beta|string|min:3',
+            'position' => 'required_if:subject,beta|string|min:2',
             'browserLanguage' => 'required|string',
             'landingLanguage' => [
                 'required',
