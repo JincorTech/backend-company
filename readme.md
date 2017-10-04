@@ -1,5 +1,6 @@
 # Jincor Companies
- 
+ ![](https://habrastorage.org/webt/59/d5/42/59d542206afbe280817420.png)
+
  This service provides a functionality for managing companies and
  employees in the network for any purpose. Jincor uses this service
  to connect real-world companies to the blockchain, provide identifiers
