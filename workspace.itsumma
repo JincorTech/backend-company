@@ -1,0 +1,48 @@
+FROM laradock/workspace:1.1
+
+MAINTAINER Andrey Degtyaruk <hlogeon1@gmail.com>
+
+RUN groupadd -g 1002 companies && \
+    useradd -u 1001 -g companies -m companies
+
+ARG TZ=UTC
+ENV TZ ${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+
+#####################################
+# Crontab
+#####################################
+USER companies
+
+COPY ./config/crontab /var/spool/cron/crontabs
+
+USER root
+
+RUN apt-get install -y ca-certificates wget
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+RUN echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+RUN apt-get update
+RUN apt-get install -y apt-utils
+RUN apt-get install -y net-tools
+RUN apt-get install -y mongodb-org-tools
+
+
+ARG INSTALL_XDEBUG=false
+RUN if [ ${INSTALL_XDEBUG} = true ]; then \
+    # Load the xdebug extension only with phpunit commands
+    apt-get update && \
+    apt-get install -y --force-yes php7.0-xdebug \
+;fi
+
+RUN    pecl install mongodb-1.1.9 && \
+    echo "extension=mongodb.so" >> /etc/php/7.0/cli/php.ini
+
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+# Set default work directory
+
+WORKDIR /var/www/companies
+EXPOSE 8000
