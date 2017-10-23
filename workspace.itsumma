@@ -18,6 +18,7 @@ USER companies
 COPY ./config/crontab /var/spool/cron/crontabs
 
 USER root
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get install -y ca-certificates wget
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
