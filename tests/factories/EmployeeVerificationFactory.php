@@ -33,7 +33,7 @@ class EmployeeVerificationFactory implements FactoryInterface
         $employeeVerification->associateEmail($ru->email);
         $employeeVerification->associateCompany($company);
         $employeeVerification->associatePhone($ru->phoneNumber);
-        $employeeVerification->verifyEmail($employeeVerification->getEmailCode());
+        $employeeVerification->setVerifyEmail(true);
         return $employeeVerification;
     }
 

@@ -14,7 +14,7 @@ interface EmployeeVerificationServiceInterface
 {
     public function beginVerificationProcess(Company $company);
 
-    public function sendEmailVerification(string $verificationId, string $email);
+    public function sendEmailVerification(string $verificationId);
 
     public function sendEmailRestorePassword(string $email);
 

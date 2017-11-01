@@ -4,9 +4,10 @@ use App\Core\Repositories\EmployeeVerificationRepository;
 use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Core\Services\Verification\DummyVerificationService;
 use App\Core\Services\Verification\VerificationService;
-use App\Domains\Employee\Exceptions\EmployeeNotFound;
+use App\Applications\Company\Exceptions\Employee\EmployeeNotFound;
 use App\Domains\Employee\Entities\EmployeeVerification;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Core\Interfaces\IdentityInterface;
 use Faker\Factory;
 
 class EmployeeVerificationServiceCest
@@ -35,6 +36,13 @@ class EmployeeVerificationServiceCest
         $this->dm = App::make(DocumentManager::class);
     }
 
+    public function _before(UnitTester $I)
+    {
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        App::instance(IdentityInterface::class, $identityMock);
+    }
+
 
     public function beginVerificationProcess(UnitTester $I)
     {
@@ -51,7 +59,9 @@ class EmployeeVerificationServiceCest
     {
         $email = $this->faker->email;
         $verificationProcess = $this->makeVerification();
-        $this->verificationService->sendEmailVerification($verificationProcess->getId(), $email);
+        $verificationProcess->associateEmail($email);
+        $this->dm->persist($verificationProcess);
+        $this->verificationService->sendEmailVerification($verificationProcess->getId());
         $I->assertEquals($email, $verificationProcess->getEmail());
         $I->assertFalse($verificationProcess->isEmailVerified());
         $I->assertNotNull($verificationProcess->getCompany());

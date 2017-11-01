@@ -68,14 +68,12 @@ class City
      * City constructor.
      * @param array $names
      * @param Country $country
-     * @param Point $location
      */
-    public function __construct(array $names, Country $country/*, Point $location*/)
+    public function __construct(array $names, Country $country)
     {
         $this->id = Uuid::uuid4();
         $this->setNames($names);
         $this->country = $country;
-//        $this->setCoordinates(new Coordinates($location));
     }
 
     /**

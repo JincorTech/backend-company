@@ -29,8 +29,8 @@ services:
       context: ./
       args:
         - TZ=UTC
-        - INSTALL_XDEBUG=true
-      dockerfile: workspace.docker
+        - INSTALL_XDEBUG=false
+      dockerfile: workspace.debug
     tty: true
     links:
       - auth
@@ -125,6 +125,9 @@ services:
     networks:
       default:
         ipv4_address: 10.5.0.8
+    ports:
+      - 27017:27017
+      - 28017:28017
 
   src:
     image: tianon/true

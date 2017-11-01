@@ -25,6 +25,7 @@ class Register extends BaseAPIRequest implements PasswordValidation
                 'min:8',
                 self::PASSWORD_REGEX,
             ],
+            'email' => 'required|email',
             'position' => 'required|string|min:2|max:60',
             'verificationId' => 'required|string|size:36',
         ];
@@ -58,5 +59,10 @@ class Register extends BaseAPIRequest implements PasswordValidation
     public function getPassword(): string
     {
         return $this->get('password');
+    }
+
+    public function getEmail(): string
+    {
+        return $this->get('email');
     }
 }

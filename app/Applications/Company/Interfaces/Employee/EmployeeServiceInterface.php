@@ -17,6 +17,7 @@ interface EmployeeServiceInterface
 {
     public function register(
         string $verificationId,
+        string $email,
         EmployeeProfile $profile,
         string $password
     ) : Employee;

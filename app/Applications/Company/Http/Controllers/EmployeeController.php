@@ -21,7 +21,8 @@ use App\Applications\Company\Http\Requests\Employee\SearchContacts;
 use App\Applications\Company\Http\Requests\Employee\GetContactList;
 use App\Applications\Company\Http\Requests\Employee\ChangePassword;
 use App\Applications\Company\Http\Requests\Employee\ListByMatrixId;
-use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
+use App\Applications\Company\Http\Responses\Employee\Verification\EmailPinIncorrect as EmailPinIncorrectResponse;
+use App\Core\Services\Exceptions\MultipleCompanyLoginException;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
 use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
 use App\Applications\Company\Http\Requests\Employee\DeleteContact;
@@ -39,8 +40,9 @@ use App\Applications\Company\Http\Requests\Employee\Register;
 use App\Applications\Company\Http\Requests\Employee\Delete;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
-use App\Domains\Employee\Exceptions\EmailPinIncorrect;
-use App\Domains\Employee\Exceptions\PermissionDenied;
+use App\Applications\Company\Exceptions\Employee\Verification\EmailPinIncorrect;
+use App\Applications\Company\Exceptions\Employee\PermissionDenied;
+use App\Applications\Company\Exceptions\Employee\EmployeeNotFound;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Core\Interfaces\IdentityInterface;
 use Illuminate\Support\Collection;
@@ -89,7 +91,7 @@ class EmployeeController extends BaseController
      */
     public function sendEmailCode(SendVerificationCode $request)
     {
-        $verification = $this->verificationService->sendEmailVerification($request->getVerificationId(), $request->getEmail());
+        $verification = $this->verificationService->sendEmailVerification($request->getVerificationId());
         return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
@@ -102,13 +104,11 @@ class EmployeeController extends BaseController
     {
         try {
             $verification = $this->verificationService->verifyEmail($request->getVerificationId(), $request->getVerificationCode());
-            return $this->response->item($verification, EmployeeVerificationTransformer::class);
         } catch (EmailPinIncorrect $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => trans('exceptions.verification.code.incorrect'),
-            ], 401);
+            return new EmailPinIncorrectResponse;
         }
+        $this->employeeService->activate($verification);
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
 
@@ -121,6 +121,7 @@ class EmployeeController extends BaseController
     {
         $employee = $this->employeeService->register(
             $request->getVerificationId(),
+            $request->getEmail(),
             $request->getProfile(),
             $request->getPassword()
         );
@@ -144,7 +145,8 @@ class EmployeeController extends BaseController
      */
     public function sendRestorePasswordEmail(SendRestorePasswordEmail $request)
     {
-        $verification = $this->verificationService->sendEmailRestorePassword($request->getEmail())->getVerification();
+        $verification = $this->verificationService->sendEmailRestorePassword($request->getEmail());
+        $verification->setVerifyEmail(false);
         return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
@@ -174,6 +176,9 @@ class EmployeeController extends BaseController
                 'password' => $request->getPassword()
             ])->first();
             $employee = $this->employeeService->findByCompanyIdAndEmail($company->getId(), $request->getEmail());
+            if(!$employee || !$employee->isActive()) {
+                throw new EmployeeNotFound;
+            }
             $data = (object) [
                 'token' => $token,
                 'employee' => $employee,
@@ -258,7 +263,7 @@ class EmployeeController extends BaseController
             );
         } catch (PermissionDenied $exception) {
             $this->response->error($exception->getMessage(), 403);
-        } catch (App\Domains\Employee\Exceptions\EmployeeNotFound $exception) {
+        } catch (EmployeeNotFound $exception) {
             $this->response->error($exception->getMessage(), 404);
         }
     }
@@ -274,7 +279,7 @@ class EmployeeController extends BaseController
             return $this->response->item($this->employeeService->deactivate($request->getUser(), $id), Colleague::class);
         } catch (PermissionDenied $exception) {
             $this->response->error($exception->getMessage(), 403);
-        } catch (App\Domains\Employee\Exceptions\EmployeeNotFound $exception) {
+        } catch (EmployeeNotFound $exception) {
             $this->response->error($exception->getMessage(), 404);
         }
     }

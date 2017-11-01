@@ -10,8 +10,8 @@
 namespace App\Core\Services;
 
 use App\Core\Interfaces\IdentityInterface;
-use App\Domains\Employee\Exceptions\MultipleCompanyLoginException;
-use App\Domains\Employee\Exceptions\PasswordMismatchException;
+use App\Core\Services\Exceptions\MultipleCompanyLoginException;
+use App\Core\Services\Exceptions\PasswordMismatchException;
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
@@ -104,6 +104,7 @@ class IdentityService extends BaseRestService implements IdentityInterface
             $company = $companies->first()->getId();
         }
         $employee = $this->employeeService->findByCompanyIdAndEmail($company, $email);
+
         if (!$employee) {
             throw new DocumentNotFoundException(trans('exceptions.employee.not_found', ['email' => $email]));
         }

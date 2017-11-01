@@ -20,8 +20,8 @@ class EmployeeFactory implements FactoryInterface
         $password = 'test123';
         $profile = EmployeeProfileFactory::make();
         $verification = EmployeeVerificationFactory::make();
-        $verification->verifyEmail($verification->getEmailCode());
-        $employee = Employee::register($verification, $profile, $password);
+        $verification->setVerifyEmail(true);
+        $employee = Employee::register($verification, $profile, $verification->getEmail(), $password);
         return $employee;
     }
 

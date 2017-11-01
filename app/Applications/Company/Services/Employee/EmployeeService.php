@@ -9,39 +9,38 @@
 
 namespace App\Applications\Company\Services\Employee;
 
+use App;
+use App\Applications\Company\Exceptions\Company\CompanyNotFound;
+use App\Applications\Company\Exceptions\Company\EmployeeAlreadyExists;
+use App\Applications\Company\Exceptions\Employee\EmployeeNotFound;
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
+use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Applications\Company\Services\Employee\Verification\InviteEmailVerificationFactory;
+use App\Core\Services\ImageService;
 use App\Core\Services\JWTService;
 use App\Core\Services\Verification\VerificationService;
-use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
-use App\Domains\Employee\Exceptions\EmployeeVerificationException;
-use App\Domains\Employee\Exceptions\EmployeeAlreadyExists;
-use App\Domains\Employee\Exceptions\PasswordMismatchException;
-use App\Domains\Employee\Exceptions\ContactsNotVerified;
-use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Domains\Company\Entities\Company;
-use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Domains\Employee\Entities\Employee;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Domains\Employee\Entities\EmployeeVerification;
+use App\Applications\Company\Exceptions\Employee\Verification\EmployeeVerificationAlreadySent;
+use App\Applications\Company\Exceptions\Employee\EmployeeVerificationException;
+use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
+use App\Applications\Company\Exceptions\Employee\InvitationLimitReached;
+use App\Core\Services\Exceptions\PasswordMismatchException;
+use App\Applications\Company\Exceptions\Employee\PermissionDenied;
 use App\Domains\Employee\Interfaces\EmployeeRepositoryInterface;
 use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
-use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
-use Doctrine\ODM\MongoDB\DocumentRepository;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Support\Collection;
-use App\Domains\Employee\Exceptions\CompanyNotFound;
-use App\Domains\Employee\Exceptions\EmployeeVerificationAlreadySent;
-use App\Domains\Employee\Mailables\InviteColleague;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use App\Domains\Employee\Exceptions\PermissionDenied;
-use App\Domains\Employee\Exceptions\InvitationLimitReached;
+use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
-use App\Core\Services\ImageService;
-use App\Domains\Employee\Exceptions\EmployeeNotFound;
-use Validator;
-use App;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\DocumentRepository;
+use Illuminate\Support\Collection;
 use Mail;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Validator;
+use Exception;
 
 class EmployeeService implements EmployeeServiceInterface
 {
@@ -106,14 +105,16 @@ class EmployeeService implements EmployeeServiceInterface
      * Register new employee
      *
      * @param string $verificationId
+     * @param string $email
      * @param App\Domains\Employee\ValueObjects\EmployeeProfile $profile
      * @param string $password
      * @return Employee
-     * @throws App\Domains\Employee\Exceptions\ContactsNotVerified
-     * @throws App\Domains\Employee\Exceptions\EmployeeAlreadyExists
+     * @throws \App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound
+     * @throws \App\Applications\Company\Exceptions\Company\EmployeeAlreadyExists
      */
     public function register(
         string $verificationId,
+        string $email,
         EmployeeProfile $profile,
         string $password
     ) : Employee
@@ -121,9 +122,15 @@ class EmployeeService implements EmployeeServiceInterface
         /** @var EmployeeVerification $verification */
         $verification = $this->verificationService->getRepository()->find($verificationId);
         if (!$verification) {
-            throw new ContactsNotVerified(trans('exceptions.contacts.not_verified'));
+            throw new EmployeeVerificationNotFound(
+                trans('exceptions.employee.verification.not_found', [
+                        'verification' => $verificationId,
+                    ]
+                )
+            );
         }
-        if ($this->findByCompanyIdAndEmail($verification->getCompany()->getId(), $verification->getEmail())) {
+
+        if ($this->findByCompanyIdAndEmail($verification->getCompany()->getId(), $email)) {
             throw new EmployeeAlreadyExists(
                 trans('exceptions.employee.already_exists', [
                     'email' => $verification->getEmail(),
@@ -131,13 +138,38 @@ class EmployeeService implements EmployeeServiceInterface
                 ])
             );
         }
-        $employee = Employee::register($verification, $profile, $password);
+        if ($verification->getEmail() === null) {
+            $verification->associateEmail($email); //TODO: needs to be removed?
+        }
+        $employee = Employee::register($verification, $profile, $email, $password);
         $this->dm->persist($employee);
         $this->dm->persist($verification->getCompany());
         $this->dm->flush();
 
         return $employee;
     }
+
+    /**
+     * Activate an employee if email verified
+     *
+     * @param EmployeeVerification $verification
+     */
+    public function activate(EmployeeVerification $verification)
+    {
+        /** @var Employee $employee */
+        $employee = $this->repository->findByCompanyAndEmail($verification->getCompany(), $verification->getEmail());
+
+        if (!$employee) throw new EmployeeNotFound(trans('exceptions.employee.not_found', [
+            'email' => $verification->getEmail()
+        ]));
+
+        if ($verification->isEmailVerified() && !$employee->isActive()) {
+            $employee->activate();
+            $this->dm->persist($employee);
+            $this->dm->flush($employee);
+        }
+    }
+
 
     /**
      * Get colleagues of an employee specified
@@ -265,7 +297,7 @@ class EmployeeService implements EmployeeServiceInterface
      *
      * @param string $verificationId
      * @return Collection
-     * @throws \App\Domains\Employee\Exceptions\EmployeeVerificationException
+     * @throws EmployeeVerificationException;
      * @throws EmployeeVerificationNotFound
      */
     public function findByVerificationId(string $verificationId) : Collection
@@ -354,14 +386,14 @@ class EmployeeService implements EmployeeServiceInterface
      * @param string $id
      * @return Employee
      *
-     * @throws App\Domains\Employee\Exceptions\PermissionDenied
+     * @throws \App\Applications\Company\Exceptions\Employee\PermissionDenied
      */
     public function deactivate(Employee $admin, string $id)
     {
         /** @var Employee $employee */
         $employee = $this->repository->find($id);
         if (!$employee) {
-            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+            throw new App\Applications\Company\Exceptions\Employee\EmployeeNotFound(trans('exceptions.employee.not_found'));
         }
         if ($employee->getCompany()->getId() !== $admin->getCompany()->getId()) {
             throw new PermissionDenied(trans('exceptions.employee.access_denied'));
@@ -428,7 +460,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param Collection $invitees
      * @param $inviter Employee
      * @return Collection
-     * @throws \App\Domains\Employee\Exceptions\EmployeeAlreadyExists
+     * @throws \App\Applications\Company\Exceptions\Company\EmployeeAlreadyExists
      */
     public function inviteMany(Collection $invitees, Employee $inviter)
     {
@@ -481,7 +513,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param string $id
      * @param bool $value
      * @return Employee
-     * @throws App\Domains\Employee\Exceptions\EmployeeNotFound
+     * @throws EmployeeNotFound
      * @throws PermissionDenied
      */
     public function makeAdmin(Employee $admin, string $id, bool $value)
@@ -489,13 +521,13 @@ class EmployeeService implements EmployeeServiceInterface
         /** @var Employee $employee */
         $employee = $this->repository->find($id);
         if (!$employee) {
-            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+            throw new EmployeeNotFound(trans('exceptions.employee.not_found'));
         }
         if ($employee->getCompany()->getId() !== $admin->getCompany()->getId()) {
             throw new PermissionDenied(trans('exceptions.employee.access_denied'));
         }
         if (!$employee) {
-            throw new App\Domains\Employee\Exceptions\EmployeeNotFound(trans('exceptions.employee.not_found'));
+            throw new EmployeeNotFound(trans('exceptions.employee.not_found'));
         }
         if ($value === true) {
             $employee->setScope($employee->getCompany(), EmployeeRole::ADMIN);
@@ -511,7 +543,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param $email
      * @param $companyId
      * @return Employee
-     * @throws EmployeeNotFound
+     * @throws \App\Applications\Company\Exceptions\Employee\EmployeeNotFound
      */
     public function addContact($email, $companyId)
     {

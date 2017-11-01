@@ -9,27 +9,27 @@
 
 namespace App\Domains\Employee\Entities;
 
-use App\Domains\Employee\Events\EmployeeDeactivated;
-use App\Domains\Employee\Events\EmployeeRegistered;
-use App\Domains\Employee\Events\ScopeChanged;
-use App\Domains\Employee\Exceptions\ContactAlreadyAdded;
-use App\Domains\Employee\Exceptions\ContactNotFound;
-use App\Domains\Employee\ValueObjects\EmployeeRole;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Company\Entities\Department;
-use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Domains\Employee\EntityDecorators\RegistrationVerification;
+use App\Domains\Employee\Events\EmployeeActivated;
+use App\Domains\Employee\Events\EmployeeDeactivated;
+use App\Domains\Employee\Events\EmployeeRegistered;
 use App\Domains\Employee\Events\PasswordChanged;
-use App\Domains\Employee\Exceptions\EmployeeVerificationException;
+use App\Domains\Employee\Events\ScopeChanged;
+use App\Domains\Employee\Exceptions\CompanyRequired;
+use App\Domains\Employee\Exceptions\ContactAlreadyAdded;
+use App\Domains\Employee\Exceptions\ContactNotFound;
 use App\Domains\Employee\ValueObjects\EmployeeContact;
-use App\Domains\Employee\ValueObjects\EmployeeProfile;
-use App\Core\Repositories\EmployeeRepository;
-use Doctrine\ODM\MongoDB\PersistentCollection;
-use Doctrine\Common\Collections\ArrayCollection;
 use App\Domains\Employee\ValueObjects\EmployeeContactListItem;
+use App\Domains\Employee\ValueObjects\EmployeeProfile;
+use App\Domains\Employee\ValueObjects\EmployeeRole;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Ramsey\Uuid\Uuid;
+use Doctrine\ODM\MongoDB\PersistentCollection;
 use Hash;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class Employee.
@@ -114,27 +114,22 @@ class Employee implements MetaEmployeeInterface
         $this->contactList = new ArrayCollection();
     }
 
-    public static function register(EmployeeVerification $verification, EmployeeProfile $profile, string $password)
+    public static function register(EmployeeVerification $verification, EmployeeProfile $profile, string $email, string $password)
     {
         $employee = new self();
-        $registrationVerification = new RegistrationVerification($verification);
         if (!$verification->getCompany()) {
-            throw new EmployeeVerificationException("You cannot register employee without the company"); //TODO: message translation
-        }
-        if (!$registrationVerification->completelyVerified()) {
-            throw new EmployeeVerificationException("In order to register you should verify all required contacts first");
+            throw new CompanyRequired(trans('exceptions.employee.company_required')); //TODO: message translation
         }
         $employee->contacts = new EmployeeContact($verification);
         $employee->profile = $profile;
-        $employee->profile->setLogin($verification->getCompany(), $verification->getEmail());
+        $employee->profile->setLogin($verification->getCompany(), $email);
         $employee->password = Hash::make($password);
-        $employee->isActive = true;
+        $employee->isActive = $verification->isEmailVerified();
         $employee->setScope($verification->getCompany());
-
         $employee->department = $verification->getCompany()->getRootDepartment();
         $employee->departmentId = $verification->getCompany()->getRootDepartment()->getId();
         $employee->department->addEmployee($employee);
-        $employee->registeredAt = new \DateTime();
+        $employee->registeredAt = new DateTime();
         $employee->matrixId = $employee->getMatrixId();
 
         event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
@@ -252,10 +247,18 @@ class Employee implements MetaEmployeeInterface
         }
     }
 
+    public function activate()
+    {
+        if (!$this->isActive()) {
+            $this->isActive = true;
+            event(new EmployeeActivated($this->getLogin(), new DateTime()));
+        }
+    }
+
     public function deactivate()
     {
         $this->isActive = false;
-        $this->deletedAt = new \DateTime();
+        $this->deletedAt = new DateTime();
         event(new EmployeeDeactivated($this->getLogin(), $this->getCompany()));
     }
 
@@ -265,9 +268,9 @@ class Employee implements MetaEmployeeInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getRegisteredAt(): \DateTime
+    public function getRegisteredAt(): DateTime
     {
         return $this->registeredAt;
     }

@@ -17,8 +17,6 @@ class SendVerificationCode extends GetAPIRequest
     {
         return [
             'verificationId' => 'required|string|size:36',
-            'email' => 'required_without:phone|email',
-            'phone' => 'required_without:email',
         ];
     }
 

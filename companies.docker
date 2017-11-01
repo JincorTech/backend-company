@@ -1,4 +1,4 @@
-FROM laradock/php-fpm:7.0--1.2
+FROM laradock/php-fpm:1.4-71
 
 MAINTAINER Andrey Degtyaruk <hlogeon1@gmail.com>
 

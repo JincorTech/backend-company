@@ -12,8 +12,6 @@ namespace App\Core\Dictionary\Repositories;
 use App\Core\Dictionary\Entities\Country;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\DocumentRepository;
-use GeoJson\Geometry\Point;
-
 /**
  * Class CityRepository
  * @package App\Core\Dictionary\Repositories

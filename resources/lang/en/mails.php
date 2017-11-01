@@ -16,6 +16,8 @@ return [
         'verifyButton' => 'Verify',
         'outro' => 'If its not you just ignore this email',
         'bye' => 'Best Regards, Jincor team',
+        'subject' => 'Email Verification',
+        'from' => 'Support Team'
     ],
 
     'invitation' => [

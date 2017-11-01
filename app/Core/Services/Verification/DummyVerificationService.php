@@ -9,7 +9,7 @@
 
 namespace App\Core\Services\Verification;
 use App\Domains\Employee\Entities\EmployeeVerification;
-use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
+use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
 use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
 
 

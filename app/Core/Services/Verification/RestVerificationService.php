@@ -87,7 +87,7 @@ class RestVerificationService implements VerificationService
             return (new VerificationIdentifier($responseArray['verificationId']))
                 ->setExpiredOn($responseArray['expiredOn'] ?? null);
         } catch (BadResponseException $ex) {
-            throw new VerificationFatalError('Initialization of verification process is failed');
+            throw new VerificationFatalError('Initialization of verification process is failed: ' . $ex->getMessage());
         }
     }
 

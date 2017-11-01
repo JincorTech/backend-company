@@ -44,20 +44,20 @@ class EmployeeVerifyEmailCest
 
     public function sendVerificationIncorrectId(ApiTester $I)
     {
-        $I->wantTo('Request verification code with incorrect veficication ID and receive 500 error code');
+        $I->wantTo('Request verification code with incorrect verification ID and receive 404 error code');
 
         $I->sendGET('employee/verifyEmail', [
             'email' => 'notverified@tester.com',
             'verificationId' => '6b90fa0c-7912-452c-bddf-e2c718440252',
         ]);
 
-        $I->canSeeResponseCodeIs(500);
+        $I->canSeeResponseCodeIs(404);
         $I->canSeeResponseIsJson();
         $I->canSeeResponseContainsJson([
             'message' => trans('exceptions.employee.verification.not_found', [
                 'verification' => '6b90fa0c-7912-452c-bddf-e2c718440252',
             ]),
-            'status_code' => 500,
+            'status_code' => 404,
         ]);
     }
 
@@ -69,7 +69,7 @@ class EmployeeVerifyEmailCest
             'verificationCode' => '318379',
             'verificationId' => '6b90fa0c-7912-452c-bddf-e2c718440251',
         ]);
-
+        //NOTE: Fix this test
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseIsJson();
         $I->canSeeResponseContainsJson([

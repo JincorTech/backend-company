@@ -1,0 +1,25 @@
+sudo: required
+services:
+- docker
+before_install:
+- chmod ugo+x ./build.sh
+- docker-compose -f docker-compose.test.yml build
+- cp ./.env.test ./.env
+- docker-compose -f docker-compose.test.yml run --rm workspace composer install
+script:
+- docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept
+  run unit
+- docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept
+  run api
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ];  then echo "production"; elif ["$TRAVIS_BRANCH"
+  == "develop"]; then echo "stage"; else echo "dev-"$(git rev-parse --short HEAD);
+  fi`
+- "./build.sh $TAG"
+env:
+  global:
+  - secure: X8y2qrIm/5HSsCGYGIUx4Ck3+VRnp6RyosP1iwBqnBARbWcBTvr9+TiNONcJAC1EnLS46r+pN46fkT+1PVoKEnDPK9B7WLBGTsQQ989ftMZX/CY8x0r6iPWtkHNuoSnN4WP7qO8OTJPuybblXAhuIjDLsQf1lUe+k6msA0HVFpdLfRtCVtmOIyh+5peFxmkQQUYH202miC0eESLjv0pDxsQQaWFZ/qXUpF7HQtQBGltb88VbBbaPSqzF1t6hL0LkD4mvCFBOmmbZ0CCwig2XlHUVdmvr4KP3b96GU96Am02Jrciwn9v+4Aepd8XL70RDec7k0QBz5nUVjtlNyRYGi+G135gHmSGuW3+DrPqIUGevVhF1dPIQVt7YDndsh8q7uKwpfI/W+eg422TLLQkYfTDBOMIQc7HZNi6QDeRx+gozhB2Pyr+0Ylbo1mTB51SGV/yWouLEvDqw7uggPlOdOvKSXc9Z5bRVuqG054+o7OV3MGdLBzgYYlRY3510PNVQyBSj2DPyF8ORQnhSXbzZDmazhIXrP0BCOjw6kHTZCLrS8hRK5uAGpmfolZ0WYVFwA5ExsUdgNfbztBzMEy0yNhT0FVLh5dteWVEZdB2/wVdujkefaEFvAtOBvhyS0vkRYYvWmH0HajQLh7fZAtBZW2f+sR5B+/HYw2MGMFg1nH8=
+  - secure: hIZfe/n2wtKEI/jcvPKBQBkbSjG+i1KJFuAaApHR0f9faRpSmL8GChW9XRy8Z1UZOBtLUA3FDB5+8wyWOOqF2ApGlmAj9Rb42nbbl2CKsaoeUf3AK+sMNAIwNTrIJihmN0fwschQmJYpND9ht8BjAx6uFw0Lj73dWg1JQFLAvyYY0nZ7Mi/IGPanHzpbtRLMGBG2RCwMye4HnE1oCOGTVcxzl0C2necs8h5L5g6FX69VBCYpNAgcwPYtTOWtNp9g0886YfAQi6jIYCBtxPsBbbLfJNKWWDdZ4wPqf7icuCOtmaQq28UUt0FRZwXrmcK31RS3SkRK+uerGY3FY1BwO5rULe70gOQAATIsYTIwD83BET9WbsTPPPHkMHjTMPxkTs+xU65BU4ffIFs/yixd4p7Cf5I/Pybde9VKM8Wc5FATtGM4TUqmYeaY+RdEfK+/5RAYSBdLAgLVrxqfzDRvZ1bdFInpDrC5pJVkOoXyeKq66AI+otAnIIg0QmOXYZr3Zb51+TQVqGyPJtFSxQnLQ+qG+SaulnvhFbnvM1DKA/QrtkqtXF4tB8sL6gxuC/xJ0bWJjaNFhlM7eeJek/S6s0eFefRsAj3bfFsJ8g5WFuhk8wzQvhipxeVnMdhwb4zsaThxw0XNpiEd8hS+BG9oVqnlPc3fv3kYZ9wFLUIR2Gk=
+notifications:
+  slack:
+    secure: s968QpZgiLGTHFMDqbyBF+bh8wQkKTURYdYSTQCPtvGWW4DtnFXc9oKqy8tng5IlacrMYXUm+/i/ndSdjlxv6nPKyCxA/lKMrHbuwpIOTLHgqCX0c0ql5JMhRzFiXq49QSyr6kvuZtOqE3YAev6guGzU+MLEJChjHzBMH56ePlWPuK6sACn/BT/UNfJzPfyTblH1LSmjQUa9F+9GgfKsOUt1gY/1OKIJFXTGeSx4+Ks16p9gF62vD32WAhQuTh77RSiUIG27MUVDrbwCAnp3nzvao2c8C0emj09DWJJeEQqnlV1xzd+B4wrJAcopFg90YQtlzwnoCHyJHv7R0p74+Lgz/su/Vm0eMauJRUuidsc7T7tgH5SkjEy+BNg74aQUqq8YtC2/hy+Zo64tAlFB4vW/WeyUOa5w89KLC9i3UhceME4NIWoLJ18G4vm3YJbkERnumFi/C2s6MIKC5pOW0ApUVxE+gv/iolXwrev3IJYIiL3Vzaoxo7ngKC5D5+CUdGXnA4xZjIWoNS6ohZdN30v/8E4qJUfp0mkVnyKshfj+lGJpYeu1zyIJTquh3thiYcEWO+4POPLUidVz8/9wv+sR3Up5cmG760FL3ahuKf86atwEEJQUNe5VB7jQHo3Bn/fM2j8h/IMbrKTW1g6S73Lc6tl2f0QcIAOQBqVUqvM=

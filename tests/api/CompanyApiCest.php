@@ -132,7 +132,6 @@ class CompanyApiCest
                 'ortgma@gmail.com',
             ],
         ]);
-
         $I->canSeeResponseIsJson();
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseJsonMatchesJsonPath('$.data[*].status');

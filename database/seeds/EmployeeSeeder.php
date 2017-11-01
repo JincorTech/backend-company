@@ -37,11 +37,11 @@ class EmployeeSeeder extends DatabaseSeeder
     {
         $verification = $this->getEmployeeVerificationService()->beginVerificationProcess($company);
         $verification->associateEmail('test@test.com');
-        $verification->verifyEmail($verification->getEmailCode());
+        $verification->setVerifyEmail(true);
         $verification->associateCompany($company);
         $this->getDm()->persist($verification);
         $profile = new EmployeeProfile('John', 'Doe', 'Tester');
-        $this->getEmployeeService()->register($verification->getId(), $profile, 'test');
+        $this->getEmployeeService()->register($verification->getId(), 'test@test.com', $profile, 'test');
     }
 
     /**

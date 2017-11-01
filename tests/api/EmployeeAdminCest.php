@@ -35,7 +35,6 @@ class EmployeeAdminCest
             'id' => '63e88d9d-a79e-4705-9c8f-8712b71b53f8',
             'value' => false,
         ]);
-
         $I->canSeeResponseCodeIs(403);
         $I->canSeeResponseContainsJson([
             'message' => trans('exceptions.employee.access_denied'),

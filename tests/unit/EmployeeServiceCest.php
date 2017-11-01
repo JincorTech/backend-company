@@ -1,14 +1,14 @@
 <?php
 
 use App\Domains\Employee\EntityDecorators\RegistrationVerification;
-use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
-use App\Domains\Employee\Exceptions\EmployeeVerificationNotFound;
-use App\Domains\Employee\Exceptions\PasswordMismatchException;
+use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
+use App\Core\Services\Exceptions\PasswordMismatchException;
 use App\Applications\Company\Services\Employee\EmployeeVerificationService;
-use App\Domains\Employee\Exceptions\CompanyNotFound;
+use App\Applications\Company\Exceptions\Company\CompanyNotFound;
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Entities\Employee;
+use App\Domains\Employee\Entities\EmployeeVerification;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Interfaces\MessengerServiceInterface;
 use App\Core\Interfaces\IdentityInterface;
@@ -74,7 +74,7 @@ class EmployeeServiceCest
         $email = $this->faker->email;
         $verification = $this->getVerifiedProcess($email);
         $profile = EmployeeProfileFactory::make();
-        $employee = $this->employeeService->register($verification->getId(), $profile, $this->employeePassword);
+        $employee = $this->employeeService->register($verification->getId(), $email, $profile, $this->employeePassword);
         $I->assertInstanceOf(Employee::class, $employee);
         $I->assertEquals($profile, $employee->getProfile());
         $I->assertEquals($employee->getContacts()->getEmail(), $email);
@@ -226,12 +226,13 @@ class EmployeeServiceCest
         $this->dm->persist($company);
         $profile = EmployeeProfileFactory::make();
         /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
-        $verification = RestorePasswordVerification::make($this->email);
+        $verification = new EmployeeVerification(EmployeeVerification::REASON_RESTORE);
+        $verification->associateEmail($this->email);
         $verification->associateCompany($company);
-        $verification->verifyEmail($verification->getEmailCode());
-        $this->dm->persist($verification->getVerification());
+        $verification->setVerifyEmail(true);
+        $this->dm->persist($verification);
         $this->dm->flush();
-        $employee = $this->employeeService->register($verification->getId(), $profile, $this->employeePassword);
+        $employee = $this->employeeService->register($verification->getId(), $this->email, $profile, $this->employeePassword);
         $this->dm->persist($employee);
         $match = $this->employeeService->matchVerificationAndCompany($verification->getId(), $company->getId());
         $I->assertEquals($employee, $match);
@@ -269,7 +270,7 @@ class EmployeeServiceCest
             $verification = $this->getVerifiedProcess($email);
         }
         $profile = EmployeeProfileFactory::make();
-        return $this->employeeService->register($verification->getId(), $profile, $this->employeePassword);
+        return $this->employeeService->register($verification->getId(), $verification->getEmail(), $profile, $this->employeePassword);
     }
 
     /**
@@ -282,7 +283,7 @@ class EmployeeServiceCest
     {
         $verificationProcess = new RegistrationVerification($this->verificationService->beginVerificationProcess($this->getCompany()));
         $verificationProcess->getVerification()->associateEmail($email);
-        $verificationProcess->getVerification()->verifyEmail($verificationProcess->getVerification()->getEmailCode());
+        $verificationProcess->getVerification()->setVerifyEmail(true);
         $this->dm->persist($verificationProcess->getVerification());
         $this->dm->flush($verificationProcess->getVerification());
         return $verificationProcess->getVerification();

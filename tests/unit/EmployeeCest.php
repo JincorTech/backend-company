@@ -1,9 +1,9 @@
 <?php
 
 use App\Domains\Employee\Entities\Employee;
-use App\Domains\Employee\Exceptions\EmployeeVerificationException;
+use App\Domains\Employee\Entities\EmployeeVerification;
+use App\Domains\Employee\Exceptions\CompanyRequired;
 use App\Domains\Company\Entities\Company;
-use App\Domains\Employee\EntityDecorators\RestorePasswordVerification;
 use App\Core\Interfaces\MessengerServiceInterface;
 use App\Core\Interfaces\IdentityInterface;
 use App\Domains\Employee\Exceptions\ContactNotFound;
@@ -34,8 +34,8 @@ class EmployeeCest
         $password = 'test123';
         $profile = EmployeeProfileFactory::make();
         $verification = EmployeeVerificationFactory::make();
-        $verification->verifyEmail($verification->getEmailCode());
-        $employee = Employee::register($verification, $profile, $password);
+        $verification->setVerifyEmail(true);
+        $employee = Employee::register($verification, $profile, $verification->getEmail(), $password);
         $I->assertInstanceOf(Employee::class, $employee);
         $I->assertEquals($profile, $employee->getProfile());
         $I->assertNotEquals($password, $employee->getPassword());
@@ -97,9 +97,11 @@ class EmployeeCest
     {
         $password = 'test123';
         $profile = EmployeeProfileFactory::make();
-        $verification = RestorePasswordVerification::make('test@test.com');
-        $I->expectException(EmployeeVerificationException::class, function() use ($profile, $password, $verification) {
-            Employee::register($verification->getVerification(), $profile, $password);
+        $verification = new EmployeeVerification(EmployeeVerification::REASON_RESTORE);
+        $email = 'test@test.com';
+        $verification->associateEmail($email);
+        $I->expectException(CompanyRequired::class, function() use ($profile, $email, $password, $verification) {
+            Employee::register($verification, $profile, $email, $password);
         });
     }
 
@@ -139,17 +141,6 @@ class EmployeeCest
         });
     }
 
-    public function registerNotVerified(UnitTester $I)
-    {
-        $verification = EmployeeVerificationFactory::make();
-        $profile = EmployeeProfileFactory::make();
-        $password = 'test123';
-
-        $I->expectException(EmployeeVerificationException::class, function () use ($verification, $profile, $password) {
-            Employee::register($verification, $profile, $password);
-        });
-    }
-
     public function testEmployeeRoleAssignOnRegistration(UnitTester $I)
     {
         $company = CompanyFactory::makeMockWith1Employee();
@@ -157,7 +148,7 @@ class EmployeeCest
         $profile = EmployeeProfileFactory::make();
         $password = 'test123';
 
-        $employee = Employee::register($verification, $profile, $password);
+        $employee = Employee::register($verification, $profile, $verification->getEmail(), $password);
 
         //not first employee of company is registered not as admin
         $I->assertEquals(EmployeeRole::EMPLOYEE, $employee->getProfile()->scope);

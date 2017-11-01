@@ -1,31 +1,11 @@
 version: '2'
 services:
 
-  companies:
-    image: registry.jincor.com/backend/companies
-    build:
-      context: ./
-      dockerfile: companies.docker
-    ports:
-      - 9000
-    links:
-      - auth
-      - mongo
-      - redis
-    environment:
-      # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
-      - PHP_IDE_CONFIG="serverName=companies"
-    volumes:
-      - ./:/var/www/companies
-
   workspace:
-    image: registry.jincor.com/backend/companies-workspace:latest-test
+    image: jincort/backend-company
     build:
       context: ./
-      args:
-        - TZ=UTC
-        - INSTALL_XDEBUG=true
-      dockerfile: workspace.docker
+      dockerfile: workspace.debug
     tty: true
     links:
       - mongo
@@ -37,27 +17,49 @@ services:
       - mongo
     volumes:
       - ./:/var/www/companies
+    networks:
+          default:
+            ipv4_address: 10.5.0.2
 
 # The only one reason why auth is here is an API tests in EmployeeChangePasswordCest
 # Some cases are trying to interact with real auth server.
 # TODO: remove coupling to auth and this service from test docker-compose
   auth:
-    image: registry.jincor.com/backend/auth:latest
+    image: jincort/backend-auth:production
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
+      TENANT_WHITE_LIST: "10.5.0.2"
     volumes:
       - /usr/src/app
     links:
       - redis
+    networks:
+          default:
+            ipv4_address: 10.5.0.3
 
   redis:
-    image: registry.jincor.com/backend/redis:latest
+    image: jincort/backend-redis:production
     volumes:
           - ./storage/redis:/data
+    networks:
+          default:
+            ipv4_address: 10.5.0.4
 
   mongo:
-    image: registry.jincor.com/backend/mongodb:latest
+    image: jincort/backend-mongodb:production
     volumes:
           - ./storage/mongodb:/data/db
+    networks:
+          default:
+            ipv4_address: 10.5.0.5
+
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
