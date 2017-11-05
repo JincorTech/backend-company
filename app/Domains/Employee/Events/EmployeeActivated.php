@@ -38,5 +38,4 @@ class EmployeeActivated
         $this->login = $login;
         $this->activatedAt = $time;
     }
-
 }

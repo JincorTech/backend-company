@@ -32,9 +32,9 @@ class EmailVerificationFactory
     {
         return EmailVerificationVerificationMethod::buildDefault(
             $toEmail,
-            trans('mails.verification.subject'), // @TODO: trans
+            trans('mails.verification.subject'),
             'support@jincor.com',
-            trans(trans('mails.verification.from')), // @TODO: trans
+            trans(trans('mails.verification.from')),
             view('emails.registration.verify-email', [
                 'jwt' => $jwt,
                 'pin' => '{{{CODE}}}',

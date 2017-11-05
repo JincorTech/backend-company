@@ -69,7 +69,6 @@ class EmployeeVerifyEmailCest
             'verificationCode' => '318379',
             'verificationId' => '6b90fa0c-7912-452c-bddf-e2c718440251',
         ]);
-        //NOTE: Fix this test
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseIsJson();
         $I->canSeeResponseContainsJson([

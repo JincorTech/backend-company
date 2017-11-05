@@ -15,6 +15,12 @@ use Exception;
 
 use App\Core\Exceptions\Handler;
 
+/**
+ * Class ExceptionHandler
+ * @package App\Applications\Company\Exceptions
+ *
+ * @TODO: use this class to handle custom exceptions
+ */
 class ExceptionHandler extends Handler
 {
 

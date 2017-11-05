@@ -19,5 +19,4 @@ class EmailPinIncorrect extends AccessDeniedHttpException
     {
         parent::__construct(trans('exceptions.verification.code.incorrect'));
     }
-
 }

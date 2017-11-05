@@ -143,9 +143,9 @@ trait BaseVerificationMethodTrait
      * Set verification code policy.
      *
      * @param   string  $expiredOn
-     * @return  self
+     * @return self
      */
-    public function setPolicy(string $expiredOn): self
+    public function setPolicy(string $expiredOn)
     {
         if (empty($expiredOn)) {
             throw new \InvalidArgumentException('Expired on is empty');

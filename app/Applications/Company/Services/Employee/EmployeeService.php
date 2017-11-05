@@ -297,7 +297,7 @@ class EmployeeService implements EmployeeServiceInterface
      *
      * @param string $verificationId
      * @return Collection
-     * @throws EmployeeVerificationException;
+     * @throws EmployeeVerificationException
      * @throws EmployeeVerificationNotFound
      */
     public function findByVerificationId(string $verificationId) : Collection
@@ -386,14 +386,14 @@ class EmployeeService implements EmployeeServiceInterface
      * @param string $id
      * @return Employee
      *
-     * @throws \App\Applications\Company\Exceptions\Employee\PermissionDenied
+     * @throws App\Applications\Company\Exceptions\Employee\PermissionDenied
      */
     public function deactivate(Employee $admin, string $id)
     {
         /** @var Employee $employee */
         $employee = $this->repository->find($id);
         if (!$employee) {
-            throw new App\Applications\Company\Exceptions\Employee\EmployeeNotFound(trans('exceptions.employee.not_found'));
+            throw new EmployeeNotFound(trans('exceptions.employee.not_found'));
         }
         if ($employee->getCompany()->getId() !== $admin->getCompany()->getId()) {
             throw new PermissionDenied(trans('exceptions.employee.access_denied'));

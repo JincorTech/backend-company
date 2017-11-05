@@ -35,7 +35,8 @@ return [
         'access_denied' => 'You don\'t have permissions permissions to perform this action',
         'verification' => [
             'not_found' => 'Employee verification :verification cannot be found on the server',
-        ]
+        ],
+        'inactive' => 'Account was not activated'
     ],
     'company' => [
         'not_found' => 'Company not found on the server',

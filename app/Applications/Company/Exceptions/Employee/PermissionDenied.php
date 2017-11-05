@@ -19,5 +19,4 @@ class PermissionDenied extends AccessDeniedHttpException
     {
         parent::__construct(trans('exceptions.employee.access_denied'));
     }
-
 }

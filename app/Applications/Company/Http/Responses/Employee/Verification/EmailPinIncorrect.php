@@ -20,5 +20,4 @@ class EmailPinIncorrect extends JsonResponse
             'message' => trans('exceptions.verification.code.incorrect'),
         ], 401);
     }
-
 }

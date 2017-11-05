@@ -12,10 +12,12 @@ namespace App\Applications\Company\Http\Controllers;
 use App\Applications\Company\Http\Requests\Employee\SendRestorePasswordEmail;
 use App\Applications\Company\Services\Employee\EmployeeVerificationService;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
+use App\Applications\Company\Transformers\Employee\SearchEmployeeContact;
 use App\Applications\Company\Http\Requests\Employee\SendVerificationCode;
 use App\Applications\Company\Transformers\Employee\EmployeeContactList;
 use App\Applications\Company\Http\Controllers\Traits\PaginatedResponse;
 use App\Applications\Company\Http\Requests\Employee\MatchingCompanies;
+use App\Applications\Company\Exceptions\Employee\EmployeeNotActivated;
 use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Http\Requests\Employee\SearchContacts;
 use App\Applications\Company\Http\Requests\Employee\GetContactList;
@@ -49,7 +51,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
 use App;
-use App\Applications\Company\Transformers\Employee\SearchEmployeeContact;
 
 class EmployeeController extends BaseController
 {
@@ -176,8 +177,11 @@ class EmployeeController extends BaseController
                 'password' => $request->getPassword()
             ])->first();
             $employee = $this->employeeService->findByCompanyIdAndEmail($company->getId(), $request->getEmail());
-            if(!$employee || !$employee->isActive()) {
+            if(!$employee) {
                 throw new EmployeeNotFound;
+            }
+            if (!$employee->isActive()) {
+                throw new EmployeeNotActivated;
             }
             $data = (object) [
                 'token' => $token,
