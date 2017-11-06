@@ -122,12 +122,12 @@ services:
     image: registry.jincor.com/backend/mongodb:latest
     volumes:
           - ./storage/mongodb:/data/db
-    networks:
-      default:
-        ipv4_address: 10.5.0.8
     ports:
       - 27017:27017
       - 28017:28017
+    networks:
+          default:
+            ipv4_address: 10.5.0.8
 
   src:
     image: tianon/true

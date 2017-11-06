@@ -1,0 +1,115 @@
+company-fpm:
+  build:
+    context: ./
+    dockerfile: companies.docker
+  ports:
+      - "9000:9000"
+  links:
+    - search
+    - auth
+    - verify
+    - mongo
+    - redis
+  cached: true
+
+
+workspace:
+  build:
+    context: ./
+    args:
+      - TZ=UTC
+      - INSTALL_XDEBUG=false
+    dockerfile: workspace.production
+  environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+  tty: true
+  links:
+    - search
+    - auth
+    - verify
+    - mongo
+    - redis
+  volumes_from:
+    - src
+
+auth:
+  image: registry.jincor.com/backend/auth:latest
+  environment:
+    REDIS_HOST: redis
+    REDIS_PORT: 6379
+    THROTTLER_WHITE_LIST: 127.0.0.1,10.5.0.2,10.5.0.3
+    TENANT_WHITE_LIST: 127.0.0.1,10.5.0.2,10.5.0.3
+    FORCE_HTTPS: disabled
+    JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
+  volumes:
+    - /usr/src/app
+  links:
+    - redis
+
+verify:
+  image: registry.jincor.com/backend/verify:latest
+  env_file:
+    - .env
+  environment:
+    REDIS_HOST: redis
+    REDIS_PORT: 6379
+    MAIL_DRIVER: ${MAIL_DRIVER}
+  links:
+    - auth
+
+search:
+  image: docker.elastic.co/elasticsearch/elasticsearch:5.3.2
+  environment:
+    - cluster.name=jincor-companies
+    - bootstrap.memory_lock=true
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  ulimits:
+    memlock:
+      soft: -1
+      hard: -1
+    nofile:
+      soft: 65536
+      hard: 65536
+  mem_limit: 1g
+  cap_add:
+    - IPC_LOCK
+  ports:
+    - "9200:9200"
+
+nginx:
+  image: registry.jincor.com/backend/nginx:latest
+  volumes_from:
+    - src
+  ports:
+   - "80:80"
+   - "443:443"
+  links:
+    - companies
+
+redis:
+  image: registry.jincor.com/backend/redis:latest
+  volumes:
+      - ./storage/redis:/data
+
+mongo:
+  image: registry.jincor.com/backend/mongodb:latest
+  volumes:
+      - ./storage/mongodb:/data/db
+  ports:
+    - "27017:27017"
+    - "28017:28017"
+
+src:
+  image: tianon/true
+  volumes:
+    - ./:/var/www/companies
+
+
+#codeship_heroku_deployment:
+#  image: codeship/heroku-deployment
+#  encrypted_env_file: deployment.env.encrypted
+#  volumes:
+#    - ./:/deploy
