@@ -91,9 +91,3 @@ src:
   image: tianon/true
   volumes:
     - ./:/var/www/companies
-
-
-dockercfg_generator:
-  image: codeship/heroku-dockercfg-generator
-  add_docker: true
-  encrypted_env_file: .env.prod.encrypted

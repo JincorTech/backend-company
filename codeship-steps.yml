@@ -12,4 +12,4 @@
   type: push
   image_name: registry.heroku.com/jincor/backend-companies
   registry: registry.heroku.com
-  dockercfg_service: dockercfg_generator
+  encrypted_dockercfg_path: dockercfg.encrypted
