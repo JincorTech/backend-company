@@ -1,3 +1,6 @@
+- name: wait
+  service: workspace
+  command: sleep 20
 - name: unit_tests
   service: workspace
   command: ./vendor/bin/codecept run unit
