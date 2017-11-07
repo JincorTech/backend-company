@@ -15,13 +15,16 @@ use App\Core\Services\Exceptions\PasswordMismatchException;
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
+use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
 use App;
+use JincorTech\AuthClient\AuthClient;
 
-class IdentityService extends BaseRestService implements IdentityInterface
+class IdentityService implements IdentityInterface
 {
     private $companyService;
     private $employeeService;
+    private $authClient;
 
     /**
      * IdentityService constructor.
@@ -36,38 +39,31 @@ class IdentityService extends BaseRestService implements IdentityInterface
         $options = [
             'base_uri' => config('services.identity.uri'),
             'headers' => [
-                'Authorization' => 'Bearer ' . config('services.identity.jwt'),
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
             ]
         ];
-        parent::__construct($options);
+
+        $this->authClient = new AuthClient(new Client($options));
+
         $this->companyService = $companyService;
         $this->employeeService = $employeeService;
     }
 
     public function register(array $data)
     {
-        $response = $this->client->post('/user', [
-            'json' => $data,
-        ]);
-
-        return $response->getStatusCode() === 200;
+        return $this->authClient->createUser($data, config('services.identity.jwt'));
     }
 
-    public function validateToken(string $token)
-    {
-        $response = $this->client->post('/auth/verify', [
-            'json' => [
-                'token' => $token,
-            ],
-        ]);
-        if ($response->getStatusCode() === 200) {
-            $data = json_decode($response->getBody()->getContents(), true);
-            if (array_key_exists('decoded', $data)) {
-                return $data['decoded'];
-            }
-        }
 
-        return false;
+    /**
+     * @param string $userToken
+     * @return \JincorTech\AuthClient\UserTokenVerificationResult
+     */
+    public function validateToken(string $userToken)
+    {
+        $result = $this->authClient->verifyUserToken($userToken, config('services.identity.jwt'));
+        return $result;
     }
 
     /**
@@ -104,28 +100,17 @@ class IdentityService extends BaseRestService implements IdentityInterface
             $company = $companies->first()->getId();
         }
         $employee = $this->employeeService->findByCompanyIdAndEmail($company, $email);
-
         if (!$employee) {
             throw new DocumentNotFoundException(trans('exceptions.employee.not_found', ['email' => $email]));
         }
         if (!$employee->checkPassword($password)) {
             throw new PasswordMismatchException(trans('exceptions.employee.password_mismatch'));
         }
-        $response = $this->client->post('/auth', [
-            'json' => [
-                'login' => $company.':'.$email,
-                'password' => $employee->getPassword(),
-                'deviceId' => '12345',
-            ],
-        ]);
-        if ($response->getStatusCode() === 200) {
-            $data = json_decode($response->getBody()->getContents(), true);
-            if (array_key_exists('accessToken', $data)) {
-                return $data['accessToken'];
-            }
-
-            return false;
-        }
+        return $this->authClient->loginUser([
+            'login' => $company.':'.$email,
+            'password' => $employee->getPassword(),
+            'deviceId' => '12345',
+        ], config('services.identity.jwt'));
     }
 
     public function logout()

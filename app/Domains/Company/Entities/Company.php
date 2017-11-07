@@ -83,10 +83,10 @@ class Company
      */
     private function initializeDepartment()
     {
-        $this->departments = new ArrayCollection([]);
+        $this->departments = new ArrayCollection();
         $department = new Department('initial');
-        $this->departments[] = $department;
         $department->associateCompany($this);
+        $this->departments->add($department);
     }
 
     /**

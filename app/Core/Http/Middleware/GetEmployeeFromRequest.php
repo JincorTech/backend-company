@@ -55,7 +55,7 @@ class GetEmployeeFromRequest
         }
 
         /** @var \App\Domains\Employee\Entities\Employee $employee */
-        $employee = $this->employeeService->findByLogin($data['login']);
+        $employee = $this->employeeService->findByLogin($data->getLogin());
         if (!$employee) {
             return new JsonResponse([
                 'success' => false,
@@ -65,7 +65,7 @@ class GetEmployeeFromRequest
                 'message' => 'Cant find user by login. It means that your access token is invalid',
             ], 401);
         }
-        $employee->getProfile()->scope = $data['scope'];
+        $employee->getProfile()->scope = $data->getScope();
         $this->bindUser($employee);
 
         return $next($request);

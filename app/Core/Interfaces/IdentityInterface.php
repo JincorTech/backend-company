@@ -7,7 +7,7 @@ interface IdentityInterface
     /**
      * Validates JWT token and returns decoded token data
      * @param string $token
-     * @return array
+     * @return \JincorTech\AuthClient\UserTokenVerificationResult
      */
     public function validateToken(string $token);
 

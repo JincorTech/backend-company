@@ -11,9 +11,10 @@ namespace App\Applications\Company\Http\Requests\Company;
 
 use App\Applications\Company\Http\Requests\AuthenticatedUser;
 use App\Core\Http\Requests\BaseAPIRequest;
+use App\Core\Interfaces\URLValidation;
 use App\Domains\Employee\Entities\Employee;
 
-class UpdateProfile extends BaseAPIRequest
+class UpdateProfile extends BaseAPIRequest implements URLValidation
 {
 
     use AuthenticatedUser;
@@ -33,7 +34,9 @@ class UpdateProfile extends BaseAPIRequest
             'profile.brandName.*' => 'string',
             'profile.links' => 'array',
             'profile.links.*.name' => 'string',
-            'profile.links.*.value' => 'url',
+            'profile.links.*.value' => [
+                'regex:'.self::URL_REGEX,
+            ],
             'profile.address.country' => 'string|size:36',
             'profile.address.formattedAddress' => 'nullable|string',
             'profile.address.city' => 'string|size:36',

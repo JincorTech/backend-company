@@ -18,6 +18,18 @@ class CompanyExternalLinkCest
     }
 
     /**
+     * Ensure we can create links which contain correct URLs without a schema
+     * @param UnitTester $I
+     */
+    public function allowsCreateCorrectURLWithoutSchema(UnitTester $I)
+    {
+        $link = 'facebook.com/test';
+        $url = new CompanyExternalLink($link);
+        $I->assertEquals('facebook.com', $url->getName());
+        $I->assertEquals($link, $url->getUrl());
+    }
+
+    /**
      * Ensure we don't allow to create instances with
      * wrong data
      *

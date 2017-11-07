@@ -10,6 +10,7 @@
 namespace App\Domains\Company\ValueObjects;
 
 
+use App\Core\Interfaces\URLValidation;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use InvalidArgumentException;
 
@@ -19,7 +20,7 @@ use InvalidArgumentException;
  *
  * @ODM\EmbeddedDocument
  */
-class CompanyExternalLink
+class CompanyExternalLink implements URLValidation
 {
 
     /**
@@ -62,13 +63,17 @@ class CompanyExternalLink
     }
 
 
-    private function validateURL(string $url) : bool
+    private function validateURL(string $url): bool
     {
-        return preg_match('#((https?)://(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)#i', $url);
+        return preg_match(self::URL_REGEX, $url);
     }
 
     public function getDomain($url)
     {
+        if (strpos($url, "://") === false && substr($url, 0, 1) !== "/") {
+            $url = "http://".$url;
+        }
+
         $pieces = parse_url($url);
         $domain = isset($pieces['host']) ? $pieces['host'] : '';
         if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
@@ -76,7 +81,4 @@ class CompanyExternalLink
         }
         return false;
     }
-
-
-
 }
