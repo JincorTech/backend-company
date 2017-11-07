@@ -45,7 +45,7 @@ auth:
     - redis
 
 verify:
-  image: registry.jincor.com/backend/verify:latest
+  image: jincort/backend-verify
   env_file:
     - .env
   environment:
@@ -73,16 +73,6 @@ search:
     - IPC_LOCK
   ports:
     - "9200:9200"
-
-nginx:
-  image: registry.jincor.com/backend/nginx:latest
-  volumes_from:
-    - src
-  ports:
-   - "80:80"
-   - "443:443"
-  links:
-    - companies
 
 redis:
   image: jincort/backend-redis:production
