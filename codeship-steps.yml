@@ -1,6 +1,12 @@
-- name: wait
-  service: workspace
-  command: sleep 15
-- name: tests
+- name: unit_tests
   service: workspace
   command: ./vendor/bin/codecept run unit
+- name: api_tests
+  service: workspace
+  command: ./vendor/bin/codecept run api
+- name: push-companies
+  service: companies
+  type: push
+  image_name: registry.heroku.com/jincor/backend-companies
+  registry: registry.heroku.com
+  dockercfg_service: dockercfg_generator

@@ -2,6 +2,8 @@ public/storage
 vendor
 .idea
 .env
+.env.prod
+codeship.aes
 
 app/Core/DoctrineProxies/*
 app/Core/DoctrineHydrators/*
