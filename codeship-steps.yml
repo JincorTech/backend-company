@@ -11,14 +11,20 @@
 #    - command: ./vendor/bin/codecept run api
 
 
-
-# the same as the above
+# Example 1
 - type: serial
-#  tag: "master"
-#  encrypted_dockercfg_path: dockercfg.encrypted
-  services:
-  - workspace
+#  tag: "^(master|staging/.*)$"
+  dockercfg_service: dockercfg_generator
   steps:
-  - command: composer install
-  - command: ./vendor/bin/codecept run unit
-  - command: ./vendor/bin/codecept run api
+  - type: serial
+    steps:
+      - service: workspace
+        command: cp .env.test .env
+      - service: workspace
+        command: composer install
+  - type: parallel
+    steps:
+      - service: workspace
+        command: ./vendor/bin/codecept run unit
+      - service: workspace
+        command: ./vendor/bin/codecept run unit
