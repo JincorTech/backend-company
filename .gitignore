@@ -4,6 +4,7 @@ vendor
 .env
 .env.prod
 codeship.aes
+deployment.env
 
 app/Core/DoctrineProxies/*
 app/Core/DoctrineHydrators/*

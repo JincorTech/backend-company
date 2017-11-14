@@ -6,9 +6,6 @@ companies:
   ports:
       - "9000:9000"
   env_file: .env.prod.encrypted
-  links:
-      - auth
-      - verify
   cached: true
 
 
@@ -22,57 +19,10 @@ workspace:
     dockerfile: workspace.debug
   tty: true
   links:
-    - search
-    - auth
-    - verify
     - mongo
     - redis
   volumes_from:
     - src
-
-auth:
-  image: registry.heroku.com/backend-auth/web
-  environment:
-    REDIS_HOST: redis
-    REDIS_PORT: 6379
-    THROTTLER_WHITE_LIST: 127.0.0.1,10.5.0.2,10.5.0.3
-    TENANT_WHITE_LIST: 127.0.0.1,10.5.0.2,10.5.0.3
-    FORCE_HTTPS: disabled
-    JWT_KEY: "7z3B4gLdSx#fTlAmNnfrYC-;Gp#7fXfOk@cehjUHTWhDjSdcp1"
-  volumes:
-    - /usr/src/app
-  links:
-    - redis
-
-verify:
-  image: jincort/backend-verify
-  env_file:
-    - .env
-  environment:
-    REDIS_HOST: redis
-    REDIS_PORT: 6379
-    MAIL_DRIVER: ${MAIL_DRIVER}
-  links:
-    - auth
-
-search:
-  image: docker.elastic.co/elasticsearch/elasticsearch:5.3.2
-  environment:
-    - cluster.name=jincor-companies
-#    - bootstrap.memory_lock=true
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-  ulimits:
-    memlock:
-      soft: 65536
-      hard: 65536
-    nofile:
-      soft: 65536
-      hard: 65536
-  mem_limit: 1g
-  cap_add:
-    - IPC_LOCK
-  ports:
-    - "9200:9200"
 
 redis:
   image: jincort/backend-redis:production
@@ -96,4 +46,4 @@ src:
 dockercfg_generator:
   image: codeship/heroku-dockercfg-generator
   add_docker: true
-  encrypted_env_file: .env.prod.encrypted
+  encrypted_env_file: deployment.env.encrypted
