@@ -41,5 +41,4 @@ RUN apt-get clean && \
 
 VOLUME /var/www/companies
 
-# Set default work directory
 WORKDIR /var/www/companies

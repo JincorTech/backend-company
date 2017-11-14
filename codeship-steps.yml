@@ -1,6 +1,24 @@
-- name: unit_tests
-  service: workspace
-  command: ./vendor/bin/codecept run unit
-- name: api_tests
-  service: workspace
-  command: ./vendor/bin/codecept run api
+#type: serial
+#steps:
+##  - name: dependencies
+##    service: workspace
+#    - command: composer install
+##  - name: unit_tests
+##    service: workspace
+#    - command: ./vendor/bin/codecept run unit
+##  - name: api_tests
+##    service: workspace
+#    - command: ./vendor/bin/codecept run api
+
+
+
+# the same as the above
+- type: serial
+#  tag: "master"
+#  encrypted_dockercfg_path: dockercfg.encrypted
+  services:
+  - workspace
+  steps:
+  - command: composer install
+  - command: ./vendor/bin/codecept run unit
+  - command: ./vendor/bin/codecept run api
