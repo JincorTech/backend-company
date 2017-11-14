@@ -104,13 +104,15 @@ class CountryEntityCest
      */
     public function setCountryNamesTest(UnitTester $I)
     {
-        $names = [
-            'en' => 'Australia',
-        ];
-        $I->expectException(\InvalidArgumentException::class, function () use ($names) {
-            new Country($names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
-        });
-        $names['ru'] = 'Австралия';
+        if (config('app.locale') !== 'en') {
+            $names = [
+                'en' => 'Australia',
+            ];
+            $I->expectException(\InvalidArgumentException::class, function () use ($names) {
+                new Country($names, '+61', $this->countryISO, $this->currency, 'flag.png', $this->bounds);
+            });
+        }
+        $names[config('app.locale')] = 'Австралия';
         new Country($names, '+61', $this->countryISO, $this->currency);
     }
 
