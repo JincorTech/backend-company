@@ -1,5 +1,6 @@
 companies:
   build:
+    image: registry.heroku.com/backend-company/web
     context: ./
     dockerfile: companies.docker
   env_file: .env.prod.encrypted
