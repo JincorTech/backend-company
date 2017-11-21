@@ -21,7 +21,6 @@ RUN apt-get -y update \
 
 RUN adduser -D -H -u 1000 -s /bin/bash www-data
 ADD ./config/nginx/nginx.conf /etc/nginx/
-COPY ./config/nginx/companies.conf /etc/nginx/sites-available/
 
 ARG PHP_UPSTREAM=127.0.0.1
 RUN echo "upstream php-upstream { server ${PHP_UPSTREAM}:9000; }" > /etc/nginx/conf.d/upstream.conf

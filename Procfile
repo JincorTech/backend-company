@@ -1,1 +1,1 @@
-web: php-fpm -D && nginx
+web: php-fpm -D && ./nginx.sh
