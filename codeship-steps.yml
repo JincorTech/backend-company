@@ -8,7 +8,7 @@
     - service: workspace
       command: ./vendor/bin/codecept run unit
     - service: workspace
-      command: ./vendor/bin/codecept run unit
+      command: ./vendor/bin/codecept run api
     - name: deploy
       service: companies
 #      tag: master|develop

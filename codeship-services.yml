@@ -1,10 +1,7 @@
 companies:
   build:
-    image: jincort/backend-fpm-company
     context: ./
     dockerfile: companies.docker
-  ports:
-      - "9000:9000"
   env_file: .env.prod.encrypted
   cached: true
 

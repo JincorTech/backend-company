@@ -12,16 +12,13 @@ services:
       - search
       - auth
       - verify
-      - mongo
-      - redis
+#      - mongo
+#      - redis
     environment:
       # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
       - PHP_IDE_CONFIG="serverName=companies"
     volumes_from:
       - src
-    networks:
-      default:
-        ipv4_address: 10.5.0.2
 
   workspace:
     image: registry.jincor.com/backend/companies-workspace:latest-test
@@ -40,9 +37,6 @@ services:
       - search
     volumes_from:
       - src
-    networks:
-      default:
-        ipv4_address: 10.5.0.3
 
   auth:
     image: registry.jincor.com/backend/auth:latest
@@ -57,9 +51,6 @@ services:
       - /usr/src/app
     links:
       - redis
-    networks:
-      default:
-        ipv4_address: 10.5.0.4
 
   verify:
     image: registry.jincor.com/backend/verify:latest
@@ -71,9 +62,6 @@ services:
       MAIL_DRIVER: ${MAIL_DRIVER}
     links:
       - auth
-    networks:
-      default:
-        ipv4_address: 10.5.0.10
 
   search:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.3.2
@@ -93,9 +81,6 @@ services:
       - IPC_LOCK
     ports:
       - 9200
-    networks:
-      default:
-        ipv4_address: 10.5.0.5
 
   nginx:
     image: registry.jincor.com/backend/nginx:latest
@@ -106,28 +91,18 @@ services:
      - 443:443
     links:
       - companies
-    networks:
-      default:
-        ipv4_address: 10.5.0.6
 
   redis:
     image: registry.jincor.com/backend/redis:latest
     volumes:
           - ./storage/redis:/data
-    networks:
-      default:
-        ipv4_address: 10.5.0.7
-
   mongo:
     image: registry.jincor.com/backend/mongodb:latest
     volumes:
           - ./storage/mongodb:/data/db
     ports:
       - 27017:27017
-      - 28017:28017
-    networks:
-          default:
-            ipv4_address: 10.5.0.8
+      - 28017:2801
 
   src:
     image: tianon/true

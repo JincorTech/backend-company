@@ -13,13 +13,21 @@ RUN pecl install mongodb-1.1.9 && \
 #### SOCKET CONNECTION ####
 RUN docker-php-ext-install sockets
 
-USER companies
-
 ADD ./config/php-fpm/laravel.ini /usr/local/etc/php/conf.d
 ADD ./config/php-fpm/laravel.pool.conf /usr/local/etc/php-fpm.d/
 
-USER root
+RUN apt-get -y update \
+    && apt-get install -y nginx
 
+RUN adduser -D -H -u 1000 -s /bin/bash www-data
+ADD ./config/nginx/nginx.conf /etc/nginx/
+COPY ./config/nginx/companies.conf /etc/nginx/sites-available/
+
+ARG PHP_UPSTREAM=127.0.0.1
+RUN echo "upstream php-upstream { server ${PHP_UPSTREAM}:9000; }" > /etc/nginx/conf.d/upstream.conf
+RUN chown -R www-data /etc/nginx
+
+RUN rm /etc/nginx/sites-available/default
 RUN rm -r /var/lib/apt/lists/*
 
 VOLUME /var/www/companies
@@ -28,7 +36,6 @@ RUN chown -R companies:companies /var/www/companies
 
 WORKDIR /var/www/companies
 
-USER companies
-ENTRYPOINT ["php-fpm"]
+CMD php-fpm -D && nginx
 
-EXPOSE 9000
+EXPOSE 80 443
