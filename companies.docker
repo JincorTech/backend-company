@@ -37,6 +37,6 @@ RUN chown -R companies:companies /var/www/companies
 
 WORKDIR /var/www/companies
 
-#CMD php-fpm -D && nginx
+CMD /bin/bash -c "sed 's@API_PORT@'\\\$PORT'@' /etc/nginx/companies.tpl.conf > /etc/nginx/sites-available/companies.conf && php-fpm -D && nginx"
 
 EXPOSE 8080
