@@ -140,6 +140,7 @@ class EmployeeService implements EmployeeServiceInterface
         }
         if ($verification->getEmail() === null) {
             $verification->associateEmail($email); //TODO: needs to be removed?
+            $this->dm->persist($verification);
         }
         $employee = Employee::register($verification, $profile, $email, $password);
         $this->dm->persist($employee);
