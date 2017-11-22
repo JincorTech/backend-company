@@ -7,7 +7,7 @@ services:
       context: ./
       dockerfile: companies.docker
     ports:
-      - 9000
+      - 80:8080
     links:
       - search
       - auth
@@ -17,6 +17,7 @@ services:
     environment:
       # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
       - PHP_IDE_CONFIG="serverName=companies"
+      - PORT=8080
     volumes_from:
       - src
 
