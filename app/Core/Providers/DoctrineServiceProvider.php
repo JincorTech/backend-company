@@ -71,12 +71,16 @@ class DoctrineServiceProvider extends ServiceProvider
         $config->setMetadataDriverImpl(AnnotationDriver::create(config('app.entityPaths')));
         AnnotationDriver::registerAnnotationClasses();
         $evm = $this->getDoctrineEventManager();
-        $connection = new MongoConnection(
-            'mongodb://'
-            .config('database.connections.mongodb.host')
-            .':'
-            .config('database.connections.mongodb.port')
-        );
+        if (env('MONGO_URL') !== null) {
+            $connection = new MongoConnection(env('MONGO_URL'));
+        } else {
+            $connection = new MongoConnection(
+                'mongodb://'
+                .config('database.connections.mongodb.host')
+                .':'
+                .config('database.connections.mongodb.port')
+            );
+        }
         $this->app->singleton(DocumentManager::class, function ($app) use ($connection, $config, $evm) {
             return DocumentManager::create($connection, $config, $evm);
         });
