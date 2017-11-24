@@ -45,6 +45,9 @@ class GetEmployeeFromRequest
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        if ($request->route()->getName() === 'employee.email.verify') {
+            return $next($request); //TODO: refactor
+        }
         $header = $this->validateHeader($request);
         if ($header === false) {
             return $next($request);
