@@ -56,7 +56,7 @@ class GetEmployeeFromRequest
 
         /** @var \App\Domains\Employee\Entities\Employee $employee */
         $employee = $this->employeeService->findByLogin($data->getLogin());
-        if (!$employee) {
+        if (!$employee || !$employee->isActive()) {
             return new JsonResponse([
                 'success' => false,
                 'errors' => [

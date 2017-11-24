@@ -31,7 +31,7 @@ class Colleague extends SelfProfile
             'status' => $employee->isActive() ? 'active' : 'deleted',
             'registeredAt' => $employee->getRegisteredAt()->format(DateTime::ISO8601)
         ];
-        if (!$employee->isActive()) {
+        if ($employee->getDeletedAt() !== null) {
             $meta['deletedAt'] = $employee->getDeletedAt()->format(DateTime::ISO8601);
         }
         return $meta;
