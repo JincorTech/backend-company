@@ -10,6 +10,7 @@ namespace App\Applications\Company\Transformers\Employee;
 
 
 use App\Domains\Employee\Entities\Employee;
+use App;
 use DateTime;
 
 class Colleague extends SelfProfile
@@ -21,7 +22,8 @@ class Colleague extends SelfProfile
             'id' => $employee->getId(),
             'profile' => $this->getProfile($employee),
             'contacts' => $this->getContacts($employee),
-            'meta' => $this->getMeta($employee)
+            'meta' => $this->getMeta($employee),
+            'added' => App::make('AppUser')->isAddedToContactList($employee),
         ];
     }
 

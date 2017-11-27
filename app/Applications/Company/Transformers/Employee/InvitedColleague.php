@@ -25,7 +25,8 @@ class InvitedColleague extends TransformerAbstract
             'meta' => [
                 'status' => 'invited',
                 'invitedAt' => $employeeVerification->getCreatedAt()->format(\DateTime::ISO8601),
-            ]
+            ],
+            'added' => false,
         ];
     }
 

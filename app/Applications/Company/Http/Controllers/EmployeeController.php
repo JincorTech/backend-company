@@ -350,7 +350,7 @@ class EmployeeController extends BaseController
 
     public function matrix(ListByMatrixId $request)
     {
-        return $this->response->collection($this->employeeService->findByMatrixIds($request->getMatrixIds()),EmployeeContactList::class);
+        return $this->response->collection($this->employeeService->findByMatrixIds($request->getMatrixIds()), SearchEmployeeContact::class);
     }
 
 }
