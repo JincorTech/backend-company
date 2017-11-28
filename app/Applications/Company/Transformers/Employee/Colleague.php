@@ -24,6 +24,7 @@ class Colleague extends SelfProfile
             'contacts' => $this->getContacts($employee),
             'meta' => $this->getMeta($employee),
             'added' => App::make('AppUser')->isAddedToContactList($employee),
+            'matrixId' => $employee->getMatrixId(),
         ];
     }
 
