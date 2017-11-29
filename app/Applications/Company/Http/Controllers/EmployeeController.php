@@ -47,9 +47,12 @@ use App\Applications\Company\Exceptions\Employee\PermissionDenied;
 use App\Applications\Company\Exceptions\Employee\EmployeeNotFound;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Core\Interfaces\IdentityInterface;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
+use App\Applications\Company\Http\Requests\Employee\QueryLogins;
+use App\Applications\Company\Transformers\Employee\EmployeeList;
 use App;
 
 class EmployeeController extends BaseController
@@ -351,6 +354,13 @@ class EmployeeController extends BaseController
     public function matrix(ListByMatrixId $request)
     {
         return $this->response->collection($this->employeeService->findByMatrixIds($request->getMatrixIds()), SearchEmployeeContact::class);
+    }
+
+
+    public function queryLogins(Request $request)
+    {
+        $collection = $this->employeeService->findByLogins($request->getLogins());
+        return new JsonResponse((new EmployeeList)->transform($collection));
     }
 
 }

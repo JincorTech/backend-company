@@ -267,6 +267,17 @@ class EmployeeService implements EmployeeServiceInterface
         return $employee->first();
     }
 
+    public function findByLogins(array $logins) : Collection
+    {
+        $employees = $this->repository->createQueryBuilder()->field('profile.login')
+            ->in($logins)->getQuery()->execute();
+        $collection = [];
+        foreach ($employees as $employee) {
+            $collection[] = $employee;
+        }
+        return Collection::make($collection);
+    }
+
     /**
      * @param string $id
      * @param string $email

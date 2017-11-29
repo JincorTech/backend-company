@@ -58,6 +58,8 @@ $api->version('v1', function ($api) {
         $api->group(['prefix' => 'employee'], function ($api) {
             /* @var \Dingo\Api\Routing\Router $api */
             $namespace = 'App\Applications\Company\Http\Controllers\\';
+            $api->put('/query-logins', ['as' => 'employee.logins.search', 'uses' => $namespace.'EmployeeController@queryLogins']);
+
             $api->post('/restorePassword', ['as' => 'employee.password.restore', 'uses' => $namespace.'EmployeeController@sendRestorePasswordEmail']);
             $api->post('/verifyEmail', ['as' => 'employee.email.verify', 'uses' => $namespace.'EmployeeController@verifyEmail']);
             $api->get('/verifyEmail', ['as' => 'employee.email.sendPin', 'uses' => $namespace.'EmployeeController@sendEmailCode']);
