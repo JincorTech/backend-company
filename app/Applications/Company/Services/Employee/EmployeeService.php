@@ -143,6 +143,15 @@ class EmployeeService implements EmployeeServiceInterface
             $this->dm->persist($verification);
         }
         $employee = Employee::register($verification, $profile, $email, $password);
+        $colleagues = $this->getColleagues($employee);
+        /** @var Employee $colleague */
+        foreach ($colleagues['active'] as $colleague) {
+            if ($colleague->getId() !== $employee->getId()) {
+                $colleague->addContact($employee);
+                $employee->addContact($colleague);
+                $this->dm->persist($colleague);
+            }
+        }
         $this->dm->persist($employee);
         $this->dm->persist($verification->getCompany());
         $this->dm->flush();
