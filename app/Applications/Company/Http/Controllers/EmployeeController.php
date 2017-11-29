@@ -359,7 +359,7 @@ class EmployeeController extends BaseController
 
     public function queryLogins(Request $request)
     {
-        $collection = $this->employeeService->findByLogins($request->getLogins());
+        $collection = $this->employeeService->findByLogins($request->get('items'));
         return new JsonResponse((new EmployeeList)->transform($collection));
     }
 
