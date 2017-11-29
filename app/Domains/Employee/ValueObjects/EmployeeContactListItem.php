@@ -35,9 +35,9 @@ class EmployeeContactListItem
      */
     public function __construct(Employee $employee)
     {
-        if (!$employee->isActive()) {
-            throw new EmployeeIsDeactivated();
-        }
+//        if (!$employee->isActive()) { TODO: uncomment!!!
+//            throw new EmployeeIsDeactivated();
+//        }
         $this->employee = $employee;
     }
 
