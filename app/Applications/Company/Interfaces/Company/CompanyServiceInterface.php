@@ -31,4 +31,6 @@ interface CompanyServiceInterface
 
     public function getEARoot();
 
+    public function getTotalCount();
+
 }

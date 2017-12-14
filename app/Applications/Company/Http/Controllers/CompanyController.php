@@ -162,4 +162,12 @@ class CompanyController extends BaseController
         return $this->response->collection($paginator->getCollection()->forPage($request->get('page', 1), $perPage), CompanyTransformer::class)
             ->meta('pagination', $paginator->toArray());
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function totalCount(Request $request) {
+        return new JsonResponse(['data' => $this->companyService->getTotalCount()]);
+    }
 }

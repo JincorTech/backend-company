@@ -392,4 +392,8 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
         return new AddressService();
     }
 
+    public function getTotalCount()
+    {
+        return $this->repository->createQueryBuilder()->count()->getQuery()->execute();
+    }
 }

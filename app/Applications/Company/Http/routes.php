@@ -43,6 +43,7 @@ $api->version('v1', function ($api) {
             $namespace = 'App\Applications\Company\Http\Controllers\\';
 
             $api->post('/', ['as' => 'company.register', 'uses' => $namespace.'CompanyController@register']);
+            $api->get('/totalCount', ['as' => 'company.totalCount', 'uses' => $namespace.'CompanyController@totalCount']);
             $api->get('/types', ['as' => 'company.types', 'uses' => $namespace.'CompanyController@companyTypes']);
             $api->get('/activityTypes', ['as' => 'company.eatypes', 'uses' => $namespace.'CompanyController@economicalActivityTypes']);
             $api->get('/my', ['as' => 'company.my', 'uses' => $namespace . 'CompanyController@my']);

@@ -255,4 +255,15 @@ class CompanyApiCest
         ]);
     }
 
+    public function getTotalCount(ApiTester $I)
+    {
+        $I->wantTo('Get total company count to display on landing');
+
+        $I->sendGET('company/totalCount');
+
+        $I->seeResponseCodeIs(200);
+        $I->canSeeResponseContainsJson([
+            'data' => 14
+        ]);
+    }
 }
