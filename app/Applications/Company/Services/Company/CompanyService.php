@@ -394,6 +394,14 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
 
     public function getTotalCount()
     {
-        return $this->repository->createQueryBuilder()->count()->getQuery()->execute();
+        $countryQuery = $this->repository->createQueryBuilder()
+            ->distinct('profile.address.country')
+            ->getQuery()
+            ->execute();
+
+        return [
+            'companyCount' => $this->repository->createQueryBuilder()->count()->getQuery()->execute(),
+            'countryCount' => count($countryQuery)
+        ];
     }
 }
