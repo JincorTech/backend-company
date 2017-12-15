@@ -263,7 +263,10 @@ class CompanyApiCest
 
         $I->seeResponseCodeIs(200);
         $I->canSeeResponseContainsJson([
-            'data' => 14
+            'data' => [
+                'companyCount' => 14,
+                'countryCount' => 1
+            ]
         ]);
     }
 }
