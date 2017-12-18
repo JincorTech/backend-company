@@ -11,10 +11,10 @@
 
 namespace App\Applications\Company\Http\Controllers;
 
+use App\Applications\Company\Transformers\Company\CompanyRegistrationTransformer;
 use App\Applications\Company\Transformers\Dictionary\EconomicalActivityTypeTransformer;
 use App\Applications\Company\Http\Requests\PublicEconomicalActivityTypesRequest;
 use App\Applications\Company\Transformers\Dictionary\CompanyTypeTransformer;
-use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
 use App\Applications\Company\Transformers\Company\CompanyTransformer;
 use App\Applications\Company\Http\Requests\Company\MyCompanyRequest;
 use App\Applications\Company\Http\Requests\Company\InviteEmployees;
@@ -31,7 +31,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Request;
 use App;
-
 
 class CompanyController extends BaseController
 {
@@ -52,14 +51,10 @@ class CompanyController extends BaseController
      * @param CompanyService $companyService
      * @param $employeeService EmployeeService
      */
-    public function __construct(
-        CompanyService $companyService,
-        EmployeeService $employeeService
-    )
+    public function __construct(CompanyService $companyService, EmployeeService $employeeService)
     {
         $this->companyService = $companyService;
         $this->employeeService = $employeeService;
-
     }
 
 
@@ -89,7 +84,10 @@ class CompanyController extends BaseController
         if ($request->get('legalName') !== null) {
             $data['legalName'] = $request->get('legalName');
         }
-        return $this->response->item($this->companyService->update($request->getUser()->getCompany(), $data), MyCompany::class);
+        return $this->response->item(
+            $this->companyService->update($request->getUser()->getCompany(), $data),
+            MyCompany::class
+        );
     }
 
     /**
@@ -100,9 +98,9 @@ class CompanyController extends BaseController
      */
     public function invite(InviteEmployees $request)
     {
-        $result = $this->employeeService->inviteMany(Collection::make($request->getEmails()), App::make('AppUser'));
+        $results = $this->employeeService->inviteMany(Collection::make($request->getEmails()), App::make('AppUser'));
         $transformer = new InviteToCompanyResult();
-        return new JsonResponse(['data' => $transformer->transform($result)]);
+        return new JsonResponse(['data' => $transformer->transform($results)]);
     }
 
     /**
@@ -113,16 +111,17 @@ class CompanyController extends BaseController
      */
     public function register(RegisterCompany $request)
     {
-        $verification = $this->companyService->register(
+        $result = $this->companyService->register(
             $request->getCountryId(),
             $request->getLegalName(),
             $request->getCompanyTypeId()
         );
-        $transformer = new EmployeeVerificationTransformer();
+
+        $transformer = new CompanyRegistrationTransformer();
 
         return $this->response->created(
-            '/api/v1/company/'.$verification->getCompany()->getId(),
-            ['data' => $transformer->transform($verification)]
+            '/api/v1/company/'.$result->getCompany()->getId(),
+            ['data' => $transformer->transform($result)]
         );
     }
 
@@ -159,6 +158,7 @@ class CompanyController extends BaseController
         $items = $this->companyService->search($request->getQuery(), $request->getCountryId(), $request->getActivityId());
         $perPage = $request->get('perPage', null) !== null ? (int) $request->get('perPage') : config('view.perPage');
         $paginator = new App\Core\Pagination\Paginator($items, count($items), $perPage);
+
         return $this->response->collection($paginator->getCollection()->forPage($request->get('page', 1), $perPage), CompanyTransformer::class)
             ->meta('pagination', $paginator->toArray());
     }

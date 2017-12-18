@@ -10,8 +10,8 @@
 namespace App\Applications\Company\Services\Employee\Verification;
 
 
-use App\Core\Services\Verification\EmailVerificationVerificationMethod;
-use App\Core\Services\Verification\VerificationIdentifier;
+use JincorTech\VerifyClient\Interfaces\GenerateCode;
+use JincorTech\VerifyClient\VerificationMethod\EmailVerification;
 
 /**
  * Class RestorePasswordEmailVerificationFactory
@@ -20,27 +20,25 @@ use App\Core\Services\Verification\VerificationIdentifier;
 class RestorePasswordEmailVerificationFactory
 {
     /**
-     * @param string $verificationId
      * @param string $toEmail
-     * @return EmailVerificationVerificationMethod
+     * @return EmailVerification
+     * @internal param string $verificationId
      */
-    public function buildEmailVerificationMethod(
-        string $verificationId,
-        string $toEmail
-    )
+    public function buildEmailVerificationMethod(string $toEmail)
     {
-        return EmailVerificationVerificationMethod::buildDefault(
-            $toEmail,
-            'Restore Password', // @TODO: trans
-            'support@jincor.com',
-            'Support Team', // @TODO: trans
-            view('emails.restore-password.verify-email', [
+        $template = view('emails.restore-password.verify-email', [
                 'email' => $toEmail,
-                'verificationId' => $verificationId,
+                'verificationId' => '{{{VERIFICATION_ID}}}',
                 'code' => '{{{CODE}}}',
-            ])
-        )->setPolicy('01:00:00')
-            ->setForcedVerificationId(new VerificationIdentifier($verificationId))
-            ->setGenerateCode(['DIGITS'], 6);
+            ]);
+
+        $emailVerification = new EmailVerification();
+        return $emailVerification->setSubject('Restore Password') // @TODO: trans
+            ->setFromName('Support Team') // @TODO: trans
+            ->setFromEmail('support@jincor.com')
+            ->setTemplate($template)
+            ->setConsumer($toEmail)
+            ->setExpiredOn('01:00:00')
+            ->setGenerateCode([GenerateCode::DIGITS], 6);
     }
 }

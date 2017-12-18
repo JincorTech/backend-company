@@ -10,16 +10,12 @@ use App\Domains\Company\Events\CompanyUpdated;
 use App\Domains\Employee\Events\EmployeeDeactivated;
 use App\Domains\Employee\Events\EmployeeRegistered;
 use App\Domains\Employee\Events\PasswordChanged;
-use App\Domains\Employee\Events\RestorePasswordRequested;
 use App\Domains\Employee\Events\ScopeChanged;
 use App\Domains\Employee\Handlers\EmployeeDeactivatedHandler;
 use App\Domains\Employee\Handlers\EmployeeRegistered as EmployeeRegisteredHandler;
 use App\Domains\Employee\Handlers\PasswordChanged as PasswordChangedHandler;
 use App\Domains\Employee\Handlers\ScopeChangedHandler;
-use App\Domains\Employee\Handlers\SendRestorePasswordEmail;
-use App\Domains\Employee\Handlers\SendVerificationEmail;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use App\Domains\Employee\Events\VerificationEmailRequested;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -34,12 +30,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         PasswordChanged::class => [
             PasswordChangedHandler::class,
-        ],
-        VerificationEmailRequested::class => [
-            SendVerificationEmail::class,
-        ],
-        RestorePasswordRequested::class => [
-            SendRestorePasswordEmail::class,
         ],
         ScopeChanged::class => [
             ScopeChangedHandler::class,

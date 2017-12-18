@@ -14,6 +14,9 @@ use App\Domains\Employee\ValueObjects\EmployeeProfile;
 
 class Register extends BaseAPIRequest implements PasswordValidation
 {
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -27,40 +30,64 @@ class Register extends BaseAPIRequest implements PasswordValidation
             ],
             'email' => 'required|email',
             'position' => 'required|string|min:2|max:60',
-            'verificationId' => 'required|string|size:36',
+            'token' => 'required|string',
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getFirstName(): string
     {
         return $this->get('firstName');
     }
 
+    /**
+     * @return string
+     */
     public function getPosition(): string
     {
         return $this->get('position');
     }
 
+    /**
+     * @return string
+     */
     public function getLastName(): string
     {
         return $this->get('lastName');
     }
 
-    public function getVerificationId(): string
+
+    /**
+     * Company token
+     *
+     * @return string
+     */
+    public function getToken(): string
     {
-        return $this->get('verificationId');
+        return $this->get('token');
     }
 
+    /**
+     * @return EmployeeProfile
+     */
     public function getProfile(): EmployeeProfile
     {
         return new EmployeeProfile($this->getFirstName(), $this->getLastName(), $this->getPosition());
     }
 
+    /**
+     * @return string
+     */
     public function getPassword(): string
     {
         return $this->get('password');
     }
 
+    /**
+     * @return string
+     */
     public function getEmail(): string
     {
         return $this->get('email');

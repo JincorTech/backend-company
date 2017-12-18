@@ -2,13 +2,13 @@
 
 use App\Core\Repositories\EmployeeVerificationRepository;
 use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
-use App\Core\Services\Verification\DummyVerificationService;
-use App\Core\Services\Verification\VerificationService;
 use App\Applications\Company\Exceptions\Employee\EmployeeNotFound;
 use App\Domains\Employee\Entities\EmployeeVerification;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Interfaces\IdentityInterface;
 use Faker\Factory;
+use JincorTech\VerifyClient\Interfaces\VerifyService;
+use JincorTech\VerifyClient\ValueObjects\EmailVerificationDetails;
 
 class EmployeeVerificationServiceCest
 {
@@ -30,7 +30,6 @@ class EmployeeVerificationServiceCest
 
     public function __construct()
     {
-        app()->bind(VerificationService::class, DummyVerificationService::class);
         $this->verificationService = App::make(EmployeeVerificationServiceInterface::class);
         $this->faker = Factory::create();
         $this->dm = App::make(DocumentManager::class);
@@ -46,30 +45,58 @@ class EmployeeVerificationServiceCest
 
     public function beginVerificationProcess(UnitTester $I)
     {
-        $company = CompanyFactory::make();
-        $this->dm->persist($company);
-        $verificationProcess = $this->verificationService->beginVerificationProcess($company);
-        $I->assertEquals($company, $verificationProcess->getCompany());
-        $I->assertFalse($verificationProcess->isEmailVerified());
-        $I->assertNotNull($verificationProcess->getEmailCode());
-        $I->assertNull($verificationProcess->getEmail());
+        $employee = EmployeeFactory::make();
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->once()->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => '6b90fa0c-7912-452c-bddf-e2c718440251',
+                'expiredOn' => 12345678,
+                'consumer' => $employee->getContacts()->getEmail(),
+            ])
+        );
+        App::instance(VerifyService::class, $verifyMock);
+        $this->verificationService = App::make(EmployeeVerificationServiceInterface::class);
+
+        $this->dm->persist($employee);
+        $this->dm->persist($employee->getCompany());
+
+        // @TODO: add test
     }
 
     public function sendEmailVerification(UnitTester $I)
     {
-        $email = $this->faker->email;
-        $verificationProcess = $this->makeVerification();
-        $verificationProcess->associateEmail($email);
-        $this->dm->persist($verificationProcess);
-        $this->verificationService->sendEmailVerification($verificationProcess->getId());
-        $I->assertEquals($email, $verificationProcess->getEmail());
-        $I->assertFalse($verificationProcess->isEmailVerified());
-        $I->assertNotNull($verificationProcess->getCompany());
+        $employee = EmployeeFactory::make();
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->once()->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => '6b90fa0c-7912-452c-bddf-e2c718440251',
+                'expiredOn' => 12345678,
+                'consumer' => $employee->getContacts()->getEmail(),
+            ])
+        );
+        App::instance(VerifyService::class, $verifyMock);
+        $this->verificationService = App::make(EmployeeVerificationServiceInterface::class);
+
+        $email = $employee->getContacts()->getEmail();
+        // @TODO: add test
     }
 
     public function sendEmailRestorePassword(UnitTester $I)
     {
-        $I->expectException(EmployeeNotFound::class, function() {
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => 'd3d548c5-2c7d-4ae0-9271-8e41b7f03714',
+                'expiredOn' => 12345678,
+                'consumer' => 'email'
+            ])
+        );
+        $I->haveInstance(VerifyService::class, $verifyMock);
+        
+        $I->expectException(EmployeeNotFound::class, function () {
             $this->verificationService->sendEmailRestorePassword($this->faker->email);
         });
         $employee = EmployeeFactory::make();
@@ -83,14 +110,6 @@ class EmployeeVerificationServiceCest
     public function getRepository(UnitTester $I)
     {
         $I->assertInstanceOf(EmployeeVerificationRepository::class, $this->verificationService->getRepository());
-    }
-
-
-    private function makeVerification() : EmployeeVerification
-    {
-        $company = CompanyFactory::make();
-        $this->dm->persist($company);
-        return $this->verificationService->beginVerificationProcess($company);
     }
 
 }

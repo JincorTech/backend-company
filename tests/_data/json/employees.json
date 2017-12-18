@@ -188,5 +188,34 @@
     "registeredAt": {
       "$date": "2017-06-13T06:02:36.000Z"
     }
+  },
+  {
+    "_id": {
+      "$binary": "OWM2N2Y3MjEtNmU2OC00NjU3LWJkNWEtNmRmOWY4NDhjY2Ji",
+      "$type": "03"
+    },
+    "department": {
+      "$ref": "departments",
+      "$id": {
+        "$binary": "ZDM0ODVmM2UtYTQ0NS00YmNiLTg2M2EtYTcxMTg2OWUwMGQ1",
+        "$type": "03"
+      },
+      "$db": "test"
+    },
+    "password": "$2y$10$IPtoSvKZdqbwxucyRmVDJOtRgGt51Gql4w1lESzRFv2kqzofv4GE6",
+    "profile": {
+      "position": "Employee",
+      "firstName": "Employee",
+      "lastName": "Company 1",
+      "login": "8d80a3e9-515d-4974-927d-4b097d1eb9fe:invited@company2.com",
+      "scope": "employee"
+    },
+    "contacts": {
+      "email": "invited@company2.com"
+    },
+    "isActive": false,
+    "registeredAt": {
+      "$date": "2017-06-13T05:58:12.000Z"
+    }
   }
 ]

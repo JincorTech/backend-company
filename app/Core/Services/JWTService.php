@@ -9,6 +9,8 @@
 namespace App\Core\Services;
 
 
+use App\Core\Interfaces\EmployeeVerificationReason;
+use App\Domains\Company\Entities\Company;
 use Carbon\Carbon;
 use \Firebase\JWT\JWT;
 
@@ -25,13 +27,12 @@ class JWTService
 
     /**
      * @param string $email
-     * @param string $verificationId
      * @param string $companyName
-     * @param string $pin
-     *
+     * @param string $companyId
+     * @param string $reason
      * @return string
      */
-    public function makeRegistrationToken(string $email, string $verificationId, string $companyName, string $pin)
+    public function makeRegistrationToken(string $email, string $companyName, string $companyId, string $reason)
     {
         $token = [
             'iss' => config('url'),
@@ -39,9 +40,9 @@ class JWTService
             'iat' => Carbon::create()->getTimestamp(),
             'exp' => Carbon::create()->addWeeks(2)->getTimestamp(),
             'email' => $email,
-            'verificationId' => $verificationId,
             'companyName' => $companyName,
-            'pin' => $pin,
+            'companyId' => $companyId,
+            'reason' => $reason
         ];
         return JWT::encode($token, $this->key);
     }
@@ -51,4 +52,33 @@ class JWTService
 
     }
 
+    /**
+     * @param Company $company
+     *
+     * @return string
+     */
+    public function makeRegistrationCompanyToken(Company $company): string
+    {
+        $token = [
+            'iss' => config('url'),
+            'aud' => config('url'),
+            'iat' => Carbon::create()->getTimestamp(),
+            'exp' => Carbon::create()->addWeeks(2)->getTimestamp(),
+            'companyName' => $company->getProfile()->getName(),
+            'companyId' => $company->getId(),
+            'reason' => EmployeeVerificationReason::REASON_REGISTER,
+        ];
+        return JWT::encode($token, $this->key);
+    }
+
+    public function getCompanyId(string $token): string
+    {
+        $data = JWT::decode($token, $this->key, ['HS256']);
+        return $data->companyId;
+    }
+
+    public function getData(string $token): array
+    {
+        return (array) JWT::decode($token, $this->key, ['HS256']);
+    }
 }

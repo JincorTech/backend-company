@@ -1,19 +1,19 @@
 <?php
 
-use App\Domains\Employee\EntityDecorators\RegistrationVerification;
-use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
+use App\Applications\Company\Services\Employee\EmployeeService;
+use App\Core\Interfaces\EmployeeVerificationReason;
+use App\Core\Services\IdentityService;
+use App\Core\Services\JWTService;
 use App\Core\Services\Exceptions\PasswordMismatchException;
-use App\Applications\Company\Services\Employee\EmployeeVerificationService;
 use App\Applications\Company\Exceptions\Company\CompanyNotFound;
-use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Entities\Employee;
-use App\Domains\Employee\Entities\EmployeeVerification;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Interfaces\MessengerServiceInterface;
-use App\Core\Interfaces\IdentityInterface;
 use Faker\Factory;
 use Illuminate\Support\Collection;
+use JincorTech\VerifyClient\Interfaces\VerifyService;
+use JincorTech\VerifyClient\ValueObjects\EmailVerificationDetails;
 
 class EmployeeServiceCest
 {
@@ -24,12 +24,6 @@ class EmployeeServiceCest
      * @var \Doctrine\ODM\MongoDB\DocumentManager
      */
     private $dm;
-
-    /**
-     * @var EmployeeVerificationService
-     */
-    private $verificationService;
-
 
     /**
      * @var App\Applications\Company\Services\Employee\EmployeeService
@@ -47,8 +41,6 @@ class EmployeeServiceCest
     public function __construct()
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->verificationService = App::make(EmployeeVerificationServiceInterface::class);
-        $this->employeeService = App::make(EmployeeServiceInterface::class);
         $this->faker = Factory::create();
     }
 
@@ -57,10 +49,6 @@ class EmployeeServiceCest
         $messengerMock = Mockery::mock(MessengerServiceInterface::class);
         $messengerMock->shouldReceive('register')->once()->andReturn(true);
         App::instance(MessengerServiceInterface::class, $messengerMock);
-
-        $identityMock = Mockery::mock(IdentityInterface::class);
-        $identityMock->shouldReceive('register')->once()->andReturn(true);
-        App::instance(IdentityInterface::class, $identityMock);
     }
 
     /**
@@ -70,11 +58,13 @@ class EmployeeServiceCest
      */
     public function canRegisterEmployees(UnitTester $I)
     {
+        $this->employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
+
         $I->wantTo('Register user using EmployeeService');
         $email = $this->faker->email;
-        $verification = $this->getVerifiedProcess($email);
         $profile = EmployeeProfileFactory::make();
-        $employee = $this->employeeService->register($verification->getId(), $email, $profile, $this->employeePassword);
+        $result = $this->employeeService->register('token', $email, $profile, $this->employeePassword);
+        $employee = $result->getEmployee();
         $I->assertInstanceOf(Employee::class, $employee);
         $I->assertEquals($profile, $employee->getProfile());
         $I->assertEquals($employee->getContacts()->getEmail(), $email);
@@ -90,15 +80,16 @@ class EmployeeServiceCest
     {
         $I->wantTo('Find existing user by email');
         $employee = $this->registerEmployee();
-        $findResult = $this->employeeService->findByEmail($employee->getContacts()->getEmail());
+        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
+        $findResult = $employeeService->findByEmail($employee->getContacts()->getEmail());
         $I->assertEquals($employee, $findResult->first());
         $I->wantToTest('Passing wrong email leads to finding nothing');
-        $I->assertEmpty($this->employeeService->findByEmail('1'.$employee->getContacts()->getEmail()));
-
+        $I->assertEmpty($employeeService->findByEmail('1'.$employee->getContacts()->getEmail()));
     }
 
     /**
-     * Create new employee and try to find it by passing login (this also checks for login creation from the companyId and email of employee)
+     * Create new employee and try to find it by passing login
+     * (this also checks for login creation from the companyId and email of employee)
      *
      * @param UnitTester $I
      */
@@ -106,12 +97,12 @@ class EmployeeServiceCest
     {
         $I->wantTo('Find existing user by login');
         $employee = $this->registerEmployee();
-        $findResult = $this->employeeService->findByLogin($employee->getLogin());
+        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
+        $findResult = $employeeService->findByLogin($employee->getLogin());
         $I->assertEquals($employee, $findResult);
         $I->wantToTest('Passing wrong login leads to finding nothing');
-        $I->assertEmpty($this->employeeService->findByLogin('1'.$employee->getLogin()));
+        $I->assertEmpty($employeeService->findByLogin('1'.$employee->getLogin()));
     }
-
 
     /**
      * Find employee by companyId and email
@@ -124,34 +115,25 @@ class EmployeeServiceCest
         $employee = $this->registerEmployee();
         $this->dm->persist($employee->getCompany());
         $this->dm->flush($employee->getCompany());
-        $findResult = $this->employeeService->findByCompanyIdAndEmail($employee->getCompany()->getId(), $employee->getContacts()->getEmail());
+        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
+        $findResult = $employeeService->findByCompanyIdAndEmail(
+            $employee->getCompany()->getId(),
+            $employee->getContacts()->getEmail()
+        );
         $I->assertEquals($employee, $findResult);
         $I->wantToTest('Passing wrong company id leads to finding nothing as passing wrong email');
-        $I->expectException(CompanyNotFound::class, function () use ($employee) {
-            $this->employeeService->findByCompanyIdAndEmail('1'.$employee->getCompany()->getId(), $employee->getContacts()->getEmail());
+        $I->expectException(CompanyNotFound::class, function () use ($employee, $employeeService) {
+            $employeeService->findByCompanyIdAndEmail(
+                '1'.$employee->getCompany()->getId(),
+                $employee->getContacts()->getEmail()
+            );
         });
-        $I->assertEmpty($this->employeeService->findByCompanyIdAndEmail($employee->getCompany()->getId(), '1'.$employee->getContacts()->getEmail()));
-    }
-
-    /**
-     * Find employee by verificationId
-     *
-     * @param UnitTester $I
-     */
-    public function findByVerificationId(UnitTester $I)
-    {
-        $I->wantTo('Find existing employee by verification id');
-        $email = $this->faker->email;
-        $verification = $this->getVerifiedProcess($email);
-        $this->dm->persist($verification);
-        $this->dm->flush($verification);
-        $employee = $this->registerEmployee($verification);
-        $result = $this->employeeService->findByVerificationId($verification->getId());
-        $I->assertEquals($employee->getId(), $result->first()->getId());
-        $I->wantToTest('Passing wrong id throws 404');
-        $I->expectException(EmployeeVerificationNotFound::class , function () use ($verification) {
-            $this->employeeService->findByVerificationId('z' . $verification->getId());
-        });
+        $I->assertEmpty(
+            $employeeService->findByCompanyIdAndEmail(
+                $employee->getCompany()->getId(),
+                '1'.$employee->getContacts()->getEmail()
+            )
+        );
     }
 
     /**
@@ -161,12 +143,18 @@ class EmployeeServiceCest
      */
     public function findByEmailAndPassword(UnitTester $I)
     {
-        $verification1 = $this->getVerifiedProcess($this->email);
-        $employee1 = $this->registerEmployee($verification1);
-        $verification2 = $this->getVerifiedProcess($this->email);
-        $employee2 = $this->registerEmployee($verification2);
+        $employeeService = $this->makeEmployeeService([
+            '514c0099-716f-4550-9d28-c25e2af9181e',
+            '7026ba15-2d1d-4041-b6ed-536da0c1020a'
+        ]);
+        $email = $this->faker->email;
+        $employee1 = $this->registerEmployeeWithSpecifyEmail($email, $employeeService);
+        $employee2 = $this->registerEmployeeWithSpecifyEmail($email, $employeeService);
 
-        $result = $this->employeeService->findByEmailAndPassword($employee1->getContacts()->getEmail(), $this->employeePassword);
+        $result = $employeeService->findByEmailAndPassword(
+            $employee1->getContacts()->getEmail(),
+            $this->employeePassword
+        );
         $I->assertTrue(is_int($result->search($employee1)));
         $I->assertTrue(is_int($result->search($employee2)));
     }
@@ -178,20 +166,24 @@ class EmployeeServiceCest
      */
     public function getMatchingCompanies(UnitTester $I)
     {
-        $verification1 = $this->getVerifiedProcess($this->email);
-        $employee1 = $this->registerEmployee($verification1);
-        $verification2 = $this->getVerifiedProcess($this->email);
-        $employee2 = $this->registerEmployee($verification2);
+        $employeeService = $this->makeEmployeeService([
+            '514c0099-716f-4550-9d28-c25e2af9181e',
+            '7026ba15-2d1d-4041-b6ed-536da0c1020a'
+        ]);
+
+        $employee1 = $this->registerEmployeeWithSpecifyEmail($this->email, $employeeService);
+        $employee2 = $this->registerEmployeeWithSpecifyEmail($this->email, $employeeService);
+
         $this->dm->persist($employee1->getCompany());
         $this->dm->persist($employee2->getCompany());
-        $companies = $this->employeeService->getMatchingCompanies([
+        $companies = $employeeService->getMatchingCompanies([
             'email' => $this->email,
             'password' => $this->employeePassword
         ]);
+
         $I->assertNotEquals(false, $companies->search($employee1->getCompany()));
         $I->assertNotEquals(false, $companies->search($employee2->getCompany()));
     }
-
 
     /**
      * Test if we can get collection of all companies of the provided employees
@@ -200,44 +192,25 @@ class EmployeeServiceCest
      */
     public function getEmployeesCompanies(UnitTester $I)
     {
+        $employeeService = $this->makeEmployeeService([
+            '514c0099-716f-4550-9d28-c25e2af9181e',
+            '7026ba15-2d1d-4041-b6ed-536da0c1020a',
+            '9fcad7c5-f84e-4d43-b35c-05e69d0e0362'
+        ]);
+
         $employees = new Collection(
             [
-                $this->registerEmployee(),
-                $this->registerEmployee(),
-                $this->registerEmployee()
+                $this->registerEmployeeWithSpecifyEmail('emp1@test.com', $employeeService),
+                $this->registerEmployeeWithSpecifyEmail('emp1@test.com', $employeeService),
+                $this->registerEmployeeWithSpecifyEmail('emp1@test.com', $employeeService)
             ]
         );
 
-        $companies = $this->employeeService->getEmployeesCompanies($employees);
+        $companies = $employeeService->getEmployeesCompanies($employees);
         $I->assertEquals(3, $companies->count());
         $I->assertContains($employees->random()->getCompany(), $companies);
     }
 
-
-    /**
-     * Find employee matching companyId and verificationId
-     *
-     * @param UnitTester $I
-     */
-    public function matchVerificationAndCompany(UnitTester $I)
-    {
-        $I->wantTo('Find active employee by company and verificationId to imitate RestorePasswordRequest');
-        $company = $this->getCompany();
-        $this->dm->persist($company);
-        $profile = EmployeeProfileFactory::make();
-        /** @var \App\Domains\Employee\Entities\EmployeeVerification $verification */
-        $verification = new EmployeeVerification(EmployeeVerification::REASON_RESTORE);
-        $verification->associateEmail($this->email);
-        $verification->associateCompany($company);
-        $verification->setVerifyEmail(true);
-        $this->dm->persist($verification);
-        $this->dm->flush();
-        $employee = $this->employeeService->register($verification->getId(), $this->email, $profile, $this->employeePassword);
-        $this->dm->persist($employee);
-        $match = $this->employeeService->matchVerificationAndCompany($verification->getId(), $company->getId());
-        $I->assertEquals($employee, $match);
-        $I->assertEquals($company, $match->getCompany());
-    }
 
     /**
      * Test change password functionality
@@ -249,55 +222,83 @@ class EmployeeServiceCest
         $I->wantTo("I want to change password of an Employee");
         $employee = $this->registerEmployee();
         $newPass = 'annsnd4848';
-        $I->expectException(PasswordMismatchException::class, function () use ($employee, $newPass) {
-            $this->employeeService->changePassword($employee, $newPass, 'test' . $this->employeePassword);
+        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
+        $I->expectException(PasswordMismatchException::class, function () use ($employee, $newPass, $employeeService) {
+            $employeeService->changePassword($employee, $newPass, 'test' . $this->employeePassword);
         });
-        $this->employeeService->changePassword($employee, $newPass, $this->employeePassword);
+        $employeeService->changePassword($employee, $newPass, $this->employeePassword);
         $I->assertTrue($employee->checkPassword($newPass));
     }
 
-
+    /**
+     * Register new Employee
+     * @return Employee
+     */
+    private function registerEmployee()
+    {
+        $profile = EmployeeProfileFactory::make();
+        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
+        return ($employeeService->register(
+            'token',
+            $this->faker->email,
+            $profile,
+            $this->employeePassword
+        ))->getEmployee();
+    }
 
     /**
      * Register new Employee
-     * @param null $verification
-     * @return Employee
-     */
-    private function registerEmployee($verification = null)
-    {
-        if ($verification === null) {
-            $email = $this->faker->email;
-            $verification = $this->getVerifiedProcess($email);
-        }
-        $profile = EmployeeProfileFactory::make();
-        return $this->employeeService->register($verification->getId(), $verification->getEmail(), $profile, $this->employeePassword);
-    }
-
-    /**
-     * Makes verification process and automatically verifies it
-     *
      * @param string $email
-     * @return \App\Domains\Employee\Entities\EmployeeVerification
+     * @param $employeeService
+     * @return Employee
+     * @internal param null $verification
      */
-    private function getVerifiedProcess(string $email)
+    private function registerEmployeeWithSpecifyEmail(string $email, $employeeService)
     {
-        $verificationProcess = new RegistrationVerification($this->verificationService->beginVerificationProcess($this->getCompany()));
-        $verificationProcess->getVerification()->associateEmail($email);
-        $verificationProcess->getVerification()->setVerifyEmail(true);
-        $this->dm->persist($verificationProcess->getVerification());
-        $this->dm->flush($verificationProcess->getVerification());
-        return $verificationProcess->getVerification();
+        $profile = EmployeeProfileFactory::make();
+        return ($employeeService->register('token', $email, $profile, $this->employeePassword))->getEmployee();
     }
 
     /**
-     * @return \App\Domains\Company\Entities\Company
+     * @param array $companyIds List id of company
+     * @param string $reason
+     * @return EmployeeService
      */
-    private function getCompany()
+    private function makeEmployeeService(array $companyIds, string $reason = EmployeeVerificationReason::REASON_REGISTER)
     {
-        $company = CompanyFactory::make();
-        $this->dm->persist($company);
-        $this->dm->flush($company);
-        return $company;
-    }
+        $jwtServiceMock = Mockery::mock(JWTService::class);
+        $jwtServiceMock->shouldReceive('makeRegistrationToken')->once()->andReturn('token');
+        $jwtServiceMock->shouldReceive('makeRegistrationCompanyToken')->once()->andReturn('tokenCompany');
+        $jwtServiceMock->shouldReceive('getCompanyId')->andReturnValues($companyIds);
+        $returnData = [];
+        foreach ($companyIds as $companyId) {
+            $returnData[] = ['reason' => $reason, 'companyId' => $companyId];
+        }
+        $jwtServiceMock->shouldReceive('getData')->andReturnValues($returnData);
+        App::instance(JWTService::class, $jwtServiceMock);
 
+        $identityMock = Mockery::mock(IdentityService::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        $identityMock->shouldReceive('login')->once()->andReturn('123');
+        App::instance(IdentityService::class, $identityMock);
+
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->once()->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => 'd3d548c5-2c7d-4ae0-9271-8e41b7f03714',
+                'expiredOn' => 12345678,
+                'consumer' => 'ivan@wizard.com'
+            ])
+        );
+        App::instance(VerifyService::class, $verifyMock);
+
+        return new EmployeeService(
+            App::make(\App\Domains\Employee\Interfaces\EmployeeRepositoryInterface::class),
+            App::make(\App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface::class),
+            App::make(EmployeeVerificationServiceInterface::class),
+            $jwtServiceMock,
+            $verifyMock
+        );
+    }
 }

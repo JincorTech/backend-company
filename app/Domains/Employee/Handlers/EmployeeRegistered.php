@@ -40,7 +40,6 @@ class EmployeeRegistered
         $this->dm = App::make(DocumentManager::class);
         $this->identityService = $identityService;
         $this->messengerService = $messengerService;
-
     }
 
     public function handle(ERE $event)

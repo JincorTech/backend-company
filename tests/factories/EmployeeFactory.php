@@ -9,19 +9,18 @@
  */
 
 use App\Domains\Employee\Entities\Employee;
+use App\Domains\Employee\ValueObjects\EmployeeContact;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 class EmployeeFactory implements FactoryInterface
 {
-
-
     public static function make()
     {
         $password = 'test123';
         $profile = EmployeeProfileFactory::make();
-        $verification = EmployeeVerificationFactory::make();
-        $verification->setVerifyEmail(true);
-        $employee = Employee::register($verification, $profile, $verification->getEmail(), $password);
+        $company = CompanyFactory::make();
+        $employeeContact = new EmployeeContact('test@test.com', '+7-900-888-88-88');
+        $employee = Employee::register($company, $profile, $password, $employeeContact);
         return $employee;
     }
 
@@ -31,5 +30,4 @@ class EmployeeFactory implements FactoryInterface
         $employee = App::make(DocumentManager::class)->getRepository(Employee::class)->find($id);
         return $employee;
     }
-
 }

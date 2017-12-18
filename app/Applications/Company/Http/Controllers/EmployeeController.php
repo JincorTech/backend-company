@@ -9,7 +9,10 @@
 
 namespace App\Applications\Company\Http\Controllers;
 
+use App\Applications\Company\Exceptions\Employee\EmployeeVerificationException;
+use App\Applications\Company\Exceptions\Employee\InvalidEmailSpecified;
 use App\Applications\Company\Http\Requests\Employee\SendRestorePasswordEmail;
+use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
 use App\Applications\Company\Services\Employee\EmployeeVerificationService;
 use App\Applications\Company\Transformers\EmployeeVerificationTransformer;
 use App\Applications\Company\Transformers\Employee\SearchEmployeeContact;
@@ -23,7 +26,7 @@ use App\Applications\Company\Http\Requests\Employee\SearchContacts;
 use App\Applications\Company\Http\Requests\Employee\GetContactList;
 use App\Applications\Company\Http\Requests\Employee\ChangePassword;
 use App\Applications\Company\Http\Requests\Employee\ListByMatrixId;
-use App\Applications\Company\Http\Responses\Employee\Verification\EmailPinIncorrect as EmailPinIncorrectResponse;
+use App\Core\Interfaces\EmployeeVerificationReason;
 use App\Core\Services\Exceptions\MultipleCompanyLoginException;
 use App\Applications\Company\Transformers\EmployeeRegisterSuccess;
 use App\Applications\Company\Http\Requests\Employee\UpdateRequest;
@@ -42,7 +45,6 @@ use App\Applications\Company\Http\Requests\Employee\Register;
 use App\Applications\Company\Http\Requests\Employee\Delete;
 use App\Applications\Company\Http\Requests\Employee\Login;
 use App\Applications\Company\Http\Requests\Employee\Me;
-use App\Applications\Company\Exceptions\Employee\Verification\EmailPinIncorrect;
 use App\Applications\Company\Exceptions\Employee\PermissionDenied;
 use App\Applications\Company\Exceptions\Employee\EmployeeNotFound;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,6 +56,7 @@ use Dingo\Api\Http\Response;
 use App\Applications\Company\Http\Requests\Employee\QueryLogins;
 use App\Applications\Company\Transformers\Employee\EmployeeList;
 use App;
+use JincorTech\VerifyClient\Exceptions\InvalidCodeException;
 
 class EmployeeController extends BaseController
 {
@@ -75,17 +78,28 @@ class EmployeeController extends BaseController
     private $verificationService;
 
     /**
+     * @var App\Applications\Company\Services\Company\CompanyServiceInterface
+     */
+    private $companyService;
+
+    /**
      * EmployeeController constructor.
      *
      * @param EmployeeService $employeeService
      * @param IdentityInterface $identityService
      * @param EmployeeVerificationService $verificationService
+     * @param CompanyServiceInterface $companyService
      */
-    public function __construct(EmployeeService $employeeService, IdentityInterface $identityService, EmployeeVerificationService $verificationService)
-    {
+    public function __construct(
+        EmployeeService $employeeService,
+        IdentityInterface $identityService,
+        EmployeeVerificationService $verificationService,
+        CompanyServiceInterface $companyService
+    ) {
         $this->employeeService = $employeeService;
         $this->identityService = $identityService;
         $this->verificationService = $verificationService;
+        $this->companyService = $companyService;
     }
 
     /**
@@ -107,12 +121,24 @@ class EmployeeController extends BaseController
     public function verifyEmail(VerifyByCode $request)
     {
         try {
-            $verification = $this->verificationService->verifyEmail($request->getVerificationId(), $request->getVerificationCode());
-        } catch (EmailPinIncorrect $e) {
-            return new EmailPinIncorrectResponse;
+            $verification = $this->verificationService->verifyEmail(
+                $request->getVerificationId(),
+                $request->getVerificationCode()
+            );
+
+            if ($verification->getReason() === EmployeeVerificationReason::REASON_REGISTER) {
+                $this->employeeService->activate(
+                    $verification
+                );
+            }
+
+            return $this->response->item($verification, EmployeeVerificationTransformer::class);
+        } catch (InvalidCodeException $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => trans('exceptions.verification.code.incorrect'),
+            ], 401);
         }
-        $this->employeeService->activate($verification);
-        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
 
@@ -123,23 +149,36 @@ class EmployeeController extends BaseController
      */
     public function register(Register $request)
     {
-        $employee = $this->employeeService->register(
-            $request->getVerificationId(),
-            $request->getEmail(),
-            $request->getProfile(),
-            $request->getPassword()
-        );
-        $token = $this->identityService->login(
-            $employee->getContacts()->getEmail(),
-            $request->getPassword(),
-            $employee->getCompany()->getId()
-        );
-        return new JsonResponse(
-            (new EmployeeRegisterSuccess())
-                ->transform(Collection::make([
-                    'employee' => $employee, 'token' => $token,
-                ]))
-        );
+        try {
+            $registerResult = $this->employeeService->register(
+                $request->getToken(),
+                $request->getEmail(),
+                $request->getProfile(),
+                $request->getPassword()
+            );
+
+            $employee = $registerResult->getEmployee();
+
+            $token = $this->identityService->login(
+                $employee->getContacts()->getEmail(),
+                $request->getPassword(),
+                $employee->getCompany()->getId()
+            );
+
+            return new JsonResponse(
+                (new EmployeeRegisterSuccess())
+                    ->transform(Collection::make([
+                        'employee' => $employee,
+                        'token' => $token,
+                        'verificationId' => $registerResult->getVerificationId()
+                    ]))
+            );
+
+        } catch (InvalidEmailSpecified $exception) {
+            $this->response->error($exception->getMessage(), 422);
+        } catch (EmployeeVerificationException $exception) {
+            $this->response->errorNotFound($exception->getMessage());
+        }
     }
 
 
@@ -150,7 +189,6 @@ class EmployeeController extends BaseController
     public function sendRestorePasswordEmail(SendRestorePasswordEmail $request)
     {
         $verification = $this->verificationService->sendEmailRestorePassword($request->getEmail());
-        $verification->setVerifyEmail(false);
         return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
@@ -175,10 +213,15 @@ class EmployeeController extends BaseController
             return $this->response->collection($companies, CompanyTransformer::class);
         }
         if ($token !== false) {
-            $company = $this->employeeService->getMatchingCompanies([
-                'email' => $request->getEmail(),
-                'password' => $request->getPassword()
-            ])->first();
+            /** @var App\Domains\Company\Entities\Company $company */
+            if (!$request->getCompanyId()) {
+                $company = $this->employeeService->getMatchingCompanies([
+                    'email' => $request->getEmail(),
+                    'password' => $request->getPassword()
+                ])->first();
+            } else {
+                $company = $this->companyService->getCompany($request->getCompanyId());
+            }
             $employee = $this->employeeService->findByCompanyIdAndEmail($company->getId(), $request->getEmail());
             if(!$employee) {
                 throw new EmployeeNotFound;
@@ -190,7 +233,7 @@ class EmployeeController extends BaseController
                 'token' => $token,
                 'employee' => $employee,
             ];
-            return $this->response->item($data, LoginResponse::class);
+            return $this->response->item($data, LoginResponse::class)->withHeader('Access-Control-Allow-Origin', '*');
         }
     }
 
@@ -266,7 +309,9 @@ class EmployeeController extends BaseController
                 $this->employeeService->makeAdmin(
                     $request->getUser(),
                     $request->get('id'),
-                    $request->get('value')), Colleague::class
+                    $request->get('value')
+                ),
+                Colleague::class
             );
         } catch (PermissionDenied $exception) {
             $this->response->error($exception->getMessage(), 403);
@@ -283,7 +328,10 @@ class EmployeeController extends BaseController
     public function delete(Delete $request, string $id)
     {
         try {
-            return $this->response->item($this->employeeService->deactivate($request->getUser(), $id), Colleague::class);
+            return $this->response->item(
+                $this->employeeService->deactivate($request->getUser(), $id),
+                Colleague::class
+            );
         } catch (PermissionDenied $exception) {
             $this->response->error($exception->getMessage(), 403);
         } catch (EmployeeNotFound $exception) {
@@ -299,7 +347,7 @@ class EmployeeController extends BaseController
     {
         try {
             return $this->response->item(
-                $this->employeeService->updateEmployee($request->getUser(),$request->get('profile')),
+                $this->employeeService->updateEmployee($request->getUser(), $request->get('profile')),
                 SelfProfile::class
             );
         } catch (App\Core\Exceptions\InvalidImageException $exception) {
@@ -353,14 +401,9 @@ class EmployeeController extends BaseController
 
     public function matrix(ListByMatrixId $request)
     {
-        return $this->response->collection($this->employeeService->findByMatrixIds($request->getMatrixIds()), SearchEmployeeContact::class);
+        return $this->response->collection(
+            $this->employeeService->findByMatrixIds($request->getMatrixIds()),
+            EmployeeContactList::class
+        );
     }
-
-
-    public function queryLogins(Request $request)
-    {
-        $collection = $this->employeeService->findByLogins($request->get('items'));
-        return new JsonResponse((new EmployeeList)->transform($collection));
-    }
-
 }

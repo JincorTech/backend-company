@@ -31,10 +31,10 @@ class EmployeeContact
      */
     private $phone;
 
-    public function __construct(EmployeeVerification $verification)
+    public function __construct(string $email, string $phone = null)
     {
-        $this->email = $verification->getEmail();
-        $this->phone = $verification->getPhone();
+        $this->email = $email;
+        $this->phone = $phone;
     }
 
     /**

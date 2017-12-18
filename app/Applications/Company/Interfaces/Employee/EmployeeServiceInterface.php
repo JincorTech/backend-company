@@ -8,19 +8,20 @@
 
 namespace App\Applications\Company\Interfaces\Employee;
 
+use App\Core\ValueObjects\RegisterResult;
 use App\Domains\Employee\Entities\Employee;
+use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use Illuminate\Support\Collection;
-use App\Domains\Employee\Entities\EmployeeVerification;
 
 interface EmployeeServiceInterface
 {
     public function register(
-        string $verificationId,
+        string $registrationToken,
         string $email,
         EmployeeProfile $profile,
         string $password
-    ) : Employee;
+    ) : RegisterResult;
 
     public function getColleagues(Employee $employee);
 

@@ -9,8 +9,8 @@
 
 namespace App\Domains\Employee\Entities;
 
+use App\Core\Interfaces\EmployeeVerificationReason;
 use App\Domains\Company\Entities\Company;
-use App\Domains\Employee\ValueObjects\VerificationPin;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Ramsey\Uuid\Uuid;
 use DateTime;
@@ -23,14 +23,8 @@ use DateTime;
  *     repositoryClass="App\Core\Repositories\EmployeeVerificationRepository"
  * )
  */
-class EmployeeVerification implements MetaEmployeeInterface
+class EmployeeVerification implements MetaEmployeeInterface, EmployeeVerificationReason
 {
-
-
-    const REASON_REGISTER = 'register';
-    const REASON_RESTORE = 'restore';
-    const REASON_INVITED_BY_EMPLOYEE = 'invited-by-employee';
-
     /**
      * @var string
      * @ODM\Id(strategy="NONE", type="bin_uuid")
@@ -44,22 +38,10 @@ class EmployeeVerification implements MetaEmployeeInterface
     protected $email;
 
     /**
-     * @var \App\Domains\Employee\ValueObjects\VerificationPin
-     * @ODM\EmbedOne(targetDocument="App\Domains\Employee\ValueObjects\VerificationPin")
-     */
-    protected $emailPin;
-
-    /**
      * @var string
      * @ODM\Field(type="string")
      */
     protected $phone;
-
-    /**
-     * @var VerificationPin
-     * @ODM\EmbedOne(targetDocument="App\Domains\Employee\ValueObjects\VerificationPin")
-     */
-    protected $phonePin;
 
     /**
      * @var Company
@@ -98,6 +80,12 @@ class EmployeeVerification implements MetaEmployeeInterface
     protected $emailVerifiedAt;
 
     /**
+     * @var Employee
+     * @ODM\ReferenceOne(targetDocument="App\Domains\Employee\Entities\Employee", cascade={"persist"})
+     */
+    protected $employee;
+
+    /**
      * EmployeeVerification constructor.
      * @param $reason string|null
      */
@@ -105,8 +93,6 @@ class EmployeeVerification implements MetaEmployeeInterface
     {
         $this->id = Uuid::uuid4()->toString();
         $this->createdAt = new DateTime();
-        $this->emailPin = new VerificationPin();
-        $this->phonePin = new VerificationPin();
         $this->emailVerified = false;
         $this->phoneVerified = false;
         $this->reason = $reason;
@@ -145,14 +131,6 @@ class EmployeeVerification implements MetaEmployeeInterface
         $this->emailVerifiedAt = $isVerified ? new DateTime() : null;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailCode()
-    {
-        return $this->emailPin->getCode();
-    }
-
 
     /**
      * @return bool
@@ -184,6 +162,16 @@ class EmployeeVerification implements MetaEmployeeInterface
     public function getPhone()
     {
         return $this->phone;
+    }
+
+
+    /**
+     * @param string $verificationId
+     * @TODO: move to constructor
+     */
+    public function setId(string $verificationId)
+    {
+        $this->id = $verificationId;
     }
 
     /**
@@ -226,6 +214,22 @@ class EmployeeVerification implements MetaEmployeeInterface
         return $this->reason;
     }
 
+    /**
+     * @param Employee $employee
+     */
+    public function associateEmployee(Employee $employee)
+    {
+        $this->employee = $employee;
+        $this->email = $employee->getContacts()->getEmail();
+        $this->phone = $employee->getContacts()->getPhone();
+        $this->company = $employee->getCompany();
+    }
 
-
+    /**
+     * @return Employee
+     */
+    public function getEmployee(): Employee
+    {
+        return $this->employee;
+    }
 }

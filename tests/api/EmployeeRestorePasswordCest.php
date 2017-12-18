@@ -1,23 +1,23 @@
 <?php
 
-
-use App\Core\Services\Verification\DummyVerificationService;
-use App\Core\Services\Verification\VerificationService;
+use JincorTech\VerifyClient\Interfaces\VerifyService;
+use JincorTech\VerifyClient\ValueObjects\EmailVerificationDetails;
 
 class EmployeeRestorePasswordCest
 {
-    public function _before(ApiTester $I)
-    {
-        $I->haveBinding(VerificationService::class, DummyVerificationService::class);
-    }
-
-    public function _after(ApiTester $I)
-    {
-    }
-
-    // tests
     public function success(ApiTester $I)
     {
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->once()->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => 'd3d548c5-2c7d-4ae0-9271-8e41b7f03714',
+                'expiredOn' => 12345678,
+                'consumer' => 'some@email.com'
+            ])
+        );
+        $I->haveInstance(VerifyService::class, $verifyMock);
+
         $I->wantTo('Send a request to restore password with existing email to receive password restore link.');
         $I->sendPOST('employee/restorePassword', [
             'email' => 'test@test.com',

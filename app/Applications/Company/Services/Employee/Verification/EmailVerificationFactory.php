@@ -11,6 +11,8 @@ namespace App\Applications\Company\Services\Employee\Verification;
 
 use App\Core\Services\Verification\EmailVerificationVerificationMethod;
 use App\Core\Services\Verification\VerificationIdentifier;
+use JincorTech\VerifyClient\Interfaces\GenerateCode;
+use JincorTech\VerifyClient\VerificationMethod\EmailVerification;
 
 /**
  * Class EmailVerifyVerificationFactory
@@ -20,28 +22,28 @@ class EmailVerificationFactory
 {
     /**
      * @param string $jwt
-     * @param string $verificationId
      * @param string $toEmail
-     * @return EmailVerificationVerificationMethod
+     * @return EmailVerification
      */
-    public function buildEmailVerificationMethod(
-        string $jwt,
-        string $verificationId,
-        string $toEmail
-    )
+    public function buildEmailVerificationMethod(string $jwt, string $toEmail)
     {
-        return EmailVerificationVerificationMethod::buildDefault(
-            $toEmail,
-            trans('mails.verification.subject'),
-            'support@jincor.com',
-            trans(trans('mails.verification.from')),
-            view('emails.registration.verify-email', [
-                'jwt' => $jwt,
-                'pin' => '{{{CODE}}}',
-            ])
-        )->setPolicy('02:00:00')
-            ->setForcedVerificationId(new VerificationIdentifier($verificationId))
-            ->setGenerateCode(['DIGITS'], 6);
+        $template = view('emails.registration.verify-email', [
+            'jwt' => $jwt,
+            'pin' => '{{{CODE}}}',
+            'verificationId' => '{{{VERIFICATION_ID}}}'
+        ]);
+
+        $emailVerification = new EmailVerification();
+        $emailVerification->setConsumer($toEmail)
+            ->setGenerateCode([GenerateCode::DIGITS], 6)
+            ->setExpiredOn('02:00:00')
+            ->setPayload($jwt)
+            ->setFromEmail('support@jincor.com')
+            ->setFromName(trans('mails.verification.from'))
+            ->setSubject(trans('mails.verification.subject'))
+            ->setTemplate($template);
+
+        return $emailVerification;
     }
 }
 

@@ -114,25 +114,25 @@ class Employee implements MetaEmployeeInterface
         $this->contactList = new ArrayCollection();
     }
 
-    public static function register(EmployeeVerification $verification, EmployeeProfile $profile, string $email, string $password)
-    {
+    public static function register(
+        Company $company,
+        EmployeeProfile $profile,
+        string $password,
+        EmployeeContact $employeeContact
+    ) {
         $employee = new self();
-        if (!$verification->getCompany()) {
-            throw new CompanyRequired(trans('exceptions.employee.company_required')); //TODO: message translation
-        }
-        $employee->contacts = new EmployeeContact($verification);
+
+        $employee->contacts = $employeeContact;
         $employee->profile = $profile;
-        $employee->profile->setLogin($verification->getCompany(), $email);
+        $employee->profile->setLogin($company, $employeeContact->getEmail());
         $employee->password = Hash::make($password);
-        $employee->isActive = $verification->isEmailVerified();
-        $employee->setScope($verification->getCompany());
-        $employee->department = $verification->getCompany()->getRootDepartment();
-        $employee->departmentId = $verification->getCompany()->getRootDepartment()->getId();
+        $employee->isActive = false;
+        $employee->setScope($company);
+        $employee->department = $company->getRootDepartment();
+        $employee->departmentId = $company->getRootDepartment()->getId();
         $employee->department->addEmployee($employee);
         $employee->registeredAt = new DateTime();
         $employee->matrixId = $employee->getMatrixId();
-
-        event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
 
         return $employee;
     }

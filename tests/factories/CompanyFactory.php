@@ -18,8 +18,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 
 class CompanyFactory implements FactoryInterface
 {
-
-
     /**
      * Make a new random company
      * @return Company
@@ -33,6 +31,10 @@ class CompanyFactory implements FactoryInterface
         return new Company($ru->company, AddressFactory::make(), $companyType);
     }
 
+
+    /**
+     * @return Company
+     */
     public static function makeMockWith1Employee()
     {
         $company = Mockery::mock(Company::class);
@@ -55,6 +57,9 @@ class CompanyFactory implements FactoryInterface
         return $company;
     }
 
+    /**
+     * @return Company
+     */
     public static function makeTestCompanyFromDb() : Company
     {
         $id = base64_decode('OWZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzYy');

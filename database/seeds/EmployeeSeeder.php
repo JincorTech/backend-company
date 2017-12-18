@@ -1,6 +1,8 @@
 <?php
 
 
+use App\Core\Interfaces\EmployeeVerificationReason;
+use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
@@ -35,13 +37,16 @@ class EmployeeSeeder extends DatabaseSeeder
 
     private function registerEmployee(Company $company)
     {
-        $verification = $this->getEmployeeVerificationService()->beginVerificationProcess($company);
+        $jwtService = new \App\Core\Services\JWTService(config('jwt.key'));
+        $companyToken = $jwtService->makeRegistrationCompanyToken($company);
+
+        $verification = new EmployeeVerification(EmployeeVerificationReason::REASON_REGISTER);
         $verification->associateEmail('test@test.com');
         $verification->setVerifyEmail(true);
         $verification->associateCompany($company);
         $this->getDm()->persist($verification);
         $profile = new EmployeeProfile('John', 'Doe', 'Tester');
-        $this->getEmployeeService()->register($verification->getId(), 'test@test.com', $profile, 'test');
+        $this->getEmployeeService()->register($companyToken, 'test@test.com', $profile, 'Password1');
     }
 
     /**

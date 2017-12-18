@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b55eee42d7f7627fb603907067764a92",
+    "content-hash": "bfdff48b90c414883639dcd7e9c32f01",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2120,6 +2120,61 @@
                 "laravel"
             ],
             "time": "2017-10-18T02:07:57+00:00"
+        },
+        {
+            "name": "jincor/verify-php-client",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JincorTech/verify-php-client.git",
+                "reference": "719ed2ca9f0e8b4ca7aa31c8c8dcef1982a790c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JincorTech/verify-php-client/zipball/719ed2ca9f0e8b4ca7aa31c8c8dcef1982a790c6",
+                "reference": "719ed2ca9f0e8b4ca7aa31c8c8dcef1982a790c6",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3",
+                "php": ">=7"
+            },
+            "require-dev": {
+                "codeception/codeception": "^2.3",
+                "phpunit/phpunit": "^5.7",
+                "squizlabs/php_codesniffer": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JincorTech\\VerifyClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "aleserche",
+                    "homepage": "https://github.com/Aleserche"
+                },
+                {
+                    "name": "Jincor Team",
+                    "email": "tech@jincor.com",
+                    "homepage": "https://jincor.com"
+                }
+            ],
+            "description": "A PHP library which encapsulates interaction with Jincor Verify service",
+            "homepage": "https://github.com/JincorTech/verify-php-client",
+            "keywords": [
+                "client",
+                "jwt",
+                "library",
+                "sdk",
+                "verify"
+            ],
+            "time": "2017-11-30 13:20:35"
         },
         {
             "name": "jmikola/geojson",
@@ -7780,6 +7835,7 @@
     "stability-flags": {
         "dingo/api": 20,
         "jincor/laravel-auth-client": 20,
+        "jincor/verify-php-client": 20,
         "hlogeon/codeception-doctrine-mongo": 20
     },
     "prefer-stable": false,

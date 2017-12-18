@@ -208,5 +208,50 @@
       },
       "$db": "test"
     }
+  },
+  {
+    "_id": {
+      "$binary": "OTBmMWNkMTktMDQxOC00M2ZkLTgyYmMtZGViNjIyMmY5MjIw",
+      "$type": "03"
+    },
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NGZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzY0",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
+  },
+  {
+    "_id": {
+      "$binary": "Y2Q4ZTJlMWEtYTQxZC00ODQwLThiMDMtMGM1MTZjODQ5Mjc5",
+      "$type": "03"
+    },
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NTE0YzAwOTktNzE2Zi00NTUwLTlkMjgtYzI1ZTJhZjkxODFl",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
+  },
+  {
+    "_id": {
+      "$binary": "NGZhMjljNTgtYTNhZi00MDNkLWE4OGUtMjk0ZTE0M2EwZjM3",
+      "$type": "03"
+    },
+    "name": "initial",
+    "company": {
+      "$ref": "companies",
+      "$id": {
+        "$binary": "NzAyNmJhMTUtMmQxZC00MDQxLWI2ZWQtNTM2ZGEwYzEwMjBh",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   }
 ]

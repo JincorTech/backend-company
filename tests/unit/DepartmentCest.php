@@ -14,6 +14,16 @@ class DepartmentCest
         $identityMock = Mockery::mock(IdentityInterface::class);
         $identityMock->shouldReceive('register')->once()->andReturn(true);
         App::instance(IdentityInterface::class, $identityMock);
+
+        $jwtServiceMock = Mockery::mock(JWTService::class);
+        $jwtServiceMock->shouldReceive('makeRegistrationToken')->once()->andReturn('token');
+        $jwtServiceMock->shouldReceive('getCompanyId')->once()->andReturn('9fcad7c5-f84e-4d43-b35c-05e69d0e0362');
+        App::instance(JWTService::class, $jwtServiceMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        $identityMock->shouldReceive('login')->once()->andReturn('123');
+        App::instance(IdentityInterface::class, $identityMock);
     }
 
     public function _after(UnitTester $I)

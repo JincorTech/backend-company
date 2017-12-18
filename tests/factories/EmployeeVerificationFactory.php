@@ -22,7 +22,7 @@ class EmployeeVerificationFactory implements FactoryInterface
         $employeeVerification = new EmployeeVerification();
         $employeeVerification->associateEmail($ru->email);
         $employeeVerification->associateCompany(CompanyFactory::make());
-        $employeeVerification->associatePhone($ru->phoneNumber);
+        $employeeVerification->associateEmployee(EmployeeFactory::make());
         return $employeeVerification;
     }
 

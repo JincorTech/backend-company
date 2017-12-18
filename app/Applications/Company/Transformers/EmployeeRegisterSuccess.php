@@ -9,7 +9,6 @@
 
 namespace App\Applications\Company\Transformers;
 
-
 use App\Applications\Company\Transformers\Employee\SelfProfile;
 use App\Domains\Employee\Entities\Employee;
 use Illuminate\Support\Collection;
@@ -17,8 +16,6 @@ use League\Fractal\TransformerAbstract;
 
 class EmployeeRegisterSuccess extends TransformerAbstract
 {
-
-
     public function transform(Collection $data)
     {
         /** @var Employee $employee */
@@ -26,9 +23,9 @@ class EmployeeRegisterSuccess extends TransformerAbstract
         return [
             'data' => [
                 'employee' => (new SelfProfile())->transform($employee),
-                'token' => $data['token']
+                'token' => $data['token'],
+                'verificationId' => $data['verificationId'],
             ],
         ];
     }
-
 }

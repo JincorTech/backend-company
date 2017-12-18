@@ -33,38 +33,18 @@
  must not depend on Application. Application depends on Core and Domain.
 
 ### Local development setup
+
 1. Clone the repo
-2. `cd /path/to/repo` - go to the projects folder
-3. `docker-compose build` - build development containers
-4. Wait for a while
-5. `docker-compose up -d` - run services
-5. `docker-compose exec workspace bash`
-5. You need to register company service as tenant, run in "workspace" container:
-```
-curl --include \
-     --request POST \
-     --header "Content-Type: application/json" \
-     --header "Accept: application/json" \
-     --data-binary "{
-    \"email\": \"test@test.com\",
-    \"password\": \"Password1\"
-}" \
-'http://auth:3000/tenant'
-``` 
-8. Then login tenant:
-```
-curl --include \
-     --request POST \
-     --header "Content-Type: application/json" \
-     --header "Accept: application/json" \
-     --data-binary "{
-    \"email\": \"test@test.com\",
-    \"password\": \"Password1\"
-}" \
-'http://auth:3000/tenant/login'
-```
-9. Add received JWT to .env file as IDENTITY_JWT.
-10. `./init.sh` - installs composer dependencies, set up environment variables and runs `php artisan db:seed`
+2. `cd /path/to/repo` - go to projects folder
+3. `cp .env.local .env`
+4. In `companies.docker` comment the line `RUN rm -r /var/lib/apt/lists/*`
+5. `docker-compose build` - build development containers
+6. `docker-compose up -d` - run services
+7. `docker-compose exec workspace bash`
+8. `composer install`
+9. `php artisan auth:register:tenant test@test.com Password1` and `php artisan auth:login:tenant test@test.com Password1`. This command is to automate setting IDENTITY_JWT in .env when it is empty.
+10.  Add received JWT to .env file as `VERIFICATION_JWT`
+11. `php artisan db:seed`
 
 Your changes will be automatically synchronized with local machine, there is no need to rebuild or restart containers after source code changes.
 

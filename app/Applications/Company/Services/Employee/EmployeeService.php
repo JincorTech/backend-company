@@ -13,29 +13,35 @@ use App;
 use App\Applications\Company\Exceptions\Company\CompanyNotFound;
 use App\Applications\Company\Exceptions\Company\EmployeeAlreadyExists;
 use App\Applications\Company\Exceptions\Employee\EmployeeNotFound;
+use App\Applications\Company\Exceptions\Employee\InvalidEmailSpecified;
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
+use App\Applications\Company\Services\Employee\Verification\EmailVerificationFactory;
 use App\Applications\Company\Services\Employee\Verification\InviteEmailVerificationFactory;
+use App\Core\Interfaces\EmployeeVerificationReason;
 use App\Core\Services\ImageService;
 use App\Core\Services\JWTService;
-use App\Core\Services\Verification\VerificationService;
+use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
+use App\Core\ValueObjects\RegisterResult;
 use App\Domains\Company\Entities\Company;
 use App\Domains\Employee\Entities\Employee;
 use App\Domains\Employee\Entities\EmployeeVerification;
 use App\Applications\Company\Exceptions\Employee\Verification\EmployeeVerificationAlreadySent;
 use App\Applications\Company\Exceptions\Employee\EmployeeVerificationException;
-use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
 use App\Applications\Company\Exceptions\Employee\InvitationLimitReached;
 use App\Core\Services\Exceptions\PasswordMismatchException;
 use App\Applications\Company\Exceptions\Employee\PermissionDenied;
+use App\Domains\Employee\Events\EmployeeRegistered;
 use App\Domains\Employee\Interfaces\EmployeeRepositoryInterface;
 use App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface;
+use App\Domains\Employee\ValueObjects\EmployeeContact;
 use App\Domains\Employee\ValueObjects\EmployeeProfile;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Illuminate\Support\Collection;
+use JincorTech\VerifyClient\Interfaces\VerifyService;
 use Mail;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -68,116 +74,176 @@ class EmployeeService implements EmployeeServiceInterface
     private $verificationService;
 
     /**
-     * @var VerificationService
-     */
-    private $commonVerificationService;
-
-    /**
      * @var JWTService
      */
     private $jwtService;
+
+    /**
+     * @var VerifyService
+     */
+    private $verifyService;
 
     /**
      * EmployeeService constructor.
      * @param EmployeeRepositoryInterface $employeeRepository
      * @param EmployeeVerificationRepositoryInterface $verificationRepository
      * @param EmployeeVerificationServiceInterface $verificationService
-     * @param VerificationService $commonVerificationService
      * @param JWTService $jwtService
+     * @param VerifyService $verifyService
      */
     public function __construct(
         EmployeeRepositoryInterface $employeeRepository,
         EmployeeVerificationRepositoryInterface $verificationRepository,
         EmployeeVerificationServiceInterface $verificationService,
-        VerificationService $commonVerificationService,
-        JWTService $jwtService
-    )
-    {
+        JWTService $jwtService,
+        VerifyService $verifyService
+    ) {
         $this->dm = App::make(DocumentManager::class);
         $this->repository = $employeeRepository;
         $this->verificationRepository = $verificationRepository;
         $this->verificationService = $verificationService;
-        $this->commonVerificationService = $commonVerificationService;
         $this->jwtService = $jwtService;
+        $this->verifyService = $verifyService;
     }
 
     /**
      * Register new employee
      *
-     * @param string $verificationId
+     * @param string $token
      * @param string $email
      * @param App\Domains\Employee\ValueObjects\EmployeeProfile $profile
      * @param string $password
-     * @return Employee
-     * @throws \App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound
-     * @throws \App\Applications\Company\Exceptions\Company\EmployeeAlreadyExists
+     * @return RegisterResult
+     * @throws InvalidEmailSpecified
+     * @throws \Doctrine\ODM\MongoDB\LockException
+     * @throws \Doctrine\ODM\MongoDB\Mapping\MappingException
      */
     public function register(
-        string $verificationId,
+        string $token,
         string $email,
         EmployeeProfile $profile,
         string $password
-    ) : Employee
-    {
-        /** @var EmployeeVerification $verification */
-        $verification = $this->verificationService->getRepository()->find($verificationId);
-        if (!$verification) {
-            throw new EmployeeVerificationNotFound(
-                trans('exceptions.employee.verification.not_found', [
-                        'verification' => $verificationId,
-                    ]
-                )
-            );
-        }
-
-        if ($this->findByCompanyIdAndEmail($verification->getCompany()->getId(), $email)) {
-            throw new EmployeeAlreadyExists(
+    ) : RegisterResult {
+        $decodedToken = $this->jwtService->getData($token);
+        /** @var Company $company */
+        $company = $this->dm->getRepository(Company::class)->find($decodedToken['companyId']);
+        if ($this->findByCompanyIdAndEmail($company->getId(), $email)) {
+            throw new EmployeeAlreadyExists(500,
                 trans('exceptions.employee.already_exists', [
-                    'email' => $verification->getEmail(),
-                    'company' => $verification->getCompany()->getProfile()->getName(),
+                    'email' => $email,
+                    'company' => $company->getProfile()->getName(),
                 ])
             );
         }
-        if ($verification->getEmail() === null) {
-            $verification->associateEmail($email); //TODO: needs to be removed?
-            $this->dm->persist($verification);
+
+        $employeeContact = new EmployeeContact($email);
+        $employee = Employee::register($company, $profile, $password, $employeeContact);
+
+        if ($decodedToken['reason'] === EmployeeVerificationReason::REASON_INVITED_BY_EMPLOYEE) {
+            return $this->registerByInvitation($email, $employee, $company);
+        } else {
+            return $this->commonRegister($email, $employee, $company);
         }
-        $employee = Employee::register($verification, $profile, $email, $password);
-        $colleagues = $this->getColleagues($employee);
-        /** @var Employee $colleague */
-        foreach ($colleagues['active'] as $colleague) {
-            if ($colleague->getId() !== $employee->getId()) {
-                $colleague->addContact($employee);
-                $employee->addContact($colleague);
-                $this->dm->persist($colleague);
-            }
+    }
+
+
+    private function registerByInvitation(string $email, Employee $employee, Company $company)
+    {
+        /** @var EmployeeVerification $verification */
+        $verification = $this->verificationRepository->findOneBy([
+            'email' => $email,
+            'company' => $company,
+            'reason' => EmployeeVerificationReason::REASON_INVITED_BY_EMPLOYEE
+        ]);
+
+        if (!$verification) {
+            throw new EmployeeVerificationException('Invitation not found');
         }
+
+        if ($verification->getEmail() !== $email) {
+            throw new InvalidEmailSpecified('Invalid email specified');
+        }
+
+        $employee->activate();
+        $verification->setVerifyEmail(true);
+        $verification->associateEmployee($employee);
+
         $this->dm->persist($employee);
-        $this->dm->persist($verification->getCompany());
+        $this->dm->persist($company);
+        $this->dm->persist($verification);
         $this->dm->flush();
 
-        return $employee;
+        event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
+
+        return new RegisterResult($employee, $verification->getId());
+    }
+
+    /**
+     * @param string $email
+     * @param $employee
+     * @param $company
+     * @return RegisterResult
+     */
+    private function commonRegister(string $email, Employee $employee, Company $company): RegisterResult
+    {
+        $registrationToken = $this->jwtService->makeRegistrationToken(
+            $employee->getId(),
+            $employee->getCompany()->getProfile()->getName(),
+            $employee->getCompany()->getId(),
+            EmployeeVerificationReason::REASON_REGISTER
+        );
+
+        $emailVerification = (new EmailVerificationFactory())->buildEmailVerificationMethod(
+            $registrationToken,
+            $employee->getContacts()->getEmail()
+        );
+
+        $verificationDetails = $this->verifyService->initiate($emailVerification);
+
+        $verification = new EmployeeVerification(EmployeeVerificationReason::REASON_REGISTER);
+        $verification->associateCompany($company);
+        $verification->associateEmail($email);
+        $verification->setId($verificationDetails->getVerificationId());
+
+        $this->dm->persist($verification);
+        $this->dm->persist($employee);
+        $this->dm->persist($company);
+        $this->dm->flush();
+
+        event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
+
+        return new RegisterResult($employee, $verificationDetails->getVerificationId());
     }
 
     /**
      * Activate an employee if email verified
      *
      * @param EmployeeVerification $verification
+     * @return Employee
+     * @internal param string $companyId
+     * @internal param string $email
+     * @internal param EmployeeVerification $verification
      */
     public function activate(EmployeeVerification $verification)
     {
+        $email = $verification->getEmail();
+        /** @var Company $company */
+        $company = $this->dm->getRepository(Company::class)->find($verification->getCompany()->getId());
+
         /** @var Employee $employee */
-        $employee = $this->repository->findByCompanyAndEmail($verification->getCompany(), $verification->getEmail());
+        $employee = $this->repository->findByCompanyAndEmail($company, $email);
 
-        if (!$employee) throw new EmployeeNotFound(trans('exceptions.employee.not_found', [
-            'email' => $verification->getEmail()
-        ]));
-
-        if ($verification->isEmailVerified() && !$employee->isActive()) {
-            $employee->activate();
-            $this->dm->persist($employee);
-            $this->dm->flush($employee);
+        if (!$employee) {
+            throw new EmployeeNotFound(trans('exceptions.employee.not_found', [
+                'email' => $email
+            ]));
         }
+
+        $employee->activate();
+        $this->dm->persist($employee);
+        $this->dm->flush($employee);
+
+        return $employee;
     }
 
 
@@ -206,7 +272,7 @@ class EmployeeService implements EmployeeServiceInterface
         $deleted = $employee->getCompany()
             ->getEmployees()
             ->filter(function (Employee $empl) use ($employee) {
-                return $empl->getId() !== $employee->getId() && !$empl->isActive();
+                return $empl->getId() !== $employee->getId() && !$empl->isActive() && $empl->getDeletedAt();
             })->toArray();
         return [
             'self' => $employee,
@@ -291,7 +357,7 @@ class EmployeeService implements EmployeeServiceInterface
             throw new CompanyNotFound(trans('exceptions.company.not_found'));
         }
 
-        return $company->getEmployees()->filter(function (Employee $employee) use($email) {
+        return $company->getEmployees()->filter(function (Employee $employee) use ($email) {
             return $employee->getContacts()->getEmail() === $email;
         })->first();
     }
@@ -304,7 +370,7 @@ class EmployeeService implements EmployeeServiceInterface
     public function findByEmailAndPassword(string $email, string $password) : Collection
     {
         $employees = $this->findByEmail($email);
-        return $employees->filter(function (Employee $employee) use($password) {
+        return $employees->filter(function (Employee $employee) use ($password) {
             return $employee->checkPassword($password);
         });
     }
@@ -326,9 +392,13 @@ class EmployeeService implements EmployeeServiceInterface
         /** @var EmployeeVerification $verificationProcess */
         $verificationProcess = $this->verificationRepository->find($verificationId);
         if (!$verificationProcess instanceof EmployeeVerification) {
-            throw new EmployeeVerificationNotFound('Employee Verification Entity id: ' . $verificationId . ' Not found');
+            throw new EmployeeVerificationNotFound(
+                'Employee Verification Entity id: ' . $verificationId . ' Not found'
+            );
         }
-        if (!$verificationProcess->isEmailVerified()) { // We cannot use this verification process if email is not verified
+
+        // We cannot use this verification process if email is not verified
+        if (!$verificationProcess->isEmailVerified()) {
             throw new EmployeeVerificationException("Employee didn't verify email");
         }
 
@@ -373,7 +443,10 @@ class EmployeeService implements EmployeeServiceInterface
             throw new HttpException(401, trans('exceptions.verification.failed'));
         }
 
-        $employee = $this->repository->findByDepartmentAndEmail($company->getRootDepartment(), $verification->getEmail());
+        $employee = $this->repository->findByDepartmentAndEmail(
+            $company->getRootDepartment(),
+            $verification->getEmail()
+        );
         if (!$employee) {
             throw new HttpException(401, trans('exceptions.verification.failed'));
         }
@@ -437,40 +510,50 @@ class EmployeeService implements EmployeeServiceInterface
     {
         if ($this->invitationLimitReached($inviter->getCompany(), $email)) {
             throw new InvitationLimitReached(
-                trans('exceptions.invitation.limitReached',
-                ['email' => $email, 'limit' => config('mail.invitations.max_company_user')]
-            ));
+                trans(
+                    'exceptions.invitation.limitReached',
+                    ['email' => $email, 'limit' => config('mail.invitations.max_company_user')]
+                )
+            );
         }
         $validator = Validator::make(
             ['value' => $email],
             ['value' => 'email']
         );
         $validator->validate();
-        if ($this->repository->findByCompanyAndEmail($inviter->getCompany(), $email)) {
-            throw new EmployeeVerificationAlreadySent(trans('exceptions.invitation.alreadyExists', ['email' => $email]));
-        }
-        $employeeVerification = new EmployeeVerification(EmployeeVerification::REASON_INVITED_BY_EMPLOYEE);
-        $employeeVerification->associateEmail($email);
-        $employeeVerification->associateCompany($inviter->getCompany());
-        $this->dm->persist($employeeVerification);
 
-        $this->commonVerificationService->initiate(
-            (new InviteEmailVerificationFactory())->buildEmailVerificationMethod(
-                $this->jwtService->makeRegistrationToken(
-                    $email,
-                    $employeeVerification->getId(),
-                    $employeeVerification->getCompany()->getProfile()->getName(),
-                    $employeeVerification->getEmailCode()
-                ),
-                $inviter->getCompany()->getProfile()->getName(),
-                $inviter->getProfile()->getName(),
-                $email,
-                $employeeVerification->getId()
-            )->setForcedCode($employeeVerification->getEmailCode()) // @TODO: Remove when change behavior processing of
-                                                                    // @TODO: jwt on the frontend.
+        if ($this->repository->findByCompanyAndEmail($inviter->getCompany(), $email)) {
+            throw new EmployeeVerificationAlreadySent(
+                trans(
+                    'exceptions.invitation.alreadyExists',
+                    ['email' => $email]
+                )
+            );
+        }
+
+        $token = $this->jwtService->makeRegistrationToken(
+            $email,
+            $inviter->getCompany()->getProfile()->getName(),
+            $inviter->getCompany()->getId(),
+            EmployeeVerificationReason::REASON_INVITED_BY_EMPLOYEE
         );
 
-        return $employeeVerification;
+        $verificationDetails = $this->verifyService->initiate(
+            (new InviteEmailVerificationFactory())->buildEmailVerificationMethod(
+                $token,
+                $inviter->getCompany()->getProfile()->getName(),
+                $inviter->getProfile()->getName(),
+                $email
+            )
+        );
+
+        $verification = new EmployeeVerification(EmployeeVerificationReason::REASON_INVITED_BY_EMPLOYEE);
+        $verification->setId($verificationDetails->getVerificationId());
+        $verification->associateEmail($email);
+        $verification->associateCompany($inviter->getCompany());
+        $this->dm->persist($verification);
+
+        return $verification;
     }
 
 
@@ -487,10 +570,10 @@ class EmployeeService implements EmployeeServiceInterface
     {
         $verifications = new Collection();
         $errors = new Collection();
-        $invitees->each(function(string $email) use ($inviter, $errors, $verifications) {
+        $invitees->each(function (string $email) use ($inviter, $errors, $verifications) {
             try {
                 $verifications->push($this->invite($email, $inviter));
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $errors->push([
                     'status' => self::VERIFICATION_ERR,
                     'email' => $email,
@@ -655,7 +738,10 @@ class EmployeeService implements EmployeeServiceInterface
      */
     private function invitationLimitReached(Company $company, string $email)
     {
-        $openVerificationsCount = $this->verificationRepository->getOpenVerificationsCountByCompanyAndEmail($company, $email);
+        $openVerificationsCount = $this->verificationRepository->getOpenVerificationsCountByCompanyAndEmail(
+            $company,
+            $email
+        );
 
         return $openVerificationsCount >= config('mail.invitations.max_company_user');
     }
@@ -672,7 +758,9 @@ class EmployeeService implements EmployeeServiceInterface
         try {
             App::make('AppUser');
             return Collection::make([App::make('AppUser')]);
-        } catch (\Exception $exception) {}
+        } catch (Exception $exception) {
+        }
+
         if (array_key_exists('verificationId', $options) && $options['verificationId']) {
             return $this->findByVerificationId($options['verificationId']);
         }

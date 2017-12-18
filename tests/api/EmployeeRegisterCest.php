@@ -1,7 +1,12 @@
 <?php
+
+use App\Core\Interfaces\EmployeeVerificationReason;
+use App\Core\Services\JWTService;
 use Helper\Api;
 use App\Core\Interfaces\MessengerServiceInterface;
 use App\Core\Interfaces\IdentityInterface;
+use JincorTech\VerifyClient\Interfaces\VerifyService;
+use JincorTech\VerifyClient\ValueObjects\EmailVerificationDetails;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class EmployeeRegisterCest
@@ -14,41 +19,30 @@ class EmployeeRegisterCest
     {
     }
 
-    public function verificationIncorrect(ApiTester $I)
-    {
-        $I->wantTo('Register new employee with incorrect verification ID and receive 422 error code');
-        $I->sendPOST('employee/register', [
-            'firstName' => 'Ivan',
-            'lastName' => 'Ivanov',
-            'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
-            'position' => 'Wizard',
-            'email' => 'ivan@test.com',
-        ]);
-        $I->canSeeResponseCodeIs(404);
-        $I->canSeeResponseIsJson();
-        $I->canSeeResponseContainsJson([
-            'message' => trans('exceptions.employee.verification.not_found', [
-                'verification' => '8a62229e-fc82-4018-be4b-83a5bca72452',
-            ]),
-            'status_code' => 404,
-        ]);
-    }
-
     public function employeeExist(ApiTester $I)
     {
         $messengerMock = Mockery::mock(MessengerServiceInterface::class);
         $messengerMock->shouldReceive('register')->once()->andReturn(true);
         $I->haveInstance(MessengerServiceInterface::class, $messengerMock);
 
+        $jwtServiceMock = Mockery::mock(JWTService::class);
+        $jwtServiceMock->shouldReceive('getCompanyId')->once()->andReturn('9fcad7c5-f84e-4d43-b35c-05e69d0e0362');
+        $jwtServiceMock->shouldReceive('getData')->andReturn([
+            'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
+            'email' => 'test2@test.com',
+            'reason' => EmployeeVerificationReason::REASON_REGISTER
+        ]);
+        $jwtServiceMock->shouldReceive('makeRegistrationToken')->andReturn('token');
+        $I->haveInstance(JWTService::class, $jwtServiceMock);
+
         $identityMock = Mockery::mock(IdentityInterface::class);
         $identityMock->shouldReceive('register')
-            ->once()
+            //->once()
             ->andThrow(new HttpException(
                 500,
                 trans('exceptions.employee.already_exists', [
                     'email' => 'test2@test.com',
-                    'company' => 'Test Company',
+                    'company' => 'Test Company'
                 ])
             ));
 
@@ -58,10 +52,10 @@ class EmployeeRegisterCest
         $I->sendPOST('employee/register', [
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
-            'password' => 'Cm3jpmrt7c',
-            'verificationId' => '4d668fe0-85d3-49d7-9277-9499c5a3024b',
+            'password' => 'Password1',
             'position' => 'Wizard',
-            'email' => 'ivan@test.com',
+            'email' => 'test2@test.com',
+            'token' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsImF1ZCI6bnVsbCwiaWF0IjoxNTExNjE1MDU5LCJleHAiOjE1MTI4MjQ2NTksImNvbXBhbnlOYW1lIjoiVklNRU80IiwiY29tcGFueUlkIjoiYjE0MmQyNmYtZTUxYS00YTM1LWFlY2UtY2UyZjAwOTYwMWU3In0.w5qGe_WkVKUw3Y8i9ACNUeg7bC4lCLuYWj7RFoldC-U'
         ]);
 
         $I->canSeeResponseCodeIs(500);
@@ -69,7 +63,7 @@ class EmployeeRegisterCest
         $I->canSeeResponseContainsJson([
             'message' => trans('exceptions.employee.already_exists', [
                 'email' => 'test2@test.com',
-                'company' => 'Test Company',
+                'company' => 'Test Company'
             ]),
             'status_code' => 500,
         ]);
@@ -83,18 +77,39 @@ class EmployeeRegisterCest
         $messengerMock->shouldReceive('register')->once()->andReturn(true);
         $I->haveInstance(MessengerServiceInterface::class, $messengerMock);
 
+        $jwtServiceMock = Mockery::mock(JWTService::class);
+        $jwtServiceMock->shouldReceive('makeRegistrationToken')->once()->andReturn('token');
+        $jwtServiceMock->shouldReceive('getCompanyId')->once()->andReturn('9fcad7c5-f84e-4d43-b35c-05e69d0e0362');
+        $jwtServiceMock->shouldReceive('getData')->andReturn([
+            'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
+            'email' => 'ivan@wizard.com',
+            'reason' => EmployeeVerificationReason::REASON_REGISTER
+        ]);
+        $I->haveInstance(JWTService::class, $jwtServiceMock);
+
         $identityMock = Mockery::mock(IdentityInterface::class);
         $identityMock->shouldReceive('register')->once()->andReturn(true);
         $identityMock->shouldReceive('login')->once()->andReturn('123');
         $I->haveInstance(IdentityInterface::class, $identityMock);
 
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->once()->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => 'd3d548c5-2c7d-4ae0-9271-8e41b7f03714',
+                'expiredOn' => 12345678,
+                'consumer' => 'ivan@wizard.com'
+            ])
+        );
+        $I->haveInstance(VerifyService::class, $verifyMock);
+
         $I->sendPOST('employee/register', [
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '2a5f87b8-273a-47f8-af20-786ffce71edc',
             'position' => 'Wizard',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $I->canSeeResponseCodeIs(200);
@@ -114,18 +129,39 @@ class EmployeeRegisterCest
         $messengerMock->shouldReceive('register')->once()->andReturn(true);
         $I->haveInstance(MessengerServiceInterface::class, $messengerMock);
 
+        $jwtServiceMock = Mockery::mock(JWTService::class);
+        $jwtServiceMock->shouldReceive('makeRegistrationToken')->once()->andReturn('token');
+        $jwtServiceMock->shouldReceive('getCompanyId')->once()->andReturn('9fcad7c5-f84e-4d43-b35c-05e69d0e0362');
+        $jwtServiceMock->shouldReceive('getData')->andReturn([
+            'companyId' => '9fcad7c5-f84e-4d43-b35c-05e69d0e0362',
+            'email' => 'ivan@wizard.com',
+            'reason' => EmployeeVerificationReason::REASON_REGISTER
+        ]);
+        $I->haveInstance(JWTService::class, $jwtServiceMock);
+
         $identityMock = Mockery::mock(IdentityInterface::class);
         $identityMock->shouldReceive('register')->once()->andReturn(true);
         $identityMock->shouldReceive('login')->once()->andReturn('123');
         $I->haveInstance(IdentityInterface::class, $identityMock);
 
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->once()->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => 'd3d548c5-2c7d-4ae0-9271-8e41b7f03714',
+                'expiredOn' => 12345678,
+                'consumer' => 'ivan@wizard.com'
+            ])
+        );
+        $I->haveInstance(VerifyService::class, $verifyMock);
+
         $I->sendPOST('employee/register', [
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
             'password' => "Cm3jpmrt7c!@#$%^&*()`~[]{}'\"?/\<>,.|",
-            'verificationId' => '2a5f87b8-273a-47f8-af20-786ffce71edc',
             'position' => 'Wizard',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $I->canSeeResponseCodeIs(200);
@@ -144,9 +180,9 @@ class EmployeeRegisterCest
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
             'password' => 'cm3jpmrt7c',
-            'verificationId' => '2a5f87b8-273a-47f8-af20-786ffce71edc',
             'position' => 'Wizard of Hogwarts School of Witchcraft and Wizardry',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('password');
@@ -169,9 +205,9 @@ class EmployeeRegisterCest
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
             'password' => 'C123m',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => 'Wizard of Hogwarts School of Witchcraft and Wizardry',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('password');
@@ -193,9 +229,9 @@ class EmployeeRegisterCest
         $I->sendPOST('employee/register', [
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => 'Wizard of Hogwarts School of Witchcraft and Wizardry',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('password');
@@ -217,9 +253,9 @@ class EmployeeRegisterCest
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => Api::generateRandomString(61),
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('position');
@@ -243,9 +279,9 @@ class EmployeeRegisterCest
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => 'a',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('position');
@@ -269,8 +305,8 @@ class EmployeeRegisterCest
             'firstName' => 'Ivan',
             'lastName' => 'Ivanov',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('position');
@@ -293,9 +329,9 @@ class EmployeeRegisterCest
             'firstName' => 'I',
             'lastName' => 'Ivanov',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => 'Wizard',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('first name');
@@ -318,9 +354,9 @@ class EmployeeRegisterCest
         $I->sendPOST('employee/register', [
             'lastName' => 'Ivanov',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => 'Wizard',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('first name');
@@ -342,9 +378,9 @@ class EmployeeRegisterCest
         $I->sendPOST('employee/register', [
             'firstName' => 'Ivan',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => 'Wizard',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('last name');
@@ -367,9 +403,9 @@ class EmployeeRegisterCest
             'firstName' => 'Ivan',
             'lastName' => 'I',
             'password' => 'Cm3jpmrt7c',
-            'verificationId' => '8a62229e-fc82-4018-be4b-83a5bca72452',
             'position' => 'Wizard',
             'email' => 'ivan@wizard.com',
+            'token' => 'token',
         ]);
 
         $attrName = trans('last name');

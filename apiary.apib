@@ -1,10 +1,10 @@
 FORMAT: 1A
 HOST: http://jincor.com:8080/api/v1/
 
-# JinCorCompany
+# JincorCompany
 
 JincorCompany is a service that manages the core Domain of JinCor - Companies.
-Users(Actually, employees) are registring company profiles and personal accounts in the companies.
+Users (Actually, employees) are registering company profiles and personal accounts in the companies.
 There are some dictionaries are also available in this service.
 
 
@@ -35,18 +35,19 @@ the tenant id as well. So in our case email + companyId.
 
 To make registration process more configurable we use Entity called `VerificationProcess`
 which has unique key which you must provide to server when doing requests during verification process.
-Note that `VerificationProcess` also keeps all the data required to restore the session, think about it like about session key.
+Note that `VerificationProcess` also keeps all the data required to restore the session, think about it
+like about session key.
 
-In order to achieve business requirement which shortly can be described as: 'Trigger user registration after company registration'
-I've moved creating of `VerificationProcess` Entity to the end of company registration workflow.
-So, remember: The result of company registration is always `VerificationProcess`.
+In order to achieve business requirement which shortly can be described as: 'Trigger user registration
+after company registration'. The result of the registration of the company is the company id + token,
+which stores the company id. With the specified token, the employee is registered.
 
 
 ## Login process
 
 At first time the whole login system can look too complicated that's why we added this section
 to our docs to get you through the login process quickly.
-1 user(means 1 email address) can be associated to many companies. Because of some reasons
+1 user (means 1 email address) can be associated to many companies. Because of some reasons
 like security and functionality we decided to keep such kind of accounts independently.
 But this decion leads us to another problem: you must specify company you are logging in
 in every login request.
@@ -100,7 +101,7 @@ Get the list of the countries
             }
 
 
-## Cities [/dictionary/city/{country}]
+## Cities [/dictionary/city?country={country}]
 
 ### Get cities dictionary [GET]
 
@@ -295,8 +296,8 @@ Returns the list of economical activity types
 
 ### Register new company [POST]
 
-Anyone can register company. The result of successfull registration is VerificationProcess.
-Use this process `id` to pass to verification requests.
+Anyone can register a company. The result of successful registration is a token which stores the company id.
+Use this token to pass to registration requests.
 
 + Request (application/json)
 
@@ -311,21 +312,15 @@ Use this process `id` to pass to verification requests.
 
     + Headers
 
-            Location: /api/v1/company/21afcee6-6aa6-49f3-8c56-2d1b3fb03b53
+            Location: /api/v1/company/a47669aa-02d7-408d-9f41-c882b1355e14
 
     + Body
 
-            "data" : {
-              "id": "a32d7960-4bd5-4a73-9aeb-4e9551c77ddc",
-              "companyId": "21afcee6-6aa6-49f3-8c56-2d1b3fb03b53",
-              "email": {
-                "value": null,
-                "isVerified": false
-              },
-              "phone": {
-                "value": null,
-                "isVerified": false
-              }
+            {
+                "data": {
+                    "id": "a47669aa-02d7-408d-9f41-c882b1355e14",
+                    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsImF1ZCI6bnVsbCwiaWF0IjoxNTExOTM5NDQ1LCJleHAiOjE1MTMxNDkwNDUsImNvbXBhbnlOYW1lIjoiSW50ZXJhY3RpdmUgRGV2ZWxvcGVyIiwiY29tcGFueUlkIjoiYTQ3NjY5YWEtMDJkNy00MDhkLTlmNDEtYzg4MmIxMzU1ZTE0In0.F7wQAn6N-dzkufDmx1y7xxk6A4BLpBIITJDUzES_9Xw"
+                }
             }
 
 
@@ -345,12 +340,14 @@ Use this process `id` to pass to verification requests.
             }
 
 
-## Send e-mail verification [/employee/verifyEmail/{verificationId}/{email}]
+## Send e-mail verification [/employee/verifyEmail?verificationId={verificationId}&email={email}]
 
 ### Send email verification code [GET]
 
 Send verification code to users email. Email will be saved in `VerificationProcess` entity and
 will be associated with employee on registration complete.
+
+> With each request, the Verification id update takes place
 
 + Parameters
     + verificationId (string, required)
@@ -416,19 +413,17 @@ Verify email by providing verificationId and email verification code.
 
 ### Register employee in the company [POST]
 
-Register new Employee. Warning! This action can be called only if the user verified email
-. Will create an entity in database and register employee in auth server.
-Internal login will be created.
+After registration, the code will be sent to the mailbox, which is needed to verify the email address.
 
 + Request (application/json)
 
             {
-                "firstName": "Andrey",
-                "lastName": "Degtyaruk",
-                "email": "andrey@jincor.com",
-                "password": "cm2jpmrt6c",
-                "verificationId": "bb69ec2e-9294-41fc-a593-a01a0f973f46",
-                "position": "Директор"
+                "firstName": "Axel",
+                "lastName": "McDermott",
+                "email": "test@test.com",
+                "password": "Password1",
+                "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOm51bGwsImF1ZCI6bnVsbCwiaWF0IjoxNTExOTM5NDQ1LCJleHAiOjE1MTMxNDkwNDUsImNvbXBhbnlOYW1lIjoiSW50ZXJhY3RpdmUgRGV2ZWxvcGVyIiwiY29tcGFueUlkIjoiYTQ3NjY5YWEtMDJkNy00MDhkLTlmNDEtYzg4MmIxMzU1ZTE0In0.F7wQAn6N-dzkufDmx1y7xxk6A4BLpBIITJDUzES_9Xw",
+                "position": "Wizard"
             }
 
 + Response 200 (application/json)
@@ -496,7 +491,8 @@ Internal login will be created.
                     "employeesCount": 2
                   }
                 },
-                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYxYjhlMzdjLTMzNGYtNGVkYS04ZTIwLTJmMWIwNDE4YThjYSIsImxvZ2luIjoiYTNjYmUyMWMtYmFiNi00YzcyLTlkMmUtODkwN2Y5YTU2ODk4Omhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiZW1wbG95ZWUiLCJkZXZpY2VJZCI6IjEyMzQ1IiwianRpIjoiZjFiOGUzN2MtMzM0Zi00ZWRhLThlMjAtMmYxYjA0MThhOGNhMTIzNDUxNDkyMTQ1Mzk5MTY0IiwiaWF0IjoxNDkyMTQ1Mzk5MTY0LCJleHAiOjE0OTIxNDYwMDM5NjR9.fbTUkwKO-X_MoMDulV2YrgtX6xVfgxdYbWwaMdV-GWo"
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYxYjhlMzdjLTMzNGYtNGVkYS04ZTIwLTJmMWIwNDE4YThjYSIsImxvZ2luIjoiYTNjYmUyMWMtYmFiNi00YzcyLTlkMmUtODkwN2Y5YTU2ODk4Omhsb2dlb24xQGdtYWlsLmNvbSIsInNjb3BlIjoiZW1wbG95ZWUiLCJkZXZpY2VJZCI6IjEyMzQ1IiwianRpIjoiZjFiOGUzN2MtMzM0Zi00ZWRhLThlMjAtMmYxYjA0MThhOGNhMTIzNDUxNDkyMTQ1Mzk5MTY0IiwiaWF0IjoxNDkyMTQ1Mzk5MTY0LCJleHAiOjE0OTIxNDYwMDM5NjR9.fbTUkwKO-X_MoMDulV2YrgtX6xVfgxdYbWwaMdV-GWo",
+                "verificationId": "5f72fa12-cb1f-4dd4-b6e1-4c06594ee879"
               }
             }
 

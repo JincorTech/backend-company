@@ -240,7 +240,15 @@
     "createdAt": {
       "$date": "2017-06-07T08:51:21.000Z"
     },
-    "email": "notverified@tester.com"
+    "email": "notverified@tester.com",
+    "employee": {
+      "$ref": "employees",
+      "$id": {
+        "$binary": "MWU0N2MxNTUtM2E3Ny00ZGM3LTlkNGQtMzRmYzJhZmE2YjMx",
+        "$type": "03"
+      },
+      "$db": "test"
+    }
   },
   {
     "_id": {
@@ -414,6 +422,14 @@
     },
     "emailVerifiedAt": {
       "$date": "2017-06-09T13:05:26.000Z"
+    },
+    "employee": {
+      "$ref": "employees",
+      "$id": {
+        "$binary": "NjNlODhkOWQtYTc5ZS00NzA1LTljOGYtODcxMmI3MWI1M2Y4",
+        "$type": "03"
+      },
+      "$db": "test"
     }
   },
   {
@@ -502,8 +518,13 @@
     "createdAt": {
       "$date": "2017-06-13T05:58:12.000Z"
     },
-    "emailVerifiedAt": {
-      "$date": "2017-06-13T06:02:36.000Z"
+    "employee": {
+      "$ref": "employees",
+      "$id": {
+        "$binary": "OWM2N2Y3MjEtNmU2OC00NjU3LWJkNWEtNmRmOWY4NDhjY2Ji",
+        "$type": "03"
+      },
+      "$db": "test"
     }
   }
 ]

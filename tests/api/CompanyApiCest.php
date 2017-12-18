@@ -1,14 +1,12 @@
 <?php
 
-use App\Core\Services\Verification\DummyVerificationService;
-use App\Core\Services\Verification\VerificationService;
+use JincorTech\VerifyClient\Interfaces\VerifyService;
+use JincorTech\VerifyClient\ValueObjects\EmailVerificationDetails;
 
 class CompanyApiCest
 {
     public function _before(ApiTester $I)
     {
-        $I->haveBinding(VerificationService::class, DummyVerificationService::class);
-
         Elasticsearch::shouldReceive('index')
             ->once()
             ->andReturn(null);
@@ -35,14 +33,9 @@ class CompanyApiCest
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
         $I->seeResponseJsonMatchesJsonPath('data.id');
-        $I->seeResponseJsonMatchesJsonPath('data.companyId');
-        $I->seeResponseJsonMatchesJsonPath('data.email');
-        $I->seeResponseJsonMatchesJsonPath('data.email.value');
-        $I->seeResponseJsonMatchesJsonPath('data.email.isVerified');
-        $I->seeResponseJsonMatchesJsonPath('data.phone.isVerified');
-        $I->seeResponseJsonMatchesJsonPath('data.phone.value');
+        $I->seeResponseJsonMatchesJsonPath('data.token');
 
-        $company = $I->grabDataFromResponseByJsonPath('$.data.companyId.');
+        $company = $I->grabDataFromResponseByJsonPath('$.data.id.');
         $I->seeHttpHeader('Location', '/api/v1/company/' . $company[0]);
     }
 
@@ -73,7 +66,7 @@ class CompanyApiCest
     {
         $I->wantTo('Register new company with incorrect type and receive validation error');
 
-        $countryId = 'c699fc1a-ec7f-4021-9102-31ff03c5624a';;
+        $countryId = 'c699fc1a-ec7f-4021-9102-31ff03c5624a';
 
         $I->sendPOST('company', [
             'legalName' => 'Рога и Копыта',
@@ -119,6 +112,17 @@ class CompanyApiCest
 
     public function inviteEmployees(ApiTester $I)
     {
+        $verifyMock = Mockery::mock(VerifyService::class);
+        $verifyMock->shouldReceive('initiate')->andReturn(
+            new EmailVerificationDetails([
+                'status' => '200',
+                'verificationId' => 'd3d548c5-2c7d-4ae0-9271-8e41b7f03714',
+                'expiredOn' => 12345678,
+                'consumer' => 'email'
+            ])
+        );
+        $I->haveInstance(VerifyService::class, $verifyMock);
+
         $token = '123'; //just random token
 
         $I->amAuthorizedAsJincorAdmin($token);

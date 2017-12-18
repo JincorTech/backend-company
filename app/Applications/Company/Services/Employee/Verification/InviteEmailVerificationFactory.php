@@ -10,8 +10,8 @@
 namespace App\Applications\Company\Services\Employee\Verification;
 
 
-use App\Core\Services\Verification\EmailVerificationVerificationMethod;
-use App\Core\Services\Verification\VerificationIdentifier;
+use JincorTech\VerifyClient\Interfaces\GenerateCode;
+use JincorTech\VerifyClient\VerificationMethod\EmailVerification;
 
 /**
  * Class InviteEmailVerificationFactory
@@ -24,29 +24,33 @@ class InviteEmailVerificationFactory
      * @param string $companyName
      * @param string $employee
      * @param string $toEmail
-     * @param string $verificationId
-     * @return EmailVerificationVerificationMethod
+     * @return EmailVerification
+     * @internal param string $verificationId
      * @internal param string $verificationId
      */
     public function buildEmailVerificationMethod(
         string $jwt,
         string $companyName,
         string $employee,
-        string $toEmail,
-        string $verificationId
+        string $toEmail
     )
     {
-        return EmailVerificationVerificationMethod::buildDefault(
-            $toEmail,
-            'You are Invited',  // @TODO: trans
-            'support@jincor.com',
-            'Support Team',  // @TODO: trans
-            view('emails.invitations.invite', [
+        $template = view('emails.invitations.invite', [
                 'email' => $toEmail,
                 'employee' => $employee,
                 'jwt' => $jwt,
-            ])
-        )->setPolicy('23:59:59')
-            ->setForcedVerificationId(new VerificationIdentifier($verificationId));
+                'verificationId' => '{{{VERIFICATION_ID}}}',
+                'companyName' => $companyName
+            ]);
+
+        $verificationEmail = new EmailVerification();
+        return $verificationEmail->setSubject('You are Invited') // @TODO: trans
+            ->setFromEmail('support@jincor.com')
+            ->setFromName('Support Team') // @TODO: trans
+            ->setTemplate($template)
+            ->setGenerateCode([GenerateCode::DIGITS], 6)
+            ->setExpiredOn('23:59:59')
+            ->setConsumer($toEmail)
+            ->setPayload($jwt);
     }
 }

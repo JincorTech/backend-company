@@ -10,8 +10,8 @@
 namespace App\Applications\Company\Services\Company;
 
 use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
+use App\Core\Services\JWTService;
 use Illuminate\Support\Collection;
-use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Company\Entities\EconomicalActivityType;
 use App\Domains\Company\ValueObjects\CompanyExternalLink;
 use App\Domains\Company\Search\CompanyIndexContract;
@@ -51,21 +51,21 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
     private $eActivityRepository;
 
     /**
-     * @var App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface
-     */
-    private $verificationService;
-
-    /**
      * @var int
      */
     private $searchSize;
 
     /**
+     * @var JWTService
+     */
+    private $JWTService;
+
+    /**
      * CompanyService constructor.
-     * @param EmployeeVerificationServiceInterface $verificationService
+     * @param JWTService $JWTService
      */
     public function __construct(
-        EmployeeVerificationServiceInterface $verificationService
+        JWTService $JWTService
     )
     {
         $this->dm = App::make(DocumentManager::class);
@@ -73,7 +73,7 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
         $this->typesRepository = $this->dm->getRepository(CompanyType::class);
         $this->eActivityRepository = $this->dm->getRepository(EconomicalActivityType::class);
         $this->searchSize = config('elasticsearch.size') ?:  1000;
-        $this->verificationService = $verificationService;
+        $this->JWTService = $JWTService;
     }
 
     /**
@@ -82,7 +82,7 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
      * @param string $country
      * @param string $legalName
      * @param string $companyType
-     * @return App\Domains\Employee\Entities\EmployeeVerification
+     * @return CompanyRegistrationResult
      */
     public function register(
         string $country,
@@ -114,8 +114,11 @@ class CompanyService implements CompanyIndexContract, CompanyServiceInterface
 
         $company = new Company($legalName, $address, $ct);
         $this->dm->persist($company);
+        $this->dm->flush();
+
+        $token = $this->JWTService->makeRegistrationCompanyToken($company);
         event(new CompanyAdded($company));
-        return $this->verificationService->beginVerificationProcess($company);
+        return new CompanyRegistrationResult($company, $token);
     }
 
     /**

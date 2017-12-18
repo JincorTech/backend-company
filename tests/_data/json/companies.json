@@ -418,5 +418,95 @@
         }
       }
     }
+  },
+  {
+    "_id": {
+      "$binary": "NGZjYWQ3YzUtZjg0ZS00ZDQzLWIzNWMtMDVlNjlkMGUwMzY0",
+      "$type": "03"
+    },
+    "profile": {
+      "legalName": "Jincor",
+      "companyType": {
+        "$ref": "companyTypes",
+        "$id": {
+          "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+          "$type": "03"
+        },
+        "$db": "test"
+      },
+      "economicalActivities": [],
+      "links": [],
+      "address": {
+        "formattedAddress": "",
+        "country": {
+          "$ref": "countries",
+          "$id": {
+            "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+            "$type": "03"
+          },
+          "$db": "test"
+        }
+      }
+    }
+  },
+  {
+    "_id": {
+      "$binary": "NTE0YzAwOTktNzE2Zi00NTUwLTlkMjgtYzI1ZTJhZjkxODFl",
+      "$type": "03"
+    },
+    "profile": {
+      "legalName": "Jincor",
+      "companyType": {
+        "$ref": "companyTypes",
+        "$id": {
+          "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+          "$type": "03"
+        },
+        "$db": "test"
+      },
+      "economicalActivities": [],
+      "links": [],
+      "address": {
+        "formattedAddress": "",
+        "country": {
+          "$ref": "countries",
+          "$id": {
+            "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+            "$type": "03"
+          },
+          "$db": "test"
+        }
+      }
+    }
+  },
+  {
+    "_id": {
+      "$binary": "NzAyNmJhMTUtMmQxZC00MDQxLWI2ZWQtNTM2ZGEwYzEwMjBh",
+      "$type": "03"
+    },
+    "profile": {
+      "legalName": "Jincor",
+      "companyType": {
+        "$ref": "companyTypes",
+        "$id": {
+          "$binary": "NGYwMjFmN2YtMjNiZC00MzE3LWE0MGItMDg2YmY4ZTZhOThk",
+          "$type": "03"
+        },
+        "$db": "test"
+      },
+      "economicalActivities": [],
+      "links": [],
+      "address": {
+        "formattedAddress": "",
+        "country": {
+          "$ref": "countries",
+          "$id": {
+            "$binary": "YzY5OWZjMWEtZWM3Zi00MDIxLTkxMDItMzFmZjAzYzU2MjRh",
+            "$type": "03"
+          },
+          "$db": "test"
+        }
+      }
+    }
   }
 ]

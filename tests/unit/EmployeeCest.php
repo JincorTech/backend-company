@@ -1,13 +1,12 @@
 <?php
 
 use App\Domains\Employee\Entities\Employee;
-use App\Domains\Employee\Entities\EmployeeVerification;
-use App\Domains\Employee\Exceptions\CompanyRequired;
 use App\Domains\Company\Entities\Company;
 use App\Core\Interfaces\MessengerServiceInterface;
 use App\Core\Interfaces\IdentityInterface;
 use App\Domains\Employee\Exceptions\ContactNotFound;
 use App\Domains\Employee\Exceptions\ContactAlreadyAdded;
+use App\Domains\Employee\ValueObjects\EmployeeContact;
 use App\Domains\Employee\ValueObjects\EmployeeRole;
 
 class EmployeeCest
@@ -22,6 +21,16 @@ class EmployeeCest
         $identityMock = Mockery::mock(IdentityInterface::class);
         $identityMock->shouldReceive('register')->once()->andReturn(true);
         App::instance(IdentityInterface::class, $identityMock);
+
+        $jwtServiceMock = Mockery::mock(JWTService::class);
+        $jwtServiceMock->shouldReceive('makeRegistrationToken')->once()->andReturn('token');
+        $jwtServiceMock->shouldReceive('getCompanyId')->once()->andReturn('9fcad7c5-f84e-4d43-b35c-05e69d0e0362');
+        App::instance(JWTService::class, $jwtServiceMock);
+
+        $identityMock = Mockery::mock(IdentityInterface::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        $identityMock->shouldReceive('login')->once()->andReturn('123');
+        App::instance(IdentityInterface::class, $identityMock);
     }
 
     /**
@@ -33,9 +42,9 @@ class EmployeeCest
     {
         $password = 'test123';
         $profile = EmployeeProfileFactory::make();
-        $verification = EmployeeVerificationFactory::make();
-        $verification->setVerifyEmail(true);
-        $employee = Employee::register($verification, $profile, $verification->getEmail(), $password);
+        $company = CompanyFactory::make();
+        $employeeContact = new EmployeeContact('test@test.com');
+        $employee = Employee::register($company, $profile, $password, $employeeContact);
         $I->assertInstanceOf(Employee::class, $employee);
         $I->assertEquals($profile, $employee->getProfile());
         $I->assertNotEquals($password, $employee->getPassword());
@@ -57,8 +66,6 @@ class EmployeeCest
         $employee = EmployeeFactory::make();
         $I->assertNotEmpty($employee->getProfile()->getName());
         $I->assertNotEmpty($employee->getProfile()->getPosition());
-
-
     }
 
     /**
@@ -71,8 +78,10 @@ class EmployeeCest
         $employee = EmployeeFactory::make();
         $I->assertNotEmpty($employee->getContacts()->getEmail());
         $I->assertNotEmpty($employee->getContacts()->getPhone());
-        $I->assertEquals($employee->getLogin(), $employee->getCompany()->getId() . ':' . $employee->getContacts()->getEmail());
-
+        $I->assertEquals(
+            $employee->getLogin(),
+            $employee->getCompany()->getId().':'.$employee->getContacts()->getEmail()
+        );
     }
 
 
@@ -87,28 +96,12 @@ class EmployeeCest
         $I->assertInstanceOf(Company::class, $employee->getCompany());
     }
 
-
-    /**
-     * Assert we not allow to register users with no companies
-     *
-     * @param UnitTester $I
-     */
-    public function canNotRegisterEmployeeWithoutCompany(UnitTester $I)
-    {
-        $password = 'test123';
-        $profile = EmployeeProfileFactory::make();
-        $verification = new EmployeeVerification(EmployeeVerification::REASON_RESTORE);
-        $email = 'test@test.com';
-        $verification->associateEmail($email);
-        $I->expectException(CompanyRequired::class, function() use ($profile, $email, $password, $verification) {
-            Employee::register($verification, $profile, $email, $password);
-        });
-    }
-
     public function canAddContact(UnitTester $I)
     {
         $employee = EmployeeFactory::make();
         $contact = EmployeeFactory::make();
+        $contact->activate();
+
         $employee->addContact($contact);
 
         $I->assertEquals(1, $employee->getContactList()->count());
@@ -126,7 +119,11 @@ class EmployeeCest
     {
         $employee = EmployeeFactory::make();
         $contact1 = EmployeeFactory::make();
+        $contact1->activate();
+
         $contact2 = EmployeeFactory::make();
+        $contact2->activate();
+
         $employee->addContact($contact1);
         $employee->addContact($contact2);
 
@@ -144,11 +141,12 @@ class EmployeeCest
     public function testEmployeeRoleAssignOnRegistration(UnitTester $I)
     {
         $company = CompanyFactory::makeMockWith1Employee();
-        $verification = EmployeeVerificationFactory::makeVerifiedByCompany($company);
         $profile = EmployeeProfileFactory::make();
         $password = 'test123';
+        $email = 'test@test.com';
 
-        $employee = Employee::register($verification, $profile, $verification->getEmail(), $password);
+        $employeeContact = new EmployeeContact($email);
+        $employee = Employee::register($company, $profile, $password, $employeeContact);
 
         //not first employee of company is registered not as admin
         $I->assertEquals(EmployeeRole::EMPLOYEE, $employee->getProfile()->scope);
@@ -171,6 +169,7 @@ class EmployeeCest
     {
         $employee = EmployeeFactory::make();
         $contact1 = EmployeeFactory::make();
+        $contact1->activate();
         $contact2 = EmployeeFactory::make();
         $employee->addContact($contact1);
 

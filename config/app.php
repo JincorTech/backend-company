@@ -195,6 +195,7 @@ return [
         App\Core\Providers\CompanyServiceProvider::class,
         App\Core\Providers\MailingListProvider::class,
         JincorTech\AuthClient\AuthClientServiceProvider::class,
+        App\Core\Providers\VerifyServiceProvider::class,
     ],
 
     /*

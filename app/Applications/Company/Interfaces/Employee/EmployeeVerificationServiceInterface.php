@@ -8,12 +8,8 @@
 
 namespace App\Applications\Company\Interfaces\Employee;
 
-use App\Domains\Company\Entities\Company;
-
 interface EmployeeVerificationServiceInterface
 {
-    public function beginVerificationProcess(Company $company);
-
     public function sendEmailVerification(string $verificationId);
 
     public function sendEmailRestorePassword(string $email);

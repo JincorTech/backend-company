@@ -23,7 +23,7 @@ class CompanyServiceCest
     public function __construct()
     {
         $this->dm = App::make(DocumentManager::class);
-        $this->companyService = new CompanyService(App::make(EmployeeVerificationServiceInterface::class));
+        $this->companyService = new CompanyService(App::make(\App\Core\Services\JWTService::class));
     }
 
     public function getCompany(UnitTester $I)
