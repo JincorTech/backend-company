@@ -70,6 +70,43 @@ class EmployeeServiceCest
         $I->assertEquals($employee->getContacts()->getEmail(), $email);
         $I->assertTrue($employee->isAdmin());
     }
+    
+    /**
+     * Register employees with automatic addition of contacts
+     *
+     * @param UnitTester $I
+     */
+    public function canRegisterEmployeesWithAutomaticAdditionOfContacts(UnitTester $I)
+    {
+        $I->wantTo('Register employees with automatic addition of contacts');
+        $email1 = $this->faker->email;
+        $verification1 = $this->getVerifiedProcess($email1);
+        $profile = EmployeeProfileFactory::make();
+        $employee1 = $this->employeeService->register($verification1->getId(), $email1, $profile, $this->employeePassword);
+
+        $I->assertCount(0, $employee1->getContactList());
+
+        $email2 = $this->faker->email;
+        $verification2 = $this->getVerifiedProcess($email2);
+        $verification2->associateCompany($employee1->getCompany());
+        $profile = EmployeeProfileFactory::make();
+        $employee2 = $this->employeeService->register($verification2->getId(), $email2, $profile, $this->employeePassword);
+
+        $I->assertCount(1, $employee2->getContactList());
+        $I->assertCount(1, $employee1->getContactList());
+
+        $employee2->deactivate();
+
+        $email3 = $this->faker->email;
+        $verification3 = $this->getVerifiedProcess($email3);
+        $verification3->associateCompany($employee1->getCompany());
+        $profile = EmployeeProfileFactory::make();
+        $employee3 = $this->employeeService->register($verification3->getId(), $email3, $profile, $this->employeePassword);
+
+        $I->assertCount(1, $employee3->getContactList());
+        $I->assertCount(1, $employee2->getContactList());
+        $I->assertCount(2, $employee1->getContactList());
+    }
 
     /**
      * Create new employee and try to find it by email
