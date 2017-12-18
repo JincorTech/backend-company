@@ -1,0 +1,13 @@
+.git
+.idea
+docs
+build.sh
+gulpfile.js
+init.sh
+update.test.db.dump.sh
+Jincor.postman_collection
+package.json
+storage
+update.test.db.dump.sh
+workspace.*
+companies.*

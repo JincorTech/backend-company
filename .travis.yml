@@ -1,21 +1,25 @@
 sudo: required
 services:
-- docker
+  - docker
 before_install:
-- chmod ugo+x ./build.sh
-- docker-compose -f docker-compose.test.yml build
-- cp ./.env.test ./.env
-- docker-compose -f docker-compose.test.yml run --rm workspace composer install
+  - chmod ugo+x ./build.sh
+  - docker-compose -f docker-compose.test.yml build
+  - cp ./.env.test ./.env
+  - docker-compose -f docker-compose.test.yml run --rm workspace composer install
 script:
-- docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept
-  run unit
-- docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept
-  run api
-- docker login -u $DOCKER_USER -p $DOCKER_PASS
-- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ];  then echo "production"; elif ["$TRAVIS_BRANCH"
-  == "develop"]; then echo "stage"; else echo "dev-"$(git rev-parse --short HEAD);
-  fi`
-- "./build.sh $TAG"
+  - docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept
+    run unit
+  - docker-compose -f docker-compose.test.yml run --rm workspace ./vendor/bin/codecept
+    run api
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then
+      echo "production";
+    elif [ "$TRAVIS_BRANCH" == "develop" ]; then
+      echo "stage";
+    else
+      echo "dev-"$(git rev-parse --short HEAD);
+    fi`
+  - "./build.sh $TAG"
 env:
   global:
   - secure: X8y2qrIm/5HSsCGYGIUx4Ck3+VRnp6RyosP1iwBqnBARbWcBTvr9+TiNONcJAC1EnLS46r+pN46fkT+1PVoKEnDPK9B7WLBGTsQQ989ftMZX/CY8x0r6iPWtkHNuoSnN4WP7qO8OTJPuybblXAhuIjDLsQf1lUe+k6msA0HVFpdLfRtCVtmOIyh+5peFxmkQQUYH202miC0eESLjv0pDxsQQaWFZ/qXUpF7HQtQBGltb88VbBbaPSqzF1t6hL0LkD4mvCFBOmmbZ0CCwig2XlHUVdmvr4KP3b96GU96Am02Jrciwn9v+4Aepd8XL70RDec7k0QBz5nUVjtlNyRYGi+G135gHmSGuW3+DrPqIUGevVhF1dPIQVt7YDndsh8q7uKwpfI/W+eg422TLLQkYfTDBOMIQc7HZNi6QDeRx+gozhB2Pyr+0Ylbo1mTB51SGV/yWouLEvDqw7uggPlOdOvKSXc9Z5bRVuqG054+o7OV3MGdLBzgYYlRY3510PNVQyBSj2DPyF8ORQnhSXbzZDmazhIXrP0BCOjw6kHTZCLrS8hRK5uAGpmfolZ0WYVFwA5ExsUdgNfbztBzMEy0yNhT0FVLh5dteWVEZdB2/wVdujkefaEFvAtOBvhyS0vkRYYvWmH0HajQLh7fZAtBZW2f+sR5B+/HYw2MGMFg1nH8=
