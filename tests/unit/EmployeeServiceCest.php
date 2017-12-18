@@ -1,5 +1,10 @@
 <?php
 
+use App\Applications\Company\Exceptions\Employee\InvitationLimitReached;
+use App\Core\Services\Verification\DummyVerificationService;
+use App\Core\Services\Verification\VerificationService;
+use App\Domains\Employee\EntityDecorators\RegistrationVerification;
+use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
 use App\Applications\Company\Services\Employee\EmployeeService;
 use App\Core\Interfaces\EmployeeVerificationReason;
 use App\Core\Services\IdentityService;
@@ -40,6 +45,8 @@ class EmployeeServiceCest
      */
     public function __construct()
     {
+        App::bind(VerificationService::class, DummyVerificationService::class);
+
         $this->dm = App::make(DocumentManager::class);
         $this->faker = Factory::create();
     }
@@ -266,6 +273,36 @@ class EmployeeServiceCest
         $employeeService->changePassword($employee, $newPass, $this->employeePassword);
         $I->assertTrue($employee->checkPassword($newPass));
     }
+
+
+    /**
+     * Test can invite employee
+     *
+     * @param UnitTester $I
+     */
+    public function canInviteEmployee(UnitTester $I)
+    {
+        $email = $this->faker->email;
+        $verification = $this->getVerifiedProcess($email);
+        $profile = EmployeeProfileFactory::make();
+        $employee = $this->employeeService->register($verification->getId(), $email, $profile, $this->employeePassword);
+
+        for ($i = 0; $i < config('mail.invitations.max_company_user'); $i++) {
+            $verification = $this->employeeService->invite('inv_emp@test.com', $employee);
+        }
+
+        $I->assertInstanceOf(EmployeeVerification::class, $verification);
+
+        $I->expectException(new InvitationLimitReached(
+            trans('exceptions.invitation.limitReached',
+                ['email' => 'inv_emp@test.com', 'limit' => config('mail.invitations.max_company_user')]
+            )
+        ), function () use ($employee) {
+            $this->employeeService->invite('inv_emp@test.com', $employee);
+        });
+    }
+
+
 
     /**
      * Register new Employee

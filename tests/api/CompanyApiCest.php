@@ -132,8 +132,8 @@ class CompanyApiCest
 
         $I->sendPOST('company/invite', [
             'emails' => [
-                'hlogeon1@gmail.com',
-                'ortgma@gmail.com',
+                'hlogeon1@example.com',
+                'ortgma@example.com',
             ],
         ]);
         $I->canSeeResponseIsJson();

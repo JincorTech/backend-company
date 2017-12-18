@@ -44,6 +44,7 @@ use Doctrine\ODM\MongoDB\DocumentRepository;
 use Illuminate\Support\Collection;
 use JincorTech\VerifyClient\Interfaces\VerifyService;
 use Mail;
+use Redis;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Validator;
@@ -526,6 +527,9 @@ class EmployeeService implements EmployeeServiceInterface
                 )
             );
         }
+
+        $this->incrementNumberInvitations($email, $inviter);
+
         $validator = Validator::make(
             ['value' => $email],
             ['value' => 'email']
@@ -741,19 +745,13 @@ class EmployeeService implements EmployeeServiceInterface
 
     /**
      * Check if invitation limit were reached
-     * TODO: move this counter to redis
      * @param Company $company
      * @param string $email
      * @return bool
      */
     private function invitationLimitReached(Company $company, string $email)
     {
-        $openVerificationsCount = $this->verificationRepository->getOpenVerificationsCountByCompanyAndEmail(
-            $company,
-            $email
-        );
-
-        return $openVerificationsCount >= config('mail.invitations.max_company_user');
+        return (Redis::get($company->getId().':'.$email) ? Redis::get($company->getId().':'.$email) : 0) >= config('mail.invitations.max_company_user');
     }
 
 
@@ -782,5 +780,14 @@ class EmployeeService implements EmployeeServiceInterface
         }
 
         return $this->findByEmailAndPassword($options['email'], $options['password']);
+    }
+
+    /**
+     * @param string $email
+     * @param Employee $inviter
+     */
+    public function incrementNumberInvitations(string $email, Employee $inviter): void
+    {
+        Redis::incr($inviter->getCompany()->getId().':'.$email);
     }
 }
