@@ -91,6 +91,12 @@ class Employee implements MetaEmployeeInterface
     protected $contactList;
 
     /**
+     * @var array
+     * @ODM\Field(type="collection")
+     */
+    protected $wallets;
+
+    /**
      * @var bool
      * @ODM\Field(type="bool")
      */
@@ -112,6 +118,7 @@ class Employee implements MetaEmployeeInterface
     {
         $this->id = Uuid::uuid4()->toString();
         $this->contactList = new ArrayCollection();
+        $this->wallets = [];
     }
 
     public static function register(
@@ -372,5 +379,15 @@ class Employee implements MetaEmployeeInterface
     public function updateDepartmentReference()
     {
         $this->departmentId = $this->department->getId();
+    }
+
+    public function setWallets(array $wallets)
+    {
+        $this->wallets = $wallets;
+    }
+
+    public function getWallets()
+    {
+        return $this->wallets;
     }
 }

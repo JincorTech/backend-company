@@ -48,5 +48,8 @@ return [
     'messenger' => [
         'uri' => env('MESSENGER_SCHEME') . '://' . env('MESSENGER_HOST') . ':' . env('MESSENGER_PORT'),
     ],
+    'wallets' => [
+        'uri' => env('WALLETS_URI'),
+    ],
 
 ];

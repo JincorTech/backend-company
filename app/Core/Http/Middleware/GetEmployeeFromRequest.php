@@ -16,21 +16,27 @@ use App\Domains\Employee\Entities\Employee;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use App\Core\Interfaces\IdentityInterface;
+use App\Core\Interfaces\WalletsServiceInterface;
 
 class GetEmployeeFromRequest
 {
     protected $identityService;
     protected $employeeService;
+    /**
+     * @var WalletsServiceInterface
+     */
+    private $walletsService;
 
     /**
      * GetEmployeeFromRequest constructor.
      * @param IdentityInterface $identityService
      * @param EmployeeService $employeeService
      */
-    public function __construct(IdentityInterface $identityService, EmployeeService $employeeService)
+    public function __construct(IdentityInterface $identityService, EmployeeService $employeeService, WalletsServiceInterface $walletsService)
     {
         $this->identityService = $identityService;
         $this->employeeService = $employeeService;
+        $this->walletsService = $walletsService;
     }
 
     /**
@@ -66,6 +72,28 @@ class GetEmployeeFromRequest
             ], 401);
         }
         $employee->getProfile()->scope = $data->getScope();
+        $company = $employee->getCompany();
+        if ($request->getRequestUri() !== '/api/v1/company/my') {
+            //TODO: refactor, move to the event handler or some other better place
+            if (!$employee->getWallets()) {
+                $employeeWallets = $this->walletsService->register([], $header);
+                if ($employeeWallets) {
+                    $employee->setWallets($employeeWallets);
+                    $this->employeeService->dm->persist($employee);
+                }
+            }
+            if ($employee->isAdmin() && !$company->getWallets()) {
+                $companyWallets = $this->walletsService->registerCorporate([], $header);
+                if ($companyWallets) {
+                    $company->setWallets($companyWallets);
+                    $this->employeeService->dm->persist($company);
+                }
+            }
+        }
+        $this->employeeService->dm->flush();
+        //END TODO
+
+
         $this->bindUser($employee);
 
         return $next($request);

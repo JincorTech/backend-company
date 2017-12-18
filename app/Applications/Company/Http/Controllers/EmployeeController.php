@@ -54,8 +54,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Http\JsonResponse;
 use Dingo\Api\Http\Response;
 use App\Applications\Company\Http\Requests\Employee\QueryLogins;
+use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
 use App\Applications\Company\Transformers\Employee\EmployeeList;
+use App\Core\Interfaces\WalletsServiceInterface;
 use App;
+use App\Domains\Employee\Entities\EmployeeVerification;
 use JincorTech\VerifyClient\Exceptions\InvalidCodeException;
 
 class EmployeeController extends BaseController
@@ -76,6 +79,12 @@ class EmployeeController extends BaseController
      * @var EmployeeVerificationService
      */
     private $verificationService;
+
+
+    /**
+     * @var CompanyServiceInterface
+     */
+    private $companyService;
 
     /**
      * @var App\Applications\Company\Services\Company\CompanyServiceInterface
@@ -139,6 +148,10 @@ class EmployeeController extends BaseController
                 'message' => trans('exceptions.verification.code.incorrect'),
             ], 401);
         }
+        if ($verification->getReason() !== EmployeeVerification::REASON_RESTORE) {
+            $this->employeeService->activate($verification);
+        }
+        return $this->response->item($verification, EmployeeVerificationTransformer::class);
     }
 
 
@@ -229,6 +242,7 @@ class EmployeeController extends BaseController
             if (!$employee->isActive()) {
                 throw new EmployeeNotActivated;
             }
+
             $data = (object) [
                 'token' => $token,
                 'employee' => $employee,

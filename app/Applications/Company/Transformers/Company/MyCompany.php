@@ -39,6 +39,7 @@ class MyCompany extends TransformerAbstract
             ),
             'companyType' => $this->transformCompanyType($company->getProfile()->getType()),
             'employeesCount' => $company->getEmployeesCount(),
+            'wallets' => $company->getWallets(),
         ];
     }
 

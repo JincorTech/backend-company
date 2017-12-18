@@ -18,6 +18,7 @@ use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Applications\Company\Services\Employee\Verification\EmailVerificationFactory;
 use App\Applications\Company\Services\Employee\Verification\InviteEmailVerificationFactory;
+use App\Core\Services\WalletsService;
 use App\Core\Interfaces\EmployeeVerificationReason;
 use App\Core\Services\ImageService;
 use App\Core\Services\JWTService;
@@ -56,7 +57,7 @@ class EmployeeService implements EmployeeServiceInterface
     /**
      * @var DocumentManager|mixed
      */
-    private $dm;
+    public $dm;
 
     /**
      * @var \App\Domains\Employee\Interfaces\EmployeeRepositoryInterface | DocumentRepository
@@ -83,11 +84,19 @@ class EmployeeService implements EmployeeServiceInterface
      */
     private $verifyService;
 
+
+    /**
+     * @var WalletsService
+     */
+    private $walletsService;
+
     /**
      * EmployeeService constructor.
      * @param EmployeeRepositoryInterface $employeeRepository
      * @param EmployeeVerificationRepositoryInterface $verificationRepository
      * @param EmployeeVerificationServiceInterface $verificationService
+     * @param WalletsService $walletsService
+     * @param VerificationService $commonVerificationService
      * @param JWTService $jwtService
      * @param VerifyService $verifyService
      */
@@ -95,13 +104,17 @@ class EmployeeService implements EmployeeServiceInterface
         EmployeeRepositoryInterface $employeeRepository,
         EmployeeVerificationRepositoryInterface $verificationRepository,
         EmployeeVerificationServiceInterface $verificationService,
-        JWTService $jwtService,
-        VerifyService $verifyService
-    ) {
+        WalletsService $walletsService,
+        VerificationService $commonVerificationService,
+        JWTService $jwtService
+    )
+    {
         $this->dm = App::make(DocumentManager::class);
         $this->repository = $employeeRepository;
         $this->verificationRepository = $verificationRepository;
         $this->verificationService = $verificationService;
+        $this->commonVerificationService = $commonVerificationService;
+        $this->walletsService = $walletsService;
         $this->jwtService = $jwtService;
         $this->verifyService = $verifyService;
     }
@@ -163,18 +176,14 @@ class EmployeeService implements EmployeeServiceInterface
         if ($verification->getEmail() !== $email) {
             throw new InvalidEmailSpecified('Invalid email specified');
         }
-
         $employee->activate();
         $verification->setVerifyEmail(true);
         $verification->associateEmployee($employee);
-
         $this->dm->persist($employee);
         $this->dm->persist($company);
         $this->dm->persist($verification);
         $this->dm->flush();
-
         event(new EmployeeRegistered($employee->getCompany(), $employee, $employee->getProfile()->scope));
-
         return new RegisterResult($employee, $verification->getId());
     }
 
@@ -414,6 +423,7 @@ class EmployeeService implements EmployeeServiceInterface
     {
         return $this->getEmployeesCompanies($this->getEmployeeByOptions($options));
     }
+
 
     /**
      * @param Collection $employees

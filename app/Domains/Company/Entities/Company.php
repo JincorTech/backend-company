@@ -52,6 +52,12 @@ class Company
      */
     protected $departments;
 
+    /**
+     * @var array
+     * @ODM\Field(type="collection")
+     */
+    protected $wallets;
+
     public function __construct(
         string $legalName,
         Address $address,
@@ -60,6 +66,7 @@ class Company
         $this->id = Uuid::uuid4()->toString();
         $this->profile = new CompanyProfile($legalName, $address, $type);
         $this->initializeDepartment();
+        $this->wallets = [];
     }
 
     /**
@@ -115,4 +122,15 @@ class Company
             return $value->isActive();
         }));
     }
+
+    public function setWallets(array $wallets)
+    {
+        $this->wallets = $wallets;
+    }
+
+    public function getWallets()
+    {
+        return $this->wallets;
+    }
+
 }

@@ -35,6 +35,7 @@ class SelfProfile extends TransformerAbstract
             'admin' => $employee->isAdmin(),
             'contacts' => $this->getContacts($employee),
             'company' => $this->getCompany($employee->getCompany()),
+            'wallets' => $this->getWallets($employee),
         ];
     }
 
@@ -70,6 +71,23 @@ class SelfProfile extends TransformerAbstract
     protected function getCompany(Company $company)
     {
         return (new MyCompany())->transform($company);
+    }
+
+    /**
+     * TODO: refactor!!!
+     * @param Employee $employee
+     * @return array
+     */
+    protected function getWallets(Employee $employee) : array
+    {
+        $wallets = [];
+        if ($employee->isAdmin() && $employee->getCompany()->getWallets()) {
+            $wallets = array_merge($wallets, $employee->getCompany()->getWallets());
+        }
+        if ($employee->getWallets()) {
+            $wallets = array_merge($wallets, $employee->getWallets());
+        }
+        return $wallets;
     }
 
 }

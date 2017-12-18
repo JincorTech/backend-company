@@ -66,4 +66,5 @@ class EmployeeRegistered
         ];
         $this->messengerService->register($data, $eventData['employeeId']);
     }
+
 }

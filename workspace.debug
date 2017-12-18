@@ -23,14 +23,7 @@ RUN apt-get install -y ca-certificates
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
 RUN echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 RUN apt-get update
-RUN apt-get install mongodb-org-tools
-
-ARG INSTALL_XDEBUG=true
-RUN if [ ${INSTALL_XDEBUG} = true ]; then \
-    # Load the xdebug extension only with phpunit commands
-    apt-get update && \
-    apt-get install -y --force-yes php7.1-xdebug \
-;fi
+RUN apt-get install -y mongodb-org-tools php7.1-xdebug
 
 RUN pecl channel-update pecl.php.net && pecl -q install mongodb && \
     echo "extension=mongodb.so" >> /etc/php/7.1/mods-available/mongodb.ini && \
