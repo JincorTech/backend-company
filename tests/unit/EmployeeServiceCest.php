@@ -1,24 +1,22 @@
 <?php
 
 use App\Applications\Company\Exceptions\Employee\InvitationLimitReached;
-use App\Core\Services\Verification\DummyVerificationService;
-use App\Core\Services\Verification\VerificationService;
-use App\Domains\Employee\EntityDecorators\RegistrationVerification;
-use App\Core\Services\Verification\Exceptions\EmployeeVerificationNotFound;
+use App\Core\Interfaces\WalletsServiceInterface;
 use App\Applications\Company\Services\Employee\EmployeeService;
 use App\Core\Interfaces\EmployeeVerificationReason;
 use App\Core\Services\IdentityService;
 use App\Core\Services\JWTService;
 use App\Core\Services\Exceptions\PasswordMismatchException;
 use App\Applications\Company\Exceptions\Company\CompanyNotFound;
-use App\Applications\Company\Interfaces\Employee\EmployeeVerificationServiceInterface;
 use App\Domains\Employee\Entities\Employee;
+use App\Domains\Employee\Entities\EmployeeVerification;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use App\Core\Interfaces\MessengerServiceInterface;
 use Faker\Factory;
 use Illuminate\Support\Collection;
 use JincorTech\VerifyClient\Interfaces\VerifyService;
 use JincorTech\VerifyClient\ValueObjects\EmailVerificationDetails;
+use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 
 class EmployeeServiceCest
 {
@@ -45,8 +43,6 @@ class EmployeeServiceCest
      */
     public function __construct()
     {
-        App::bind(VerificationService::class, DummyVerificationService::class);
-
         $this->dm = App::make(DocumentManager::class);
         $this->faker = Factory::create();
     }
@@ -56,6 +52,13 @@ class EmployeeServiceCest
         $messengerMock = Mockery::mock(MessengerServiceInterface::class);
         $messengerMock->shouldReceive('register')->once()->andReturn(true);
         App::instance(MessengerServiceInterface::class, $messengerMock);
+
+        $identityMock = Mockery::mock(IdentityService::class);
+        $identityMock->shouldReceive('register')->once()->andReturn(true);
+        $identityMock->shouldReceive('login')->once()->andReturn('123');
+        App::instance(IdentityService::class, $identityMock);
+
+        $this->employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
     }
 
     /**
@@ -65,8 +68,6 @@ class EmployeeServiceCest
      */
     public function canRegisterEmployees(UnitTester $I)
     {
-        $this->employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
-
         $I->wantTo('Register user using EmployeeService');
         $email = $this->faker->email;
         $profile = EmployeeProfileFactory::make();
@@ -86,29 +87,34 @@ class EmployeeServiceCest
     public function canRegisterEmployeesWithAutomaticAdditionOfContacts(UnitTester $I)
     {
         $I->wantTo('Register employees with automatic addition of contacts');
+        $token = '';
         $email1 = $this->faker->email;
-        $verification1 = $this->getVerifiedProcess($email1);
         $profile = EmployeeProfileFactory::make();
-        $employee1 = $this->employeeService->register($verification1->getId(), $email1, $profile, $this->employeePassword);
+        $employee1 = $this->employeeService->register($token, $email1, $profile, $this->employeePassword)->getEmployee();
 
         $I->assertCount(0, $employee1->getContactList());
 
+        $employee1->activate();
+        $this->dm->persist($employee1);
+        $this->dm->flush();
+
         $email2 = $this->faker->email;
-        $verification2 = $this->getVerifiedProcess($email2);
-        $verification2->associateCompany($employee1->getCompany());
         $profile = EmployeeProfileFactory::make();
-        $employee2 = $this->employeeService->register($verification2->getId(), $email2, $profile, $this->employeePassword);
+        $employee2 = $this->employeeService->register($token, $email2, $profile, $this->employeePassword)->getEmployee();
+        $employee2->activate();
+        $this->dm->persist($employee2);
+        $this->dm->flush();
 
         $I->assertCount(1, $employee2->getContactList());
         $I->assertCount(1, $employee1->getContactList());
 
         $employee2->deactivate();
+        $this->dm->persist($employee2);
+        $this->dm->flush();
 
         $email3 = $this->faker->email;
-        $verification3 = $this->getVerifiedProcess($email3);
-        $verification3->associateCompany($employee1->getCompany());
         $profile = EmployeeProfileFactory::make();
-        $employee3 = $this->employeeService->register($verification3->getId(), $email3, $profile, $this->employeePassword);
+        $employee3 = $this->employeeService->register($token, $email3, $profile, $this->employeePassword)->getEmployee();
 
         $I->assertCount(1, $employee3->getContactList());
         $I->assertCount(1, $employee2->getContactList());
@@ -124,11 +130,10 @@ class EmployeeServiceCest
     {
         $I->wantTo('Find existing user by email');
         $employee = $this->registerEmployee();
-        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
-        $findResult = $employeeService->findByEmail($employee->getContacts()->getEmail());
+        $findResult = $this->employeeService->findByEmail($employee->getContacts()->getEmail());
         $I->assertEquals($employee, $findResult->first());
         $I->wantToTest('Passing wrong email leads to finding nothing');
-        $I->assertEmpty($employeeService->findByEmail('1'.$employee->getContacts()->getEmail()));
+        $I->assertEmpty($this->employeeService->findByEmail('1'.$employee->getContacts()->getEmail()));
     }
 
     /**
@@ -141,11 +146,10 @@ class EmployeeServiceCest
     {
         $I->wantTo('Find existing user by login');
         $employee = $this->registerEmployee();
-        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
-        $findResult = $employeeService->findByLogin($employee->getLogin());
+        $findResult = $this->employeeService->findByLogin($employee->getLogin());
         $I->assertEquals($employee, $findResult);
         $I->wantToTest('Passing wrong login leads to finding nothing');
-        $I->assertEmpty($employeeService->findByLogin('1'.$employee->getLogin()));
+        $I->assertEmpty($this->employeeService->findByLogin('1'.$employee->getLogin()));
     }
 
     /**
@@ -159,7 +163,8 @@ class EmployeeServiceCest
         $employee = $this->registerEmployee();
         $this->dm->persist($employee->getCompany());
         $this->dm->flush($employee->getCompany());
-        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
+
+        $employeeService = $this->employeeService;
         $findResult = $employeeService->findByCompanyIdAndEmail(
             $employee->getCompany()->getId(),
             $employee->getContacts()->getEmail()
@@ -283,22 +288,23 @@ class EmployeeServiceCest
     public function canInviteEmployee(UnitTester $I)
     {
         $email = $this->faker->email;
-        $verification = $this->getVerifiedProcess($email);
+        $token = '';
         $profile = EmployeeProfileFactory::make();
-        $employee = $this->employeeService->register($verification->getId(), $email, $profile, $this->employeePassword);
+        $employee = $this->employeeService->register($token, $email, $profile, $this->employeePassword)->getEmployee();
 
-        for ($i = 0; $i < config('mail.invitations.max_company_user'); $i++) {
-            $verification = $this->employeeService->invite('inv_emp@test.com', $employee);
-        }
 
+        Redis::shouldReceive('incr')->andReturnNull();
+        Redis::shouldReceive('get')->with('4fcad7c5-f84e-4d43-b35c-05e69d0e0364:inv_emp@test.com')->andReturn(0);
+        $verification = $this->employeeService->invite('inv_emp@test.com', $employee);
         $I->assertInstanceOf(EmployeeVerification::class, $verification);
 
+        Redis::shouldReceive('get')->with('4fcad7c5-f84e-4d43-b35c-05e69d0e0364:inv_emp1@test.com')->andReturn(3);
         $I->expectException(new InvitationLimitReached(
             trans('exceptions.invitation.limitReached',
-                ['email' => 'inv_emp@test.com', 'limit' => config('mail.invitations.max_company_user')]
+                ['email' => 'inv_emp1@test.com', 'limit' => config('mail.invitations.max_company_user')]
             )
         ), function () use ($employee) {
-            $this->employeeService->invite('inv_emp@test.com', $employee);
+            $this->employeeService->invite('inv_emp1@test.com', $employee);
         });
     }
 
@@ -311,8 +317,8 @@ class EmployeeServiceCest
     private function registerEmployee()
     {
         $profile = EmployeeProfileFactory::make();
-        $employeeService = $this->makeEmployeeService(['4fcad7c5-f84e-4d43-b35c-05e69d0e0364']);
-        return ($employeeService->register(
+
+        return ($this->employeeService->register(
             'token',
             $this->faker->email,
             $profile,
@@ -351,11 +357,6 @@ class EmployeeServiceCest
         $jwtServiceMock->shouldReceive('getData')->andReturnValues($returnData);
         App::instance(JWTService::class, $jwtServiceMock);
 
-        $identityMock = Mockery::mock(IdentityService::class);
-        $identityMock->shouldReceive('register')->once()->andReturn(true);
-        $identityMock->shouldReceive('login')->once()->andReturn('123');
-        App::instance(IdentityService::class, $identityMock);
-
         $verifyMock = Mockery::mock(VerifyService::class);
         $verifyMock->shouldReceive('initiate')->once()->andReturn(
             new EmailVerificationDetails([
@@ -367,12 +368,12 @@ class EmployeeServiceCest
         );
         App::instance(VerifyService::class, $verifyMock);
 
-        return new EmployeeService(
-            App::make(\App\Domains\Employee\Interfaces\EmployeeRepositoryInterface::class),
-            App::make(\App\Domains\Employee\Interfaces\EmployeeVerificationRepositoryInterface::class),
-            App::make(EmployeeVerificationServiceInterface::class),
-            $jwtServiceMock,
-            $verifyMock
-        );
+        $walletsMock = Mockery::mock(WalletsServiceInterface::class);
+        $walletsMock->shouldReceive('register')->andReturnNull();
+        $walletsMock->shouldReceive('registerCorporate')->andReturnNull();
+
+        App::instance(WalletsServiceInterface::class, $walletsMock);
+
+        return App::make(EmployeeServiceInterface::class);
     }
 }

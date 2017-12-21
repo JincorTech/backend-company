@@ -7,6 +7,7 @@ class EmployeeColleaguesCest
     {
         $token = '123'; //just random token
         $I->amAuthorizedAsJincorAdmin($token);
+        $I->haveWalletsMock();
     }
 
     public function _after(ApiTester $I)

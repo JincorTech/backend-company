@@ -9,6 +9,7 @@ class EmployeeMeCest
         $token = '123'; //just random token
 
         $I->amAuthorizedAsTestCompanyAdmin($token);
+        $I->haveWalletsMock();
     }
 
     public function _after(ApiTester $I)

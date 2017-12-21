@@ -10,6 +10,8 @@ class CompanyApiCest
         Elasticsearch::shouldReceive('index')
             ->once()
             ->andReturn(null);
+
+        $I->haveWalletsMock();
     }
 
     public function _after(ApiTester $I)
@@ -125,10 +127,12 @@ class CompanyApiCest
 
         $token = '123'; //just random token
 
-        $I->amAuthorizedAsJincorAdmin($token);
+        Redis::shouldReceive('get')->with('8d80a3e9-515d-4974-927d-4b097d1eb9fe:hlogeon1@example.com')->andReturn(0);
+        Redis::shouldReceive('get')->with('8d80a3e9-515d-4974-927d-4b097d1eb9fe:ortgma@example.com')->andReturn(0);
+        Redis::shouldReceive('incr')->andReturnNull();
 
         $I->wantTo('Invite an employee to my company to be able to contact him in Jincor messenger');
-        $I->amBearerAuthenticated($token);
+        $I->amAuthorizedAsJincorAdmin($token);
 
         $I->sendPOST('company/invite', [
             'emails' => [
@@ -136,6 +140,7 @@ class CompanyApiCest
                 'ortgma@example.com',
             ],
         ]);
+
         $I->canSeeResponseIsJson();
         $I->canSeeResponseCodeIs(200);
         $I->canSeeResponseJsonMatchesJsonPath('$.data[*].status');
@@ -150,10 +155,9 @@ class CompanyApiCest
         $I->wantTo('Get company info by id');
 
         $I->sendGET('company/' . $companyId);
-
         $I->canSeeResponseIsJson();
         $I->canSeeResponseCodeIs(200);
-        $I->canSeeResponseContains('{"data":{"id":"9fcad7c5-f84e-4d43-b35c-05e69d0e0362","legalName":"Test Company","profile":{"brandName":null,"description":null,"picture":null,"links":[],"email":null,"phone":null,"address":{"country":{"id":"c699fc1a-ec7f-4021-9102-31ff03c5624a","name":"\u0420\u043e\u0441\u0441\u0438\u044f"},"city":null,"formattedAddress":"\u041c\u043e\u0441\u043a\u0432\u0430, \u0443\u043b. \u0410\u043b\u0430\u044f, \u0434. 15, \u043e\u0444. 89, 602030"}},"economicalActivityTypes":[],"companyType":{"id":"4f021f7f-23bd-4317-a40b-086bf8e6a98d","name":"\u0427\u0430\u0441\u0442\u043d\u0430\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","code":"BT1"},"employeesCount":3}}');
+        $I->canSeeResponseContains('{"data":{"id":"9fcad7c5-f84e-4d43-b35c-05e69d0e0362","legalName":"Test Company","profile":{"brandName":null,"description":null,"picture":null,"links":[],"email":null,"phone":null,"address":{"country":{"id":"c699fc1a-ec7f-4021-9102-31ff03c5624a","name":"\u0420\u043e\u0441\u0441\u0438\u044f"},"city":null,"formattedAddress":"\u041c\u043e\u0441\u043a\u0432\u0430, \u0443\u043b. \u0410\u043b\u0430\u044f, \u0434. 15, \u043e\u0444. 89, 602030"}},"economicalActivityTypes":[],"companyType":{"id":"4f021f7f-23bd-4317-a40b-086bf8e6a98d","name":"\u0427\u0430\u0441\u0442\u043d\u0430\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u044f","code":"BT1"},"employeesCount":3,"wallets":null}}');
     }
 
     public function companySearchByCountry(ApiTester $I)
@@ -268,7 +272,7 @@ class CompanyApiCest
         $I->seeResponseCodeIs(200);
         $I->canSeeResponseContainsJson([
             'data' => [
-                'companyCount' => 14,
+                'companyCount' => 17,
                 'countryCount' => 1
             ]
         ]);
