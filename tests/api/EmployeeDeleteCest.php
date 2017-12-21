@@ -5,6 +5,7 @@ class EmployeeDeleteCest
 {
     public function _before(ApiTester $I)
     {
+        $I->haveWalletsMock();
     }
 
     public function _after(ApiTester $I)

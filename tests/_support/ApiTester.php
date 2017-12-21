@@ -18,6 +18,7 @@
  */
 
 use App\Core\Interfaces\IdentityInterface;
+use App\Core\Interfaces\WalletsServiceInterface;
 use Illuminate\Filesystem\FilesystemAdapter;
 use JincorTech\AuthClient\UserTokenVerificationResult;
 
@@ -130,5 +131,14 @@ class ApiTester extends \Codeception\Actor
         $mock->shouldReceive('url')->andReturn($url);
 
         Storage::shouldReceive('disk')->andReturn($mock);
+    }
+
+    public function haveWalletsMock()
+    {
+        $walletsMock = Mockery::mock(WalletsServiceInterface::class);
+        $walletsMock->shouldReceive('register')->andReturnNull();
+        $walletsMock->shouldReceive('registerCorporate')->andReturnNull();
+
+        $this->haveInstance(WalletsServiceInterface::class, $walletsMock);
     }
 }

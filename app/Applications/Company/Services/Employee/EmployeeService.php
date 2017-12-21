@@ -71,11 +71,6 @@ class EmployeeService implements EmployeeServiceInterface
     private $verificationRepository;
 
     /**
-     * @var EmployeeVerificationServiceInterface
-     */
-    private $verificationService;
-
-    /**
      * @var JWTService
      */
     private $jwtService;
@@ -95,26 +90,21 @@ class EmployeeService implements EmployeeServiceInterface
      * EmployeeService constructor.
      * @param EmployeeRepositoryInterface $employeeRepository
      * @param EmployeeVerificationRepositoryInterface $verificationRepository
-     * @param EmployeeVerificationServiceInterface $verificationService
-     * @param WalletsService $walletsService
-     * @param VerificationService $commonVerificationService
-     * @param JWTService $jwtService
      * @param VerifyService $verifyService
+     * @param WalletsService $walletsService
+     * @param JWTService $jwtService
      */
     public function __construct(
         EmployeeRepositoryInterface $employeeRepository,
         EmployeeVerificationRepositoryInterface $verificationRepository,
-        EmployeeVerificationServiceInterface $verificationService,
+        VerifyService $verifyService,
         WalletsService $walletsService,
-        VerificationService $commonVerificationService,
         JWTService $jwtService
     )
     {
         $this->dm = App::make(DocumentManager::class);
         $this->repository = $employeeRepository;
         $this->verificationRepository = $verificationRepository;
-        $this->verificationService = $verificationService;
-        $this->commonVerificationService = $commonVerificationService;
         $this->walletsService = $walletsService;
         $this->jwtService = $jwtService;
         $this->verifyService = $verifyService;
@@ -137,7 +127,8 @@ class EmployeeService implements EmployeeServiceInterface
         string $email,
         EmployeeProfile $profile,
         string $password
-    ) : RegisterResult {
+    ): RegisterResult
+    {
         $decodedToken = $this->jwtService->getData($token);
         /** @var Company $company */
         $company = $this->dm->getRepository(Company::class)->find($decodedToken['companyId']);
@@ -149,9 +140,18 @@ class EmployeeService implements EmployeeServiceInterface
                 ])
             );
         }
-
         $employeeContact = new EmployeeContact($email);
         $employee = Employee::register($company, $profile, $password, $employeeContact);
+        $colleagues = $this->getColleagues($employee);
+        /** @var Employee $colleague */
+        foreach ($colleagues['active'] as $colleague) {
+            if ($colleague->getId() !== $employee->getId()) {
+                $colleague->addContact($employee);
+                $employee->addContact($colleague);
+                $this->dm->persist($colleague);
+            }
+        }
+
 
         if ($decodedToken['reason'] === EmployeeVerificationReason::REASON_INVITED_BY_EMPLOYEE) {
             return $this->registerByInvitation($email, $employee, $company);
@@ -284,6 +284,7 @@ class EmployeeService implements EmployeeServiceInterface
             ->filter(function (Employee $empl) use ($employee) {
                 return $empl->getId() !== $employee->getId() && !$empl->isActive() && $empl->getDeletedAt();
             })->toArray();
+
         return [
             'self' => $employee,
             'active' => $active,
@@ -296,7 +297,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param string $id
      * @return Employee
      */
-    public function findById(string $id) : Employee
+    public function findById(string $id): Employee
     {
         return $this->repository->find($id);
     }
@@ -305,7 +306,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param array $ids
      * @return Collection
      */
-    public function findByMatrixIds(array $ids) : Collection
+    public function findByMatrixIds(array $ids): Collection
     {
         $employees = $this->repository->findAllByMatrixIds($ids);
         $collection = [];
@@ -320,7 +321,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param string $email
      * @return Collection
      */
-    public function findByEmail(string $email) : Collection
+    public function findByEmail(string $email): Collection
     {
         $employees = $this->repository->findBy([
             'contacts.email' => $email,
@@ -343,7 +344,7 @@ class EmployeeService implements EmployeeServiceInterface
         return $employee->first();
     }
 
-    public function findByLogins(array $logins) : Collection
+    public function findByLogins(array $logins): Collection
     {
         $employees = $this->repository->createQueryBuilder()->field('profile.login')
             ->in($logins)->getQuery()->execute();
@@ -377,7 +378,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param string $password
      * @return Collection
      */
-    public function findByEmailAndPassword(string $email, string $password) : Collection
+    public function findByEmailAndPassword(string $email, string $password): Collection
     {
         $employees = $this->findByEmail($email);
         return $employees->filter(function (Employee $employee) use ($password) {
@@ -397,7 +398,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @throws EmployeeVerificationException
      * @throws EmployeeVerificationNotFound
      */
-    public function findByVerificationId(string $verificationId) : Collection
+    public function findByVerificationId(string $verificationId): Collection
     {
         /** @var EmployeeVerification $verificationProcess */
         $verificationProcess = $this->verificationRepository->find($verificationId);
@@ -420,7 +421,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param array $options
      * @return Collection
      */
-    public function getMatchingCompanies(array $options) : Collection
+    public function getMatchingCompanies(array $options): Collection
     {
         return $this->getEmployeesCompanies($this->getEmployeeByOptions($options));
     }
@@ -430,7 +431,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param Collection $employees
      * @return Collection
      */
-    public function getEmployeesCompanies(Collection $employees) : Collection
+    public function getEmployeesCompanies(Collection $employees): Collection
     {
         $companies = new Collection();
         $employees->each(function (Employee $employee) use ($companies) {
@@ -444,7 +445,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @param string $companyId
      * @return Employee
      */
-    public function matchVerificationAndCompany(string $verificationId, string $companyId) : Employee
+    public function matchVerificationAndCompany(string $verificationId, string $companyId): Employee
     {
         /** @var Company|null $company */
         $company = $this->dm->getRepository(Company::class)->find($companyId);
@@ -517,7 +518,7 @@ class EmployeeService implements EmployeeServiceInterface
      * @throws EmployeeVerificationAlreadySent
      * @throws InvitationLimitReached
      */
-    public function invite(string $email, Employee $inviter) : EmployeeVerification
+    public function invite(string $email, Employee $inviter): EmployeeVerification
     {
         if ($this->invitationLimitReached($inviter->getCompany(), $email)) {
             throw new InvitationLimitReached(
@@ -751,7 +752,8 @@ class EmployeeService implements EmployeeServiceInterface
      */
     private function invitationLimitReached(Company $company, string $email)
     {
-        return (Redis::get($company->getId().':'.$email) ? Redis::get($company->getId().':'.$email) : 0) >= config('mail.invitations.max_company_user');
+        $res = Redis::get($company->getId() . ':' . $email);
+        return $res >= config('mail.invitations.max_company_user');
     }
 
 
@@ -788,6 +790,6 @@ class EmployeeService implements EmployeeServiceInterface
      */
     public function incrementNumberInvitations(string $email, Employee $inviter): void
     {
-        Redis::incr($inviter->getCompany()->getId().':'.$email);
+        Redis::incr($inviter->getCompany()->getId() . ':' . $email);
     }
 }

@@ -15,10 +15,9 @@ use App\Core\Services\Exceptions\PasswordMismatchException;
 use App\Applications\Company\Interfaces\Employee\EmployeeServiceInterface;
 use App\Applications\Company\Interfaces\Company\CompanyServiceInterface;
 use Doctrine\ODM\MongoDB\DocumentNotFoundException;
-use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
 use App;
-use JincorTech\AuthClient\AuthClient;
+use JincorTech\AuthClient\AuthServiceInterface;
 
 class IdentityService implements IdentityInterface
 {
@@ -30,22 +29,15 @@ class IdentityService implements IdentityInterface
      * IdentityService constructor.
      * @param EmployeeServiceInterface $employeeService
      * @param CompanyServiceInterface $companyService
+     * @param AuthServiceInterface $authClient
      */
     public function __construct(
         EmployeeServiceInterface $employeeService,
-        CompanyServiceInterface $companyService
+        CompanyServiceInterface $companyService,
+        AuthServiceInterface $authClient
     )
     {
-        $options = [
-            'base_uri' => config('services.identity.uri'),
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ]
-        ];
-
-        $this->authClient = new AuthClient(new Client($options));
-
+        $this->authClient = $authClient;
         $this->companyService = $companyService;
         $this->employeeService = $employeeService;
     }
