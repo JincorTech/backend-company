@@ -160,5 +160,16 @@ class EmployeeApiCest
         ]);
     }
 
+    public function queryLogins(ApiTester $I)
+    {
+        $I->wantTo('Query employees info by logins');
+        $I->sendPUT('employee/query-logins', [
+            'items' => [
+                '06c52e3c-9366-4b9d-9da2-265613adb72e:test@test.com'
+            ],
+        ]);
 
+        $I->canSeeResponseCodeIs(200);
+        $I->canSeeResponseEquals('{"data":{"9fcad7c5-f84e-4d43-b35c-05e69d0e0362:test@test.com":{"id":"98687e29-f059-4baa-9469-19076bbc4c0a","profile":{"name":"John Doe","firstName":"John","lastName":"Doe","position":"Tester","role":"company-admin","avatar":"http:\/\/existing.avatar"},"contacts":{"email":"test@test.com","phone":null},"meta":{"status":"active","registeredAt":"2017-06-07T06:59:35+0000"},"added":false,"matrixId":"@9fcad7c5-f84e-4d43-b35c-05e69d0e0362_test_test.com","wallets":[]}}}');
+    }
 }
