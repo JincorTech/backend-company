@@ -98,7 +98,8 @@ class EmployeeController extends BaseController
         IdentityInterface $identityService,
         EmployeeVerificationService $verificationService,
         CompanyServiceInterface $companyService
-    ) {
+    )
+    {
         $this->employeeService = $employeeService;
         $this->identityService = $identityService;
         $this->verificationService = $verificationService;
@@ -226,14 +227,14 @@ class EmployeeController extends BaseController
                 $company = $this->companyService->getCompany($request->getCompanyId());
             }
             $employee = $this->employeeService->findByCompanyIdAndEmail($company->getId(), $request->getEmail());
-            if(!$employee) {
+            if (!$employee) {
                 throw new EmployeeNotFound;
             }
             if (!$employee->isActive()) {
                 throw new EmployeeNotActivated;
             }
 
-            $data = (object) [
+            $data = (object)[
                 'token' => $token,
                 'employee' => $employee,
             ];
@@ -270,7 +271,7 @@ class EmployeeController extends BaseController
             $request->getPassword(),
             $request->getCompanyId()
         );
-        $data = (object) [
+        $data = (object)[
             'token' => $token,
             'employee' => $employee,
         ];
@@ -409,5 +410,11 @@ class EmployeeController extends BaseController
             $this->employeeService->findByMatrixIds($request->getMatrixIds()),
             EmployeeContactList::class
         );
+    }
+
+    public function queryLogins(Request $request)
+    {
+        $collection = $this->employeeService->findByLogins($request->get('items'));
+        return new JsonResponse((new EmployeeList)->transform($collection));
     }
 }
